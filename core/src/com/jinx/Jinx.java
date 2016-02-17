@@ -1,5 +1,7 @@
 package com.jinx;
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,65 +12,53 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.Map;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.CircleMapObject;
+import com.badlogic.gdx.maps.objects.PolygonMapObject;
+import com.badlogic.gdx.maps.objects.PolylineMapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
+import com.badlogic.gdx.maps.objects.TextureMapObject;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.utils.Array;
 
 public class Jinx extends ApplicationAdapter implements InputProcessor {
+	
+	
     SpriteBatch batch;
     World world;
-    final float PIXELS_TO_METERS = 100f;
-    Texture img;
-    TextureRegion[] monsters = new TextureRegion[4];
-    Sprite m1;
-    Sprite m2; 
-    Body body;
-    Body body2;
+    OrthographicCamera cam;
+    
+    TextureGameLoader tgl;
+    
+    Thing thing1;
+    Thing thing2;
     
     @Override
     public void create() {
-
-        
+    	tgl = new TextureGameLoader();
+    	
         batch = new SpriteBatch();
         world = new World(new Vector2(0, -100f), true);
-        img = new Texture("Humanoid0.png");
-
-        
-        {
-            m1 = new Sprite(img, 0, 0, 16, 16);
-            m1.setPosition(100, 100);        	
-	        BodyDef bodyDef = new BodyDef();
-	        bodyDef.type = BodyDef.BodyType.DynamicBody;
-	        bodyDef.position.set(m1.getX(), m1.getY());
-	        body = world.createBody(bodyDef);        
-	        PolygonShape shape = new PolygonShape();
-	        shape.setAsBox(m1.getWidth()/2, m1.getHeight()/2);
-	        FixtureDef fixtureDef = new FixtureDef();
-	        fixtureDef.shape = shape;
-	        fixtureDef.density = 1f;
-	        Fixture fixture = body.createFixture(fixtureDef);
-	        shape.dispose();
-        }
-        
-        
-        {
-        	m2 = new Sprite(img, 0, 16, 16, 16);
-        	m2.setPosition(100, 25);
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            bodyDef.position.set(m2.getX(), m2.getY());
-            body2 = world.createBody(bodyDef);        
-            PolygonShape shape = new PolygonShape();
-            shape.setAsBox(m2.getWidth()/2, m2.getHeight()/2);
-            FixtureDef fixtureDef = new FixtureDef();
-            fixtureDef.shape = shape;
-            fixtureDef.density = 1f;
-            Fixture fixture = body2.createFixture(fixtureDef);
-            shape.dispose();        
-        }
-        
-        
-        
+    	cam = new OrthographicCamera();
+    	cam.setToOrtho(false, 320, 240);
+    	batch.setProjectionMatrix(cam.combined);
+    	
+    	thing1 = new Thing(world, tgl.getMonster(0), BodyDef.BodyType.DynamicBody, 100, 100);
+    	thing2 = new Thing(world, tgl.getMonster(0), BodyDef.BodyType.StaticBody, 100, 25);    	        
     }
 
 
@@ -78,7 +68,7 @@ public class Jinx extends ApplicationAdapter implements InputProcessor {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
         
-        Vector2 vel = body.getLinearVelocity();
+        Vector2 vel = thing1.body.getLinearVelocity();
         if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
         	vel.x -= 5;        	
         }
@@ -91,14 +81,19 @@ public class Jinx extends ApplicationAdapter implements InputProcessor {
         if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
         	vel.y -= 5;
         } 
-        body.setLinearVelocity(vel);
-        m1.setPosition(body.getPosition().x, body.getPosition().y);
-
+        thing1.body.setLinearVelocity(vel);
+        thing1.sprite.setPosition(thing1.body.getPosition().x, thing1.body.getPosition().y);
+        
+        tgl.levelMapRenderer.setView(cam);
+        tgl.levelMapRenderer.render();
+        
         batch.begin();
-        m1.draw(batch);
-        m2.draw(batch);
+        thing1.sprite.draw(batch);
+        thing2.sprite.draw(batch);
         batch.end();
         
+        cam.translate(0,0,0);
+        cam.update();
     }
 
     @Override
