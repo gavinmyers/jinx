@@ -9,22 +9,58 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
+
 public class Thing {
 
 	public Thing(World world, TextureRegion texture, BodyDef.BodyType bodyType, int posX, int posY) {
-        sprite = new Sprite(texture);  
+		bodyDef = new BodyDef();
+		
+		bodyDef.type = bodyType;
+		bodyDef.position.set(posX, posY);
+		
+		fixtureDef = new FixtureDef();
+		
+		shape = new PolygonShape();
+		
+		fixtureDef.shape = shape;
+		fixtureDef.density = 5;
+		fixtureDef.friction = .4f;
+		
+		sprite = new Box2DSprite(texture);
+		shape.setAsBox(sprite.getHeight(), sprite.getWidth());
+		
+		body = world.createBody(bodyDef);
+		body.createFixture(fixtureDef);
+		body.setUserData(sprite);
+		
+		
+		//
+		
+/*
+        sprite = new Box2DSprite(texture);
         sprite.setPosition(posX, posY);
+        
         bodyDef = new BodyDef();
-        bodyDef.type = bodyType;
+        bodyDef.type = bodyType;        
+        bodyDef.position.set(sprite.getX(), sprite.getY());
+        
+        
         body = world.createBody(bodyDef);
-        bodyDef.position.set(sprite.getX(), sprite.getY());        
+        body.setUserData(sprite);
+        
         shape = new PolygonShape();
-        shape.setAsBox(sprite.getWidth()/2, sprite.getHeight()/2);
+        shape.setAsBox(sprite.getWidth(), sprite.getHeight());
+        
         fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = 1f;
+                
         fixture = body.createFixture(fixtureDef);
+        fixture.setUserData(sprite); 
+        
         shape.dispose();		
+        */
         
 	}
 	

@@ -1,39 +1,19 @@
 package com.jinx;
 
-import java.util.Iterator;
-
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.Map;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObject;
-import com.badlogic.gdx.maps.MapObjects;
-import com.badlogic.gdx.maps.objects.CircleMapObject;
-import com.badlogic.gdx.maps.objects.PolygonMapObject;
-import com.badlogic.gdx.maps.objects.PolylineMapObject;
-import com.badlogic.gdx.maps.objects.RectangleMapObject;
-import com.badlogic.gdx.maps.objects.TextureMapObject;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
+
+import net.dermetfan.gdx.graphics.g2d.Box2DSprite;
 
 public class Jinx extends ApplicationAdapter implements InputProcessor {
 	
@@ -41,29 +21,37 @@ public class Jinx extends ApplicationAdapter implements InputProcessor {
     SpriteBatch batch;
     World world;
     OrthographicCamera cam;
-    
+
     TextureGameLoader tgl;
     
     Thing thing1;
-    Thing thing2;
+    
+    Box2DDebugRenderer debugRenderer;
+
     
     @Override
     public void create() {
-    	tgl = new TextureGameLoader();
+    	world = new World(new Vector2(0, -100f), true);
+    	
+    	tgl = new TextureGameLoader(world);
     	
         batch = new SpriteBatch();
-        world = new World(new Vector2(0, -100f), true);
-    	cam = new OrthographicCamera();
-    	cam.setToOrtho(false, 320, 240);
+        
+    	
+        cam = new OrthographicCamera();
+    	cam.setToOrtho(false, 1024, 768);
     	batch.setProjectionMatrix(cam.combined);
     	
-    	thing1 = new Thing(world, tgl.getMonster(0), BodyDef.BodyType.DynamicBody, 100, 100);
-    	thing2 = new Thing(world, tgl.getMonster(0), BodyDef.BodyType.StaticBody, 100, 25);    	        
+    	thing1 = new Thing(world, tgl.getMonster(0), BodyDef.BodyType.DynamicBody, 100, 150);
+    	new Thing(world, tgl.getMonster(1), BodyDef.BodyType.DynamicBody, 100, 100);    
+    	
+    	debugRenderer=new Box2DDebugRenderer();
     }
 
 
     @Override
     public void render() {
+    	
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         world.step(Gdx.graphics.getDeltaTime(), 6, 2);
@@ -82,18 +70,19 @@ public class Jinx extends ApplicationAdapter implements InputProcessor {
         	vel.y -= 5;
         } 
         thing1.body.setLinearVelocity(vel);
-        thing1.sprite.setPosition(thing1.body.getPosition().x, thing1.body.getPosition().y);
-        
-        tgl.levelMapRenderer.setView(cam);
-        tgl.levelMapRenderer.render();
-        
-        batch.begin();
-        thing1.sprite.draw(batch);
-        thing2.sprite.draw(batch);
-        batch.end();
-        
+       
+        //tgl.levelMapRenderer.setView(cam);
+        //tgl.levelMapRenderer.render();
         cam.translate(0,0,0);
         cam.update();
+        
+        batch.begin();
+        Box2DSprite.draw(batch, world);
+        batch.end();
+        
+
+        
+        debugRenderer.render(world, cam.combined);
     }
 
     @Override
