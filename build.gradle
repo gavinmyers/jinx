@@ -1,15 +1,10 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    }
-    dependencies {
-    }
-}
+apply plugin: 'scala'
 
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
+    apply plugin: 'scala'
+
 
     version = '1.0'
     ext {
@@ -20,6 +15,8 @@ allprojects {
         ashleyVersion = '1.7.0'
         aiVersion = '1.7.0'
         gdxUtilsVersion = '0.13.1'
+        slfjVersion = '1.7.5'
+        scalaVersion = '2.10.1'
     }
 
     repositories {
@@ -29,32 +26,20 @@ allprojects {
     }
 }
 
-project(":desktop") {
-    apply plugin: "java"
+dependencies{
+    compile "org.slf4j:slf4j-api:$slfjVersion"
+    compile "org.scala-lang:scala-library:$scalaVersion"
 
-
-    dependencies {
-        compile project(":core")
-        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-        compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module        
-    }
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
+    compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
+    compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
 }
 
-project(":core") {
-    apply plugin: "java"
-
-
-    dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-        compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
-        compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion" // Box2D module        
-    }
-}
-
-tasks.eclipse.doLast {
-    delete ".project"
+task run(type: JavaExec, dependsOn: classes) {
+    main = 'Main'
+    workingDir = "assets"
+    classpath sourceSets.main.runtimeClasspath
+    classpath configurations.runtime
 }
