@@ -6,7 +6,10 @@ object Main {
     println("Main")
 
     def config = new LwjglApplicationConfiguration()
-    new LwjglApplication(new Sinx(), config)
+    config.width = 960
+    config.height = 240
+    config.x = 0
+    new LwjglApplication(new Sinx())
   }
 }
 
