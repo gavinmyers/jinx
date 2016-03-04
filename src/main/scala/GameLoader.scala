@@ -15,6 +15,8 @@ object GameLoader {
   lazy val levelMap:TiledMap = new TmxMapLoader().load("level01.tmx")
   lazy val level:Texture = new Texture("levels.png")
   lazy val levels = TextureRegion.split(level, 24, 24).head
+  lazy val layer:TiledMapTileLayer = levelMap.getLayers.get("sky").asInstanceOf[TiledMapTileLayer]
+  lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
 
   lazy val monsterSheet = new Texture("Humanoid0.png")
   lazy val monsters = TextureRegion.split(monsterSheet, 16, 16).head
@@ -23,9 +25,8 @@ object GameLoader {
   var groundDb:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String,Thing]()
 
   def createLevel(): Unit = {
-    val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
-    val tileX:Int = 48
-    val tileY:Int = 48
+    val tileX:Int = 24
+    val tileY:Int = 24
     val tmtl = levelMap.getLayers.get("ground").asInstanceOf[TiledMapTileLayer]
     var x:Int = 0
     var y:Int = 0
@@ -33,8 +34,8 @@ object GameLoader {
       for(y <- -1000 to 1000 ){
         val c = tmtl.getCell(x,y)
         if(c != null) {
-          val posX:Int = x * tileX
-          val posY:Int = y * tileY
+          val posX:Int = x * tileX + 12
+          val posY:Int = y * tileY + 12
           val t:TiledMapTile = c.getTile()
           groundDb += "ground_"+x+"_"+y ->  new Thing(world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
         }

@@ -1,5 +1,6 @@
 apply plugin: 'scala'
 
+
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
@@ -27,17 +28,18 @@ allprojects {
 }
 
 dependencies{
-    compile "org.slf4j:slf4j-api:$slfjVersion"
+    compile "org.slf4j:slf4j-api:+"
     compile "org.scala-lang:scala-library:$scalaVersion"
 
-    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
-    compile "net.dermetfan.libgdx-utils:libgdx-utils:$gdxUtilsVersion"
-    compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:$gdxUtilsVersion"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:+"
+    compile "com.badlogicgames.gdx:gdx-platform:+:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-box2d-platform:+:natives-desktop"
+    compile "net.dermetfan.libgdx-utils:libgdx-utils:+"
+    compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:+"
 }
 
 task run(type: JavaExec, dependsOn: classes) {
+    jvmArgs("-XX:MaxPermSize=2048m")
     main = 'Main'
     workingDir = "assets"
     classpath sourceSets.main.runtimeClasspath

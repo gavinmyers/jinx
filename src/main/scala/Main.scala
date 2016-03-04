@@ -3,13 +3,13 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 
 object Main {
   def main(args: Array[String]): Unit = {
-    println("Main")
+    var config:LwjglApplicationConfiguration = new LwjglApplicationConfiguration();
+    config.width = 20 * 24
+    config.height = 20 * 24
 
-    def config = new LwjglApplicationConfiguration()
-    config.width = 960
-    config.height = 240
-    config.x = 0
-    new LwjglApplication(new Sinx())
+    //config.fullscreen = true
+    println(config.fullscreen)
+    new LwjglApplication(new Sinx(), config)
   }
 }
 
