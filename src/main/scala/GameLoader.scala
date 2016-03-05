@@ -8,6 +8,7 @@ import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
 object GameLoader {
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
+  lazy val backgroundCamera: OrthographicCamera = new OrthographicCamera()
   lazy val world: World = new World(new Vector2(0, -100f), true)
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
   lazy val font: BitmapFont = new BitmapFont()
@@ -17,6 +18,9 @@ object GameLoader {
   lazy val levels = TextureRegion.split(level, 24, 24).head
   lazy val layer:TiledMapTileLayer = levelMap.getLayers.get("sky").asInstanceOf[TiledMapTileLayer]
   lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
+
+  lazy val playerSheet = new Texture("jayden.png")
+  lazy val player = TextureRegion.split(playerSheet, 24, 24).head
 
   lazy val monsterSheet = new Texture("Humanoid0.png")
   lazy val monsters = TextureRegion.split(monsterSheet, 16, 16).head

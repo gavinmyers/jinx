@@ -15,6 +15,7 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   bodyDef = new BodyDef()
 
   bodyDef.`type` = bodyType
+  bodyDef.fixedRotation = true
   bodyDef.position.set(posX, posY)
 
   fixtureDef = new FixtureDef()
@@ -26,7 +27,7 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixtureDef.friction = .4f
 
   sprite = new Box2DSprite(texture)
-  shape.setAsBox(sprite.getHeight() / 2, sprite.getWidth() / 2)
+  shape.setAsBox(sprite.getHeight / 2, sprite.getWidth / 2)
 
 
   body = world.createBody(bodyDef)
@@ -34,26 +35,26 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   body.setUserData(sprite)
 
   def moveRight(): Unit = {
-    var vel:Vector2 = body.getLinearVelocity()
+    val vel:Vector2 = body.getLinearVelocity
     vel.x += 5
-    body.setLinearVelocity(vel);
+    body.setLinearVelocity(vel)
   }
 
   def moveLeft(): Unit = {
-    var vel:Vector2 = body.getLinearVelocity()
+    val vel:Vector2 = body.getLinearVelocity
     vel.x -= 5
-    body.setLinearVelocity(vel);
+    body.setLinearVelocity(vel)
   }
 
   def moveUp(): Unit = {
-    var vel:Vector2 = body.getLinearVelocity()
+    val vel:Vector2 = body.getLinearVelocity
     vel.y += 5
-    body.setLinearVelocity(vel);
+    body.setLinearVelocity(vel)
   }
 
   def moveDown(): Unit = {
-    var vel:Vector2 = body.getLinearVelocity()
+    val vel:Vector2 = body.getLinearVelocity
     vel.y -= 5
-    body.setLinearVelocity(vel);
+    body.setLinearVelocity(vel)
   }
 }
