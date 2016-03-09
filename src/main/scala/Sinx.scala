@@ -87,12 +87,12 @@ class Sinx extends ApplicationAdapter {
     GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
-    Box2DSprite.draw(GameLoader.batch, GameLoader.world)
+    GameLoader.monsterDb("player").draw(GameLoader.batch)
     GameLoader.batch.end()
 
 
 
-    //GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
+    GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 
   }
 
