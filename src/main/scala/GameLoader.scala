@@ -27,6 +27,14 @@ object GameLoader {
 
   var monsterDb:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String,Thing]()
   var groundDb:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String,Thing]()
+  var thingDb:List[Thing] = List()
+
+
+  def drawThings(): Unit = {
+    for(thing <- thingDb) {
+      thing.draw(GameLoader.batch)
+    }
+  }
 
   def createLevel(): Unit = {
     val tileX:Int = 24

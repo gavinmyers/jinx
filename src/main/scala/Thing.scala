@@ -64,6 +64,9 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   body.createFixture(fixtureLeft)
   body.setUserData(sprite)
 
+  GameLoader.thingDb = GameLoader.thingDb :+ this
+
+
   def draw(batch:Batch): Unit = {
     sprite.setPosition(body.getPosition.x - texture.getRegionWidth / 2,body.getPosition.y - texture.getRegionHeight / 2)
     sprite.draw(batch)
