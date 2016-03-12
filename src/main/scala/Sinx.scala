@@ -7,13 +7,12 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.{Input, ApplicationAdapter, Gdx}
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite
+import scala.collection.JavaConversions._
 
 class Sinx extends ApplicationAdapter {
   println("Sinx")
 
 
-  var walkRightAnimation:Animation = _
-  var walkLeftAnimation:Animation = _
 
   var gameTime:Float = 0
 
@@ -26,11 +25,8 @@ class Sinx extends ApplicationAdapter {
     GameLoader.createLevel()
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
     GameLoader.monsterDb += "player" -> new Thing(GameLoader.world, GameLoader.player(0), BodyDef.BodyType.DynamicBody, 100, 150)
-    GameLoader.monsterDb += "monster" -> new Thing(GameLoader.world, GameLoader.monsters(1), BodyDef.BodyType.DynamicBody, 100, 250)
+    GameLoader.monsterDb += "monster" -> new Thing(GameLoader.world, GameLoader.monsters(1), BodyDef.BodyType.DynamicBody, -5100, -5250)
     GameLoader.camera.translate(0, 0, 0)
-
-    walkRightAnimation = new Animation(0.15f, GameLoader.player(4),GameLoader.player(5))
-    walkLeftAnimation = new Animation(0.15f, GameLoader.player(6),GameLoader.player(7))
 
   }
 
@@ -41,37 +37,30 @@ class Sinx extends ApplicationAdapter {
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
 
     if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-
       //GameLoader.camera.position.add(-1, 0, 0)
       //GameLoader.backgroundCamera.position.add(-0.5f, 0, 0)
-
-      GameLoader.monsterDb("player").moveLeft()
-      GameLoader.monsterDb("player").sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+      GameLoader.monsterDb("player").moveLeft(gameTime)
     }
 
     if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-
       //GameLoader.camera.position.add(1, 0, 0)
       //GameLoader.backgroundCamera.position.add(0.5f, 0, 0)
-
-      GameLoader.monsterDb("player").moveRight()
-      GameLoader.monsterDb("player").sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
-
+      GameLoader.monsterDb("player").moveRight(gameTime)
     }
 
-    if(Gdx.input.isKeyPressed(Input.Keys.UP)) {
+    if(Gdx.input.isKeyPressed(Input.Keys.UP) && canJump()) {
       //GameLoader.backgroundCamera.position.add(0, 0.5f, 0)
-      GameLoader.monsterDb("player").moveUp()
+      GameLoader.monsterDb("player").moveUp(gameTime)
     }
-
 
     if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+
       //GameLoader.backgroundCamera.position.add(0, -0.5f, 0)
-      GameLoader.monsterDb("player").moveDown()
+      GameLoader.monsterDb("player").moveDown(gameTime)
     }
 
 
-    GameLoader.monsterDb("monster").moveRight()
+    GameLoader.monsterDb("monster").moveRight(gameTime)
 
     GameLoader.camera.update()
     GameLoader.backgroundCamera.update()
@@ -95,6 +84,18 @@ class Sinx extends ApplicationAdapter {
 
     GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 
+  }
+
+  def canJump():Boolean = {
+    for(contact:Contact <- GameLoader.world.getContactList()) {
+      if(!contact.getFixtureB.isSensor && contact.getFixtureA == GameLoader.monsterDb("player").fixtureBottom) {
+        return true
+      }
+      if(!contact.getFixtureA.isSensor && contact.getFixtureB == GameLoader.monsterDb("player").fixtureBottom) {
+        return true
+      }
+    }
+    return false
   }
 
   override def dispose(): Unit = {
