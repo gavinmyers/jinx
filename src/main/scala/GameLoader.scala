@@ -25,14 +25,15 @@ object GameLoader {
   lazy val monsterSheet = new Texture("Humanoid0.png")
   lazy val monsters = TextureRegion.split(monsterSheet, 16, 16).head
 
-  var monsterDb:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String,Thing]()
-  var groundDb:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String,Thing]()
+  var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()
+  var groundDb:scala.collection.mutable.Map[String,Brick] = scala.collection.mutable.Map[String,Brick]()
   var thingDb:List[Thing] = List()
 
 
   def drawThings(): Unit = {
     for(thing <- thingDb) {
-      thing.draw(GameLoader.batch)
+      thing.update(batch)
+      thing.draw(batch)
     }
   }
 
@@ -49,7 +50,7 @@ object GameLoader {
           val posX:Int = x * tileX + 12
           val posY:Int = y * tileY + 12
           val t:TiledMapTile = c.getTile()
-          groundDb += "ground_"+x+"_"+y ->  new Thing(world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
+          groundDb += "ground_"+x+"_"+y ->  new Brick(world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
         }
       }
     }
