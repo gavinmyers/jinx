@@ -1,9 +1,11 @@
-import com.badlogic.gdx.graphics.{Texture, OrthographicCamera}
+import box2dLight.{PositionalLight, PointLight, RayHandler}
+import com.badlogic.gdx.graphics.{Color, Texture, OrthographicCamera}
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, BitmapFont, SpriteBatch}
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
+
 
 object GameLoader {
   lazy val batch: SpriteBatch = new SpriteBatch()
@@ -11,6 +13,10 @@ object GameLoader {
   lazy val backgroundCamera: OrthographicCamera = new OrthographicCamera()
   lazy val world: World = new World(new Vector2(0, -100f), true)
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
+
+  lazy val handler:RayHandler = new RayHandler(world)
+  lazy val light:PositionalLight = new PointLight(handler, 32, new Color(1f, 0.0f, 0.0f, 0.8f), 500, 250, 250);
+
   lazy val font: BitmapFont = new BitmapFont()
 
   lazy val levelMap:TiledMap = new TmxMapLoader().load("level01.tmx")

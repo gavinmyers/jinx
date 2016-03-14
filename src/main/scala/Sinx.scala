@@ -1,5 +1,6 @@
 
-import com.badlogic.gdx.graphics.GL20
+
+import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Animation}
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -15,6 +16,7 @@ class Sinx extends ApplicationAdapter {
   println("Sinx")
 
   var gameTime:Float = 0
+
 
   override def create(): Unit = {
     println("create")
@@ -33,6 +35,10 @@ class Sinx extends ApplicationAdapter {
 
     //GameLoader.monsterDb += "monster" -> new Being(GameLoader.world, GameLoader.monsters(1), BodyDef.BodyType.DynamicBody, 100, 250)
     GameLoader.camera.translate(0, 0, 0)
+    GameLoader.handler.setAmbientLight(0f, 0f, 0f, 0.2f)
+    GameLoader.light.attachToBody(GameLoader.monsterDb("player").body, 0, 0);
+    GameLoader.light.setIgnoreAttachedBody(true)
+    //GameLoader.light.setXray(true)
 
   }
 
@@ -41,6 +47,7 @@ class Sinx extends ApplicationAdapter {
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     gameTime = gameTime + Gdx.graphics.getDeltaTime()
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
+
 
     if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
       //GameLoader.camera.position.add(-1, 0, 0)
@@ -68,6 +75,8 @@ class Sinx extends ApplicationAdapter {
 
     //GameLoader.monsterDb("monster").moveRight(gameTime)
 
+
+
     GameLoader.camera.update()
     GameLoader.backgroundCamera.update()
 
@@ -79,14 +88,20 @@ class Sinx extends ApplicationAdapter {
     GameLoader.batch.end()
 
 
+
     GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
 
     GameLoader.drawThings()
+    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+
     GameLoader.batch.end()
 
-    GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
+
+    GameLoader.handler.updateAndRender()
+
+    //GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 
   }
 

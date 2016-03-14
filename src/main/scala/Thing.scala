@@ -176,7 +176,9 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
     } else {
       jumpTime = 0f
       jumpGravity = 0f
-      this.fixture.setFriction(2.5f)
+      if(this.fixture.getFriction < 2.5f) {
+        this.fixture.setFriction(this.fixture.getFriction + 0.1f)
+      }
     }
     jumpRelease = true
   }

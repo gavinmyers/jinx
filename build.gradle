@@ -36,6 +36,7 @@ dependencies{
     compile "com.badlogicgames.gdx:gdx-box2d-platform:+:natives-desktop"
     compile "net.dermetfan.libgdx-utils:libgdx-utils:+"
     compile "net.dermetfan.libgdx-utils:libgdx-utils-box2d:+"
+    compile "com.badlogicgames.box2dlights:box2dlights:+"
 }
 
 task run(type: JavaExec, dependsOn: classes) {
