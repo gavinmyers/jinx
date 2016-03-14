@@ -35,9 +35,11 @@ class Sinx extends ApplicationAdapter {
 
     //GameLoader.monsterDb += "monster" -> new Being(GameLoader.world, GameLoader.monsters(1), BodyDef.BodyType.DynamicBody, 100, 250)
     GameLoader.camera.translate(0, 0, 0)
-    GameLoader.handler.setAmbientLight(0f, 0f, 0f, 0.2f)
+    GameLoader.handler.setAmbientLight(0f, 0f, 0f, 0.05f)
     GameLoader.light.attachToBody(GameLoader.monsterDb("player").body, 0, 0);
     GameLoader.light.setIgnoreAttachedBody(true)
+    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+
     //GameLoader.light.setXray(true)
 
   }
@@ -94,12 +96,13 @@ class Sinx extends ApplicationAdapter {
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
 
     GameLoader.drawThings()
-    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
 
     GameLoader.batch.end()
 
 
     GameLoader.handler.updateAndRender()
+
+
 
     //GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 

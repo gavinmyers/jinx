@@ -8,6 +8,9 @@ import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
 
 
 object GameLoader {
+  RayHandler.setGammaCorrection(true)
+  RayHandler.useDiffuseLight(true)
+
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
   lazy val backgroundCamera: OrthographicCamera = new OrthographicCamera()
@@ -15,7 +18,7 @@ object GameLoader {
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
   lazy val handler:RayHandler = new RayHandler(world)
-  lazy val light:PositionalLight = new PointLight(handler, 32, new Color(1f, 0.0f, 0.0f, 0.8f), 500, 250, 250);
+  lazy val light:PositionalLight = new PointLight(handler, 1024, new Color(1f, 1f, 1f, 0.8f), 1024, 0, 0);
 
   lazy val font: BitmapFont = new BitmapFont()
 
