@@ -6,10 +6,11 @@ import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoade
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
 
+import scala.collection.mutable.ListBuffer
 
 object GameLoader {
-  RayHandler.setGammaCorrection(true)
-  RayHandler.useDiffuseLight(true)
+
+  var gameTime:Float = 0
 
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
@@ -18,7 +19,7 @@ object GameLoader {
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
   lazy val handler:RayHandler = new RayHandler(world)
-  lazy val light:PositionalLight = new PointLight(handler, 1024, new Color(1f, 1f, 1f, 0.8f), 1024, 0, 0);
+  lazy val light:PositionalLight = new PointLight(handler, 1024, new Color(1f, 1f, 1f, 0.8f), 256, 0, 0);
 
   lazy val font: BitmapFont = new BitmapFont()
 
@@ -29,17 +30,39 @@ object GameLoader {
   lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
 
   lazy val playerSheet = new Texture("jayden.png")
-  lazy val player = TextureRegion.split(playerSheet, 24, 24).head
+
+  lazy val player:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(playerSheet, 24, 24)) {
+    for(tx <- tr) {
+      player.append(tx)
+    }
+  }
+
+
 
   lazy val monsterSheet = new Texture("Humanoid0.png")
   lazy val monsters = TextureRegion.split(monsterSheet, 16, 16).head
 
   var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()
   var groundDb:scala.collection.mutable.Map[String,Brick] = scala.collection.mutable.Map[String,Brick]()
-  var thingDb:List[Thing] = List()
+  var thingDb:ListBuffer[Thing] = ListBuffer()
+  var bulletDb:ListBuffer[Bullet] = ListBuffer()
 
 
   def drawThings(): Unit = {
+    for(bullet <- bulletDb) {
+
+      val vel:Vector2 = bullet.body.getLinearVelocity
+      if(bullet.direction.equalsIgnoreCase("R")) {
+        vel.x += 50
+      } else {
+        vel.x -= 50
+      }
+      bullet.body.setLinearVelocity(vel)
+      if(bullet.life + bullet.created < GameLoader.gameTime) {
+        bullet.destroy()
+      }
+    }
     for(thing <- thingDb) {
       thing.update(batch)
       thing.draw(batch)

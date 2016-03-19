@@ -6,6 +6,8 @@ import scala.collection.JavaConversions._
 
 class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
+  var created:Float = GameLoader.gameTime
+
   var sprite:Sprite = _
   var fixtureDefBottom:FixtureDef = _
   var fixtureDefTop:FixtureDef = _
@@ -23,9 +25,10 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   var body:Body = _
   var shape:Shape = _
 
+  var direction:String = ""
 
 
-  GameLoader.thingDb = GameLoader.thingDb :+ this
+  GameLoader.thingDb += this
 
 
   def draw(batch:Batch): Unit = {
@@ -34,6 +37,10 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   }
 
   def update(batch:Batch): Unit = {
+  }
+
+  def destroy() : Unit = {
+    GameLoader.thingDb -= this
   }
 }
 
@@ -130,10 +137,12 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
 
   body.setUserData(sprite)
 
-  walkRightAnimation = new Animation(0.15f, GameLoader.player(4),GameLoader.player(5))
-  walkLeftAnimation = new Animation(0.15f, GameLoader.player(6),GameLoader.player(7))
+  walkRightAnimation = new Animation(0.15f, GameLoader.player.get(4),GameLoader.player.get(5))
+  walkLeftAnimation = new Animation(0.15f, GameLoader.player.get(6),GameLoader.player.get(7))
+
 
   def moveRight(gameTime:Float): Unit = {
+    direction = "R"
     val vel:Vector2 = body.getLinearVelocity
     vel.x += 5
     body.setLinearVelocity(vel)
@@ -141,6 +150,7 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   }
 
   def moveLeft(gameTime:Float): Unit = {
+    direction = "L"
     sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
     val vel:Vector2 = body.getLinearVelocity
     vel.x -= 5
@@ -192,9 +202,72 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
     }
   }
 
+  var lastAttack:Float= 0
+  var cooldown:Float = 0.3f
+  def attack(gameTime:Float): Unit = {
+    println(gameTime)
+    if(lastAttack + cooldown > gameTime) {
+      return
+    }
+    lastAttack = gameTime
+    var x = sprite.getX
+    if(direction.equalsIgnoreCase("R")) {
+      x = sprite.getX + (sprite.getWidth)
+    }
+    var y = sprite.getY + (sprite.getHeight / 2)
+    var b:Bullet = new Bullet(GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
+    b.direction = direction
+
+  }
+
   def moveDown(gameTime:Float): Unit = {
     val vel:Vector2 = body.getLinearVelocity
     vel.y -= 5
     body.setLinearVelocity(vel)
   }
+}
+
+
+
+class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+
+
+  bodyDef = new BodyDef()
+
+  bodyDef.`type` = bodyType
+  bodyDef.fixedRotation = true
+  bodyDef.position.set(posX, posY)
+  bodyDef.bullet = true
+
+  fixtureDef = new FixtureDef()
+
+  shape = new PolygonShape()
+
+  fixtureDef.shape = shape
+  fixtureDef.density = Float.MinValue
+  fixtureDef.isSensor = true
+  fixtureDef.friction = 0f
+
+  var life:Float = 0.15f
+
+  sprite = new Sprite(texture)
+  shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 8, sprite.getWidth / 8)
+
+
+  body = world.createBody(bodyDef)
+  body.setBullet(true)
+
+  fixture = body.createFixture(fixtureDef)
+
+  body.setUserData(sprite)
+
+  GameLoader.bulletDb = GameLoader.bulletDb :+ this
+
+  override def destroy() : Unit = {
+    GameLoader.world.destroyBody(body)
+    GameLoader.thingDb -= this
+    GameLoader.bulletDb -= this
+  }
+
 }
