@@ -1,3 +1,5 @@
+import box2dLight.{PointLight, PositionalLight, RayHandler}
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.{Animation, Batch, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
@@ -5,6 +7,9 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite
 import scala.collection.JavaConversions._
 
 class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+
+  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 1024, new Color(1f, 1f, 1f, 0.2f), 256, 0, 0);
+
 
   var created:Float = GameLoader.gameTime
 
@@ -31,9 +36,11 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   GameLoader.thingDb += this
 
 
+
   def draw(batch:Batch): Unit = {
     sprite.setPosition(body.getPosition.x - texture.getRegionWidth / 2,body.getPosition.y - texture.getRegionHeight / 2)
     sprite.draw(batch)
+
   }
 
   def update(batch:Batch): Unit = {
@@ -63,7 +70,6 @@ class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixtureDef.friction = 1f
 
 
-
   sprite = new Sprite(texture)
   shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 2, sprite.getWidth / 2)
 
@@ -73,7 +79,6 @@ class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixture = body.createFixture(fixtureDef)
 
   body.setUserData(sprite)
-
 
 }
 
@@ -101,7 +106,6 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
 
 
   sprite = new Sprite(texture)
-  //shape.setRadius(sprite.getHeight / 2)
 
   shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 2.1f, sprite.getWidth / 2.1f)
 
@@ -125,8 +129,6 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixtureDefLeft.shape = new PolygonShape()
   fixtureDefLeft.shape.asInstanceOf[PolygonShape].setAsBox(sprite.getWidth / 4.5f, sprite.getHeight / 3f, new Vector2(-1 * sprite.getWidth / 2.5f, 0f), 0)
 
-
-
   body = world.createBody(bodyDef)
 
   fixture = body.createFixture(fixtureDef)
@@ -140,6 +142,10 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   walkRightAnimation = new Animation(0.15f, GameLoader.player.get(4),GameLoader.player.get(5))
   walkLeftAnimation = new Animation(0.15f, GameLoader.player.get(6),GameLoader.player.get(7))
 
+  GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
+  light.attachToBody(body, 0, 0)
+  light.setIgnoreAttachedBody(true)
+  GameLoader.handler.setCombinedMatrix(GameLoader.camera)
 
   def moveRight(gameTime:Float): Unit = {
     direction = "R"
@@ -232,7 +238,6 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
 class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
   extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
-
   bodyDef = new BodyDef()
 
   bodyDef.`type` = bodyType
@@ -253,7 +258,6 @@ class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX
 
   sprite = new Sprite(texture)
   shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 8, sprite.getWidth / 8)
-
 
   body = world.createBody(bodyDef)
   body.setBullet(true)

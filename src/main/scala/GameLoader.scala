@@ -10,6 +10,13 @@ import scala.collection.mutable.ListBuffer
 
 object GameLoader {
 
+  def create():Unit = {
+    GameLoader.camera.setToOrtho(false)
+    GameLoader.backgroundCamera.setToOrtho(false)
+    GameLoader.levelMapRenderer.setView(GameLoader.camera)
+    GameLoader.camera.translate(0, 0, 0)
+  }
+
   var gameTime:Float = 0
 
   lazy val batch: SpriteBatch = new SpriteBatch()
@@ -19,7 +26,6 @@ object GameLoader {
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
   lazy val handler:RayHandler = new RayHandler(world)
-  lazy val light:PositionalLight = new PointLight(handler, 1024, new Color(1f, 1f, 1f, 0.8f), 256, 0, 0);
 
   lazy val font: BitmapFont = new BitmapFont()
 
@@ -48,44 +54,5 @@ object GameLoader {
   var thingDb:ListBuffer[Thing] = ListBuffer()
   var bulletDb:ListBuffer[Bullet] = ListBuffer()
 
-
-  def drawThings(): Unit = {
-    for(bullet <- bulletDb) {
-
-      val vel:Vector2 = bullet.body.getLinearVelocity
-      if(bullet.direction.equalsIgnoreCase("R")) {
-        vel.x += 50
-      } else {
-        vel.x -= 50
-      }
-      bullet.body.setLinearVelocity(vel)
-      if(bullet.life + bullet.created < GameLoader.gameTime) {
-        bullet.destroy()
-      }
-    }
-    for(thing <- thingDb) {
-      thing.update(batch)
-      thing.draw(batch)
-    }
-  }
-
-  def createLevel(): Unit = {
-    val tileX:Int = 24
-    val tileY:Int = 24
-    val tmtl = levelMap.getLayers.get("ground").asInstanceOf[TiledMapTileLayer]
-    var x:Int = 0
-    var y:Int = 0
-    for( x <- -1000 to 1000) {
-      for(y <- -1000 to 1000 ){
-        val c = tmtl.getCell(x,y)
-        if(c != null) {
-          val posX:Int = x * tileX + 12
-          val posY:Int = y * tileY + 12
-          val t:TiledMapTile = c.getTile()
-          groundDb += "ground_"+x+"_"+y ->  new Brick(world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
-        }
-      }
-    }
-  }
 }
 
