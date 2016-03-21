@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
@@ -25,6 +26,8 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   var fixtureRight:Fixture = _
   var fixtureLeft:Fixture = _
   var fixture:Fixture = _
+
+
 
   var bodyDef:BodyDef = _
   var body:Body = _
@@ -48,6 +51,14 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
 
   def destroy() : Unit = {
     GameLoader.thingDb -= this
+  }
+
+  def contact(thing:Thing) : Unit = {
+    //do nothing
+  }
+
+  def damage(source:Thing, amount:Integer): Unit = {
+
   }
 }
 
@@ -79,13 +90,21 @@ class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixture = body.createFixture(fixtureDef)
 
   body.setUserData(sprite)
+  fixture.setUserData(this)
 
+  override def contact(thing:Thing) : Unit = {
+
+  }
+
+  override def damage(source:Thing, amount:Integer): Unit = {
+
+  }
 }
 
 class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
   extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
-
+  var life = 10
   var walkRightAnimation:Animation = _
   var walkLeftAnimation:Animation = _
 
@@ -137,6 +156,8 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   fixtureRight = body.createFixture(fixtureDefRight)
   fixtureLeft = body.createFixture(fixtureDefLeft)
 
+
+
   body.setUserData(sprite)
 
   walkRightAnimation = new Animation(0.15f, GameLoader.player.get(4),GameLoader.player.get(5))
@@ -146,6 +167,8 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   light.attachToBody(body, 0, 0)
   light.setIgnoreAttachedBody(true)
   GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+
+  fixture.setUserData(this)
 
   def moveRight(gameTime:Float): Unit = {
     direction = "R"
@@ -180,7 +203,6 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   var jumpGravity:Float = 0
   override def update(batch:Batch) = {
     if(canJump() == false) {
-      println(jumpTime)
       jumpTime += 1
       if(jumpRelease || jumpTime > 50) {
         jumpGravity += 0.15f
@@ -211,7 +233,7 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
   def attack(gameTime:Float): Unit = {
-    println(gameTime)
+
     if(lastAttack + cooldown > gameTime) {
       return
     }
@@ -221,8 +243,10 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
       x = sprite.getX + (sprite.getWidth)
     }
     var y = sprite.getY + (sprite.getHeight / 2)
+
     var b:Bullet = new Bullet(GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
     b.direction = direction
+    b.attacker = this
 
   }
 
@@ -230,6 +254,10 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
     val vel:Vector2 = body.getLinearVelocity
     vel.y -= 5
     body.setLinearVelocity(vel)
+  }
+
+  override def damage(source:Thing, amount:Integer): Unit = {
+
   }
 }
 
@@ -255,6 +283,7 @@ class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX
   fixtureDef.friction = 0f
 
   var life:Float = 0.15f
+  var attacker:Being = null
 
   sprite = new Sprite(texture)
   shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 8, sprite.getWidth / 8)
@@ -266,12 +295,24 @@ class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX
 
   body.setUserData(sprite)
 
-  GameLoader.bulletDb = GameLoader.bulletDb :+ this
+  fixture.setUserData(this)
+  GameLoader.bulletDb += this
 
   override def destroy() : Unit = {
     GameLoader.world.destroyBody(body)
     GameLoader.thingDb -= this
     GameLoader.bulletDb -= this
+  }
+
+  var contactList:ListBuffer[Thing] = ListBuffer()
+  override def contact(thing:Thing) : Unit = {
+    if(thing.isInstanceOf[Brick]) {
+      this.life = 0
+    } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
+      contactList += thing
+      this.life = 0
+      thing.damage(this, 10)
+    }
   }
 
 }

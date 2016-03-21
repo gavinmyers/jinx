@@ -84,6 +84,15 @@ class Sinx extends ApplicationAdapter {
 
     GameLoader.handler.updateAndRender()
 
+    for(contact <- GameLoader.world.getContactList) {
+      if(contact.getFixtureA.getUserData.isInstanceOf[Thing] && contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
+        //a(b)
+        contact.getFixtureA.getUserData.asInstanceOf[Thing].contact(contact.getFixtureB.getUserData.asInstanceOf[Thing])
+        //b(a)
+        contact.getFixtureB.getUserData.asInstanceOf[Thing].contact(contact.getFixtureA.getUserData.asInstanceOf[Thing])
+      }
+    }
+
     //GameLoader.monsterDb("monster").handler.updateAndRender()
 
     //GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
