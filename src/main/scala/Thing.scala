@@ -7,10 +7,11 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+class Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
   lazy val light:PositionalLight = new PointLight(GameLoader.handler, 1024, new Color(1f, 1f, 1f, 0.2f), 256, 0, 0);
 
+  var name:String = item_name
 
   var created:Float = GameLoader.gameTime
 
@@ -62,8 +63,8 @@ class Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   }
 }
 
-class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
-  extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
 
   bodyDef = new BodyDef()
@@ -91,6 +92,7 @@ class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
 
   body.setUserData(sprite)
   fixture.setUserData(this)
+  GameLoader.groundDb += name -> this
 
   override def contact(thing:Thing) : Unit = {
 
@@ -101,8 +103,8 @@ class Brick(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   }
 }
 
-class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
-  extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
   var life = 10
   var walkRightAnimation:Animation = _
@@ -166,9 +168,11 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
   light.attachToBody(body, 0, 0)
   light.setIgnoreAttachedBody(true)
-  GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+
 
   fixture.setUserData(this)
+
+  GameLoader.monsterDb += name -> this
 
   def moveRight(gameTime:Float): Unit = {
     direction = "R"
@@ -244,7 +248,7 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
     }
     var y = sprite.getY + (sprite.getHeight / 2)
 
-    var b:Bullet = new Bullet(GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
+    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
     b.direction = direction
     b.attacker = this
 
@@ -257,14 +261,23 @@ class Being(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:
   }
 
   override def damage(source:Thing, amount:Integer): Unit = {
+    life -= amount
+    if(life < 1)
+      destroy()
+  }
 
+  override def destroy() : Unit = {
+    light.setActive(false)
+    GameLoader.world.destroyBody(body)
+    GameLoader.thingDb -= this
+    GameLoader.monsterDb.remove(name)
   }
 }
 
 
 
-class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
-  extends Thing(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+class Bullet(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
   bodyDef = new BodyDef()
 
@@ -310,8 +323,7 @@ class Bullet(world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX
       this.life = 0
     } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
       contactList += thing
-      this.life = 0
-      thing.damage(this, 10)
+      thing.damage(this, 1)
     }
   }
 

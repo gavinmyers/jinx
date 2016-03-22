@@ -35,17 +35,25 @@ class Sinx extends ApplicationAdapter {
       .asInstanceOf[RectangleMapObject]
       .getRectangle
 
-    GameLoader.monsterDb += "player" -> new Being(GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x, r.y)
+    new Being("player",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x, r.y)
 
-    GameLoader.monsterDb += "monster" -> new Being(GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
+    new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
 
   }
 
+  var debug:Boolean = false
   override def render(): Unit = {
     def player = GameLoader.monsterDb("player")
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    GameLoader.camera.update()
+    GameLoader.backgroundCamera.update()
+    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+    GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
+
     GameLoader.gameTime += Gdx.graphics.getDeltaTime()
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
 
@@ -64,10 +72,9 @@ class Sinx extends ApplicationAdapter {
     if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
       player.attack(GameLoader.gameTime)
 
-    GameLoader.camera.update()
-    GameLoader.backgroundCamera.update()
 
-    GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
+
+
     GameLoader.batch.begin()
     //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
     GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
@@ -76,7 +83,6 @@ class Sinx extends ApplicationAdapter {
 
 
 
-    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
     drawThings()
@@ -85,7 +91,8 @@ class Sinx extends ApplicationAdapter {
     GameLoader.handler.updateAndRender()
 
     for(contact <- GameLoader.world.getContactList) {
-      if(contact.getFixtureA.getUserData.isInstanceOf[Thing] && contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
+      if(contact.getFixtureA == null || contact.getFixtureA.getUserData == null || contact.getFixtureB == null || contact.getFixtureB.getUserData == null) {
+      } else if(contact.getFixtureA.getUserData.isInstanceOf[Thing] && contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
         //a(b)
         contact.getFixtureA.getUserData.asInstanceOf[Thing].contact(contact.getFixtureB.getUserData.asInstanceOf[Thing])
         //b(a)
@@ -95,7 +102,11 @@ class Sinx extends ApplicationAdapter {
 
     //GameLoader.monsterDb("monster").handler.updateAndRender()
 
-    //GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
+    if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+      debug = debug == false
+
+    if(debug)
+      GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 
   }
 
@@ -138,7 +149,7 @@ class Sinx extends ApplicationAdapter {
           val posX:Int = x * tileX + 12
           val posY:Int = y * tileY + 12
           val t:TiledMapTile = c.getTile()
-          GameLoader.groundDb += "ground_"+x+"_"+y ->  new Brick(GameLoader.world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
+          new Brick("ground_"+x+"_"+y, GameLoader.world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
         }
       }
     }
