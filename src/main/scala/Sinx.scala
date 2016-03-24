@@ -51,17 +51,23 @@ class Sinx extends ApplicationAdapter {
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
 
     def player = GameLoader.monsterDb("player")
+
     GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
 
     GameLoader.camera.zoom = 1f
+    GameLoader.backgroundCamera.zoom = 1f
+
     GameLoader.camera.update()
+    GameLoader.backgroundCamera.update()
+
     GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
 
 
     GameLoader.batch.begin()
     //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
-    //GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    //GameLoader.levelMapRenderer.render(Array(0,1,2))
+    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
+    GameLoader.levelMapRenderer.render(Array(0,1,2))
     GameLoader.batch.end()
 
 
