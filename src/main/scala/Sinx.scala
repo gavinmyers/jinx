@@ -76,9 +76,6 @@ class Sinx extends ApplicationAdapter {
     drawThings()
     GameLoader.batch.end()
 
-
-
-
     def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
     GameLoader.handler.setCombinedMatrix(debugMatrix)
     GameLoader.handler.updateAndRender()
@@ -102,51 +99,6 @@ class Sinx extends ApplicationAdapter {
     if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
       player.attack(GameLoader.gameTime)
 
-  }
-
-  def abandon():Unit = {
-    def player = GameLoader.monsterDb("player")
-    GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
-    GameLoader.camera.zoom = .01f
-    //GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
-    GameLoader.camera.update()
-    //GameLoader.backgroundCamera.update()
-    //GameLoader.handler.setCombinedMatrix(GameLoader.camera)
-    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
-
-    GameLoader.gameTime += Gdx.graphics.getDeltaTime()
-    GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-      player.moveLeft(GameLoader.gameTime)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-      player.moveRight(GameLoader.gameTime)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.UP))
-      player.moveUp(GameLoader.gameTime)
-
-
-    if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-      player.attack(GameLoader.gameTime)
-
-
-
-
-    GameLoader.batch.begin()
-    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
-    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    GameLoader.levelMapRenderer.render(Array(0,1,2))
-    GameLoader.batch.end()
-
-
-
-    GameLoader.batch.begin()
-    GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
-    drawThings()
-    GameLoader.batch.end()
-
-    GameLoader.handler.updateAndRender()
 
     for(contact <- GameLoader.world.getContactList) {
       if(contact.getFixtureA == null || contact.getFixtureA.getUserData == null || contact.getFixtureB == null || contact.getFixtureB.getUserData == null) {
@@ -157,12 +109,8 @@ class Sinx extends ApplicationAdapter {
         contact.getFixtureB.getUserData.asInstanceOf[Thing].contact(contact.getFixtureA.getUserData.asInstanceOf[Thing])
       }
     }
-
-    //GameLoader.monsterDb("monster").handler.updateAndRender()
-
-
-
   }
+
 
   override def dispose(): Unit = {
     println("dispose")
