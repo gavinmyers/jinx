@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
-import com.badlogic.gdx.math.{Rectangle, Vector2}
+import com.badlogic.gdx.math.{Matrix4, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.{Input, ApplicationAdapter, Gdx}
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite
@@ -37,22 +37,76 @@ class Sinx extends ApplicationAdapter {
 
     new Being("player",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x, r.y)
 
-    new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
+    //new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
 
   }
 
   var debug:Boolean = false
   override def render(): Unit = {
-    def player = GameLoader.monsterDb("player")
+
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    GameLoader.gameTime += Gdx.graphics.getDeltaTime()
+    GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
+
+    def player = GameLoader.monsterDb("player")
     GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
-    GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
+
+    GameLoader.camera.zoom = 1f
     GameLoader.camera.update()
-    GameLoader.backgroundCamera.update()
-    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
-    GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
+    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
+
+
+    GameLoader.batch.begin()
+    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
+    //GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
+    //GameLoader.levelMapRenderer.render(Array(0,1,2))
+    GameLoader.batch.end()
+
+
+    GameLoader.batch.begin()
+    GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
+    drawThings()
+    GameLoader.batch.end()
+
+
+
+
+    def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
+    GameLoader.handler.setCombinedMatrix(debugMatrix)
+    GameLoader.handler.updateAndRender()
+
+
+    if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+      debug = debug == false
+
+    if(debug)
+      GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
+
+    if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+      player.moveLeft(GameLoader.gameTime)
+
+    if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+      player.moveRight(GameLoader.gameTime)
+
+    if(Gdx.input.isKeyPressed(Input.Keys.UP))
+      player.moveUp(GameLoader.gameTime)
+
+    if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
+      player.attack(GameLoader.gameTime)
+
+  }
+
+  def abandon():Unit = {
+    def player = GameLoader.monsterDb("player")
+    GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    GameLoader.camera.zoom = .01f
+    //GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    GameLoader.camera.update()
+    //GameLoader.backgroundCamera.update()
+    //GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
 
     GameLoader.gameTime += Gdx.graphics.getDeltaTime()
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
@@ -66,8 +120,6 @@ class Sinx extends ApplicationAdapter {
     if(Gdx.input.isKeyPressed(Input.Keys.UP))
       player.moveUp(GameLoader.gameTime)
 
-    if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
-      player.moveDown(GameLoader.gameTime)
 
     if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
       player.attack(GameLoader.gameTime)
@@ -102,11 +154,7 @@ class Sinx extends ApplicationAdapter {
 
     //GameLoader.monsterDb("monster").handler.updateAndRender()
 
-    if(Gdx.input.isKeyJustPressed(Input.Keys.D))
-      debug = debug == false
 
-    if(debug)
-      GameLoader.debugRenderer.render(GameLoader.world, GameLoader.camera.combined)
 
   }
 

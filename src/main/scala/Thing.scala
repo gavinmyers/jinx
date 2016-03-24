@@ -9,7 +9,7 @@ import scala.collection.mutable.ListBuffer
 
 class Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
-  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 1024, new Color(1f, 1f, 1f, 0.2f), 256, 0, 0);
+  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 1024, new Color(1f, 1f, 1f, 0.2f), 12, 0, 0);
 
   var name:String = item_name
 
@@ -42,8 +42,11 @@ class Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
 
 
   def draw(batch:Batch): Unit = {
-    sprite.setPosition(body.getPosition.x - texture.getRegionWidth / 2,body.getPosition.y - texture.getRegionHeight / 2)
+    sprite.setPosition(GameLoader.metersToPixels(body.getPosition().x) - sprite.getWidth()/2 , GameLoader.metersToPixels(body.getPosition().y) - sprite.getHeight()/2 )
+    //sprite.setPosition(body.getPosition.x - texture.getRegionWidth / 2,body.getPosition.y - texture.getRegionHeight / 2)
+    //sprite.setScale(0.75f, 0.75f)
     sprite.draw(batch)
+
 
   }
 
@@ -71,19 +74,18 @@ class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
 
   bodyDef.`type` = bodyType
   bodyDef.fixedRotation = true
-  bodyDef.position.set(posX, posY)
+  bodyDef.position.set(GameLoader.pixelsToMeters(posX), GameLoader.pixelsToMeters(posY))
 
   fixtureDef = new FixtureDef()
 
   shape = new PolygonShape()
 
   fixtureDef.shape = shape
-  fixtureDef.density = Float.MaxValue
-  fixtureDef.friction = 1f
+  fixtureDef.friction = 0.1f
 
 
   sprite = new Sprite(texture)
-  shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 2, sprite.getWidth / 2)
+  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2), GameLoader.pixelsToMeters(sprite.getWidth / 2))
 
 
   body = world.createBody(bodyDef)
@@ -114,41 +116,50 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   bodyDef.`type` = bodyType
   bodyDef.fixedRotation = true
-  bodyDef.position.set(posX, posY)
+  bodyDef.position.set(GameLoader.pixelsToMeters(posX), GameLoader.pixelsToMeters(posY))
 
   fixtureDef = new FixtureDef()
 
-  shape = new PolygonShape()
-
+//  shape = new PolygonShape()
+  shape = new CircleShape()
   fixtureDef.shape = shape
-  fixtureDef.density = 10f
-  fixtureDef.friction = 2.5f
+  fixtureDef.friction = 0.1f
 
 
 
   sprite = new Sprite(texture)
 
-  shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 2.1f, sprite.getWidth / 2.1f)
+  shape.setRadius(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f))
+//  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f), GameLoader.pixelsToMeters(sprite.getWidth / 2.2f))
 
+
+  def w1 = GameLoader.pixelsToMeters(sprite.getWidth / 3f)
+  def h1 = GameLoader.pixelsToMeters(sprite.getHeight / 3f)
+  def w2 = GameLoader.pixelsToMeters(sprite.getWidth / 4.5f)
+  def h2 = GameLoader.pixelsToMeters(sprite.getHeight / 4.5f)
   fixtureDefBottom = new FixtureDef
+  fixtureDefBottom.density = 0f;
   fixtureDefBottom.isSensor = true
   fixtureDefBottom.shape = new PolygonShape()
-  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(sprite.getWidth / 3f, sprite.getHeight / 4.5f, new Vector2(0f, -1 * sprite.getHeight / 2.5f), 0)
+  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameLoader.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
 
   fixtureDefTop = new FixtureDef
   fixtureDefTop.isSensor = true
+  fixtureDefTop.density = 0f
   fixtureDefTop.shape = new PolygonShape()
-  fixtureDefTop.shape.asInstanceOf[PolygonShape].setAsBox(sprite.getWidth / 3f, sprite.getHeight / 4.5f, new Vector2(0f, sprite.getHeight / 2.5f), 0)
+  fixtureDefTop.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameLoader.pixelsToMeters(sprite.getHeight / 2.5f)), 0)
 
   fixtureDefRight = new FixtureDef
   fixtureDefRight.isSensor = true
+  fixtureDefRight.density = 0f
   fixtureDefRight.shape = new PolygonShape()
-  fixtureDefRight.shape.asInstanceOf[PolygonShape].setAsBox(sprite.getWidth / 4.5f, sprite.getHeight / 3f, new Vector2(sprite.getWidth / 2.5f, 0f), 0)
+  fixtureDefRight.shape.asInstanceOf[PolygonShape].setAsBox(w2, h1, new Vector2(GameLoader.pixelsToMeters(sprite.getWidth / 2.5f), 0f), 0)
 
   fixtureDefLeft = new FixtureDef
   fixtureDefLeft.isSensor = true
+  fixtureDefLeft.density = 0f
   fixtureDefLeft.shape = new PolygonShape()
-  fixtureDefLeft.shape.asInstanceOf[PolygonShape].setAsBox(sprite.getWidth / 4.5f, sprite.getHeight / 3f, new Vector2(-1 * sprite.getWidth / 2.5f, 0f), 0)
+  fixtureDefLeft.shape.asInstanceOf[PolygonShape].setAsBox(w2, h1, new Vector2(GameLoader.pixelsToMeters(-1 * sprite.getWidth / 2.5f), 0f), 0)
 
   body = world.createBody(bodyDef)
 
@@ -176,18 +187,14 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   def moveRight(gameTime:Float): Unit = {
     direction = "R"
-    val vel:Vector2 = body.getLinearVelocity
-    vel.x += 5
-    body.setLinearVelocity(vel)
+    body.applyForceToCenter(20f, 0f, true)
     sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
   }
 
   def moveLeft(gameTime:Float): Unit = {
     direction = "L"
+    body.applyForceToCenter(-20f, 0f, true)
     sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
-    val vel:Vector2 = body.getLinearVelocity
-    vel.x -= 5
-    body.setLinearVelocity(vel)
   }
 
   def canJump():Boolean = {
@@ -202,37 +209,19 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     return false
   }
 
-  var jumpTime:Float = 0
-  var jumpRelease:Boolean = false
-  var jumpGravity:Float = 0
-  override def update(batch:Batch) = {
-    if(canJump() == false) {
-      jumpTime += 1
-      if(jumpRelease || jumpTime > 50) {
-        jumpGravity += 0.15f
-      }
-      this.fixture.setFriction(0f)
-      val vel:Vector2 = body.getLinearVelocity
-      vel.y -= jumpGravity
-      body.setLinearVelocity(vel)
-    } else {
-      jumpTime = 0f
-      jumpGravity = 0f
-      if(this.fixture.getFriction < 2.5f) {
-        this.fixture.setFriction(this.fixture.getFriction + 0.1f)
-      }
+  var jumping:Boolean = false
+  var jumpPower:Float = 0f
+  var jumpCooldown:Float = 0.3f
+  var lastJump:Float = 0
+  def moveUp(gameTime:Float): Unit = {
+    if(lastJump + jumpCooldown > gameTime) {
+      return
     }
-    jumpRelease = true
+    lastJump = gameTime
+    body.applyForceToCenter(0f, 1200f, true)
   }
 
-  def moveUp(gameTime:Float): Unit = {
-    jumpRelease = false
-    if(canJump()) {
-      val vel: Vector2 = body.getLinearVelocity
-      vel.y += 150
-      body.setLinearVelocity(vel)
-    }
-  }
+
 
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
@@ -252,12 +241,6 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     b.direction = direction
     b.attacker = this
 
-  }
-
-  def moveDown(gameTime:Float): Unit = {
-    val vel:Vector2 = body.getLinearVelocity
-    vel.y -= 5
-    body.setLinearVelocity(vel)
   }
 
   override def damage(source:Thing, amount:Integer): Unit = {

@@ -3,12 +3,22 @@ import com.badlogic.gdx.graphics.{Color, Texture, OrthographicCamera}
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, BitmapFont, SpriteBatch}
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
-import com.badlogic.gdx.math.Vector2
+import com.badlogic.gdx.math.{Matrix4, Vector2}
 import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
 
 import scala.collection.mutable.ListBuffer
 
 object GameLoader {
+
+  def BOX_TO_WORLD = 32f
+
+  def pixelsToMeters(v:Float):Float = {
+    return v / BOX_TO_WORLD
+  }
+
+  def metersToPixels(v:Float):Float = {
+    return v * BOX_TO_WORLD
+  }
 
   def create():Unit = {
     GameLoader.camera.setToOrtho(false)
@@ -22,8 +32,9 @@ object GameLoader {
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
   lazy val backgroundCamera: OrthographicCamera = new OrthographicCamera()
-  lazy val world: World = new World(new Vector2(0, -100f), true)
+  lazy val world: World = new World(new Vector2(0, -75f), true)
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
+
 
   lazy val handler:RayHandler = new RayHandler(world)
 
