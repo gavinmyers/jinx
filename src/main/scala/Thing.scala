@@ -123,7 +123,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 //  shape = new PolygonShape()
   shape = new CircleShape()
   fixtureDef.shape = shape
-  fixtureDef.friction = 0.1f
+  fixtureDef.friction = 0f
 
 
 
@@ -138,7 +138,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   def w2 = GameLoader.pixelsToMeters(sprite.getWidth / 4.5f)
   def h2 = GameLoader.pixelsToMeters(sprite.getHeight / 4.5f)
   fixtureDefBottom = new FixtureDef
-  fixtureDefBottom.density = 0f;
+  fixtureDefBottom.density = 0f
   fixtureDefBottom.isSensor = true
   fixtureDefBottom.shape = new PolygonShape()
   fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameLoader.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
@@ -230,6 +230,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     if(lastAttack + cooldown > gameTime) {
       return
     }
+
     lastAttack = gameTime
     var x = sprite.getX
     if(direction.equalsIgnoreCase("R")) {
@@ -262,36 +263,36 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 class Bullet(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
   extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
+  var life = 0.3
+  var attacker:Thing = null
+
   bodyDef = new BodyDef()
 
   bodyDef.`type` = bodyType
   bodyDef.fixedRotation = true
-  bodyDef.position.set(posX, posY)
-  bodyDef.bullet = true
+  bodyDef.position.set(GameLoader.pixelsToMeters(posX), GameLoader.pixelsToMeters(posY))
 
   fixtureDef = new FixtureDef()
 
   shape = new PolygonShape()
 
   fixtureDef.shape = shape
-  fixtureDef.density = Float.MinValue
+  fixtureDef.friction = 0.1f
+  fixtureDef.density = 0
   fixtureDef.isSensor = true
-  fixtureDef.friction = 0f
-
-  var life:Float = 0.15f
-  var attacker:Being = null
 
   sprite = new Sprite(texture)
-  shape.asInstanceOf[PolygonShape].setAsBox(sprite.getHeight / 8, sprite.getWidth / 8)
+
+  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2), GameLoader.pixelsToMeters(sprite.getWidth / 2))
+
 
   body = world.createBody(bodyDef)
-  body.setBullet(true)
 
   fixture = body.createFixture(fixtureDef)
 
   body.setUserData(sprite)
-
   fixture.setUserData(this)
+
   GameLoader.bulletDb += this
 
   override def destroy() : Unit = {
@@ -303,7 +304,7 @@ class Bullet(item_name:String, world:World, texture:TextureRegion, bodyType:Body
   var contactList:ListBuffer[Thing] = ListBuffer()
   override def contact(thing:Thing) : Unit = {
     if(thing.isInstanceOf[Brick]) {
-      this.life = 0
+      //this.life = this.life
     } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
       contactList += thing
       thing.damage(this, 1)

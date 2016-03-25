@@ -7,7 +7,7 @@ import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
-import com.badlogic.gdx.math.{Matrix4, Rectangle, Vector2}
+import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.{Input, ApplicationAdapter, Gdx}
 import net.dermetfan.gdx.graphics.g2d.Box2DSprite
@@ -43,49 +43,29 @@ class Sinx extends ApplicationAdapter {
 
   var debug:Boolean = false
   override def render(): Unit = {
-
-
-    Gdx.gl.glClearColor(0, 0, 0, 1)
-    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    GameLoader.gameTime += Gdx.graphics.getDeltaTime()
-    GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
+    if(Gdx.input.isKeyJustPressed(Input.Keys.B)) {
+      var b:Bullet = new Bullet("_bullet_"+Math.random(),GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, 0,0)
+    }
 
     def player = GameLoader.monsterDb("player")
 
-    GameLoader.camera.position.set(player.sprite.getX, player.sprite.getY, 0)
-    GameLoader.backgroundCamera.position.set(player.sprite.getX, player.sprite.getY, 0)
+    Gdx.gl.glClearColor(0, 0, 0, 1)
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    GameLoader.camera.zoom = 1f
-    GameLoader.backgroundCamera.zoom = 1f
+    def lerp:Float = 4.1f
+    val position:Vector3 = GameLoader.camera.position;
+    position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime()
+    position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime()
 
+    GameLoader.camera.position.set(position)
+    GameLoader.backgroundCamera.position.set(position)
     GameLoader.camera.update()
     GameLoader.backgroundCamera.update()
+    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+    GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
 
-    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
-
-
-    GameLoader.batch.begin()
-    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
-    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    GameLoader.levelMapRenderer.render(Array(0,1,2))
-    GameLoader.batch.end()
-
-
-    GameLoader.batch.begin()
-    GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
-    drawThings()
-    GameLoader.batch.end()
-
-    def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
-    GameLoader.handler.setCombinedMatrix(debugMatrix)
-    GameLoader.handler.updateAndRender()
-
-
-    if(Gdx.input.isKeyJustPressed(Input.Keys.D))
-      debug = debug == false
-
-    if(debug)
-      GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
+    GameLoader.gameTime += Gdx.graphics.getDeltaTime()
+    GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
 
     if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
       player.moveLeft(GameLoader.gameTime)
@@ -100,6 +80,25 @@ class Sinx extends ApplicationAdapter {
       player.attack(GameLoader.gameTime)
 
 
+
+
+    GameLoader.batch.begin()
+    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
+    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
+    GameLoader.levelMapRenderer.render(Array(0,1,2))
+    GameLoader.batch.end()
+
+
+
+    GameLoader.batch.begin()
+    GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
+    drawThings()
+    GameLoader.batch.end()
+
+    def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
+    GameLoader.handler.setCombinedMatrix(debugMatrix)
+    GameLoader.handler.updateAndRender()
+
     for(contact <- GameLoader.world.getContactList) {
       if(contact.getFixtureA == null || contact.getFixtureA.getUserData == null || contact.getFixtureB == null || contact.getFixtureB.getUserData == null) {
       } else if(contact.getFixtureA.getUserData.isInstanceOf[Thing] && contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
@@ -109,6 +108,15 @@ class Sinx extends ApplicationAdapter {
         contact.getFixtureB.getUserData.asInstanceOf[Thing].contact(contact.getFixtureA.getUserData.asInstanceOf[Thing])
       }
     }
+
+    //GameLoader.monsterDb("monster").handler.updateAndRender()
+
+    if(Gdx.input.isKeyJustPressed(Input.Keys.D))
+      debug = debug == false
+
+    if(debug)
+      GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
+
   }
 
 
@@ -118,14 +126,16 @@ class Sinx extends ApplicationAdapter {
 
 
   def drawThings(): Unit = {
+
     for(bullet <- GameLoader.bulletDb) {
 
       val vel:Vector2 = bullet.body.getLinearVelocity
       if(bullet.direction.equalsIgnoreCase("R")) {
-        vel.x += 50
+        vel.x = bullet.attacker.body.getLinearVelocity.x + 0.2f
       } else {
-        vel.x -= 50
+        vel.x = bullet.attacker.body.getLinearVelocity.x - 0.2f
       }
+      vel.y = bullet.attacker.body.getLinearVelocity.y + 1.1f
       bullet.body.setLinearVelocity(vel)
       if(bullet.life + bullet.created < GameLoader.gameTime) {
         bullet.destroy()
