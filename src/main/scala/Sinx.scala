@@ -1,21 +1,17 @@
 
-
 import box2dLight.RayHandler
 import com.badlogic.gdx.graphics.{Color, GL20}
-import com.badlogic.gdx.graphics.g2d.{TextureRegion, Animation}
-import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d._
-import com.badlogic.gdx.{Input, ApplicationAdapter, Gdx}
-import net.dermetfan.gdx.graphics.g2d.Box2DSprite
+import com.badlogic.gdx.{InputProcessor, Input, ApplicationAdapter, Gdx}
 import scala.collection.JavaConversions._
 
 
 
-class Sinx extends ApplicationAdapter {
+class Sinx extends ApplicationAdapter with InputProcessor {
   println("Sinx")
 
   RayHandler.setGammaCorrection(true)
@@ -24,6 +20,8 @@ class Sinx extends ApplicationAdapter {
 
   override def create(): Unit = {
     GameLoader.create()
+
+    Gdx.input.setInputProcessor(this)
 
     createLevel()
 
@@ -59,6 +57,10 @@ class Sinx extends ApplicationAdapter {
 
     GameLoader.camera.position.set(position)
     GameLoader.backgroundCamera.position.set(position)
+
+    GameLoader.camera.zoom = 1f
+    GameLoader.backgroundCamera.zoom = 1f
+
     GameLoader.camera.update()
     GameLoader.backgroundCamera.update()
     GameLoader.handler.setCombinedMatrix(GameLoader.camera)
@@ -66,18 +68,6 @@ class Sinx extends ApplicationAdapter {
 
     GameLoader.gameTime += Gdx.graphics.getDeltaTime()
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
-      player.moveLeft(GameLoader.gameTime)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
-      player.moveRight(GameLoader.gameTime)
-
-    if(Gdx.input.isKeyPressed(Input.Keys.UP))
-      player.moveUp(GameLoader.gameTime)
-
-    if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE))
-      player.attack(GameLoader.gameTime)
 
 
 
@@ -165,6 +155,64 @@ class Sinx extends ApplicationAdapter {
         }
       }
     }
+  }
+
+  var downButtons:Float = 0
+  override def keyDown(keycode: Int): Boolean = {
+
+    def player = GameLoader.monsterDb("player")
+
+    if(Input.Keys.LEFT == keycode)
+      player.moveLeft(GameLoader.gameTime)
+
+    if(Input.Keys.RIGHT == keycode)
+      player.moveRight(GameLoader.gameTime)
+
+    if(Input.Keys.UP == keycode)
+      player.moveUp(GameLoader.gameTime)
+
+
+    return true
+  }
+
+  override def keyUp(keycode: Int): Boolean = {
+    def player = GameLoader.monsterDb("player")
+
+    if((Input.Keys.LEFT == keycode && Gdx.input.isKeyPressed(Input.Keys.RIGHT) == false) || (Input.Keys.RIGHT == keycode && Gdx.input.isKeyPressed(Input.Keys.LEFT) == false))
+      player.stop(GameLoader.gameTime)
+
+    if(Input.Keys.UP == keycode)
+      player.fall(GameLoader.gameTime)
+
+    if(Input.Keys.SPACE == keycode)
+      player.attack(GameLoader.gameTime)
+
+    return true
+  }
+
+  override def mouseMoved(screenX: Int, screenY: Int): Boolean = {
+    return true
+  }
+
+  override def keyTyped(character: Char): Boolean = {
+    return true
+  }
+
+
+  override def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
+    return true
+  }
+
+  override def scrolled(amount: Int): Boolean = {
+    return true
+  }
+
+  override def touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
+    return true
+  }
+
+  override def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = {
+    return true
   }
 }
 

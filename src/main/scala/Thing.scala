@@ -81,7 +81,7 @@ class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
   shape = new PolygonShape()
 
   fixtureDef.shape = shape
-  fixtureDef.friction = 0.1f
+  fixtureDef.friction = 5f
 
 
   sprite = new Sprite(texture)
@@ -185,16 +185,60 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   GameLoader.monsterDb += name -> this
 
+
+  def fall(gameTime:Float): Unit = {
+    jumping = false
+    body.setLinearVelocity(body.getLinearVelocity.x, body.getLinearVelocity.y * 0.9f)
+  }
+
+  def stop(gameTime:Float): Unit = {
+    direction = ""
+    moveSpeed = 0f
+    body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
+    sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+  }
+
+  var moveSpeed:Float = 0f
+  def move(gameTime:Float): Unit = {
+    if(direction == "" && jumping == false) return stop(gameTime)
+
+    moveSpeed += 0.5f
+    if(direction == "R") {
+      if(body.getLinearVelocity.x < 10f)
+        body.applyForceToCenter(15f, 0f, true)
+      sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+    }
+    if(direction == "L") {
+      if(body.getLinearVelocity.x > -10f)
+        body.applyForceToCenter(-15f, 0f, true)
+      sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+    }
+    if(jumping) {
+      if(body.getLinearVelocity.y < 15f)
+        body.applyForceToCenter(0f, 250f, true)
+    }
+  }
+
   def moveRight(gameTime:Float): Unit = {
     direction = "R"
-    body.applyForceToCenter(20f, 0f, true)
-    sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+
   }
 
   def moveLeft(gameTime:Float): Unit = {
     direction = "L"
-    body.applyForceToCenter(-20f, 0f, true)
-    sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+  }
+
+  var jumping:Boolean = false
+  var jumpPower:Float = 0f
+  var jumpCooldown:Float = 0.3f
+  var lastJump:Float = 0
+  def moveUp(gameTime:Float): Unit = {
+    jumping = true
+    if(lastJump + jumpCooldown > gameTime) {
+      return
+    }
+    lastJump = gameTime
+
   }
 
   def canJump():Boolean = {
@@ -208,19 +252,6 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     }
     return false
   }
-
-  var jumping:Boolean = false
-  var jumpPower:Float = 0f
-  var jumpCooldown:Float = 0.3f
-  var lastJump:Float = 0
-  def moveUp(gameTime:Float): Unit = {
-    if(lastJump + jumpCooldown > gameTime) {
-      return
-    }
-    lastJump = gameTime
-    body.applyForceToCenter(0f, 1200f, true)
-  }
-
 
 
   var lastAttack:Float= 0
@@ -249,6 +280,12 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     if(life < 1)
       destroy()
   }
+
+  override def draw(batch:Batch): Unit = {
+    move(GameLoader.gameTime)
+    super.draw(batch)
+  }
+
 
   override def destroy() : Unit = {
     light.setActive(false)
