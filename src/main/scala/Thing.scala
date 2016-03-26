@@ -94,6 +94,11 @@ class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
 
   fixture = body.createFixture(fixtureDef)
 
+  var f:Filter = new Filter()
+  f.groupIndex = 2
+  fixture.setFilterData(f)
+  body.setUserData(sprite)
+
   body.setUserData(sprite)
   fixture.setUserData(this)
   GameLoader.groundDb += name -> this
@@ -134,6 +139,8 @@ class Ladder(item_name:String, world:World, texture:TextureRegion, bodyType:Body
   body = world.createBody(bodyDef)
 
   fixture = body.createFixture(fixtureDef)
+
+
 
   body.setUserData(sprite)
   fixture.setUserData(this)
@@ -212,7 +219,6 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
 
 
-  body.setUserData(sprite)
 
   var walkRightAnimation:Animation = new Animation(0.15f, GameLoader.player.get(28),GameLoader.player.get(29))
   var standRightAnimation:Animation = new Animation(0.15f, GameLoader.player.get(2))
@@ -228,7 +234,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
   light.attachToBody(body, 0, 0)
   light.setIgnoreAttachedBody(true)
-
+  light.setContactFilter(0,2,-1)
 
   fixture.setUserData(this)
 
@@ -252,7 +258,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   def move(gameTime:Float): Unit = {
     body.setGravityScale(1f)
-    if(lastAttack + cooldown <git  gameTime) {
+    if(lastAttack + cooldown < gameTime) {
       attacking = false
     }
     if(attacking) {
