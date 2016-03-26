@@ -120,7 +120,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   fixtureDef = new FixtureDef()
 
-//  shape = new PolygonShape()
+  //shape = new PolygonShape()
   shape = new CircleShape()
   fixtureDef.shape = shape
   fixtureDef.friction = 0f
@@ -130,7 +130,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   sprite = new Sprite(texture)
 
   shape.setRadius(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f))
-//  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f), GameLoader.pixelsToMeters(sprite.getWidth / 2.2f))
+  //shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f), GameLoader.pixelsToMeters(sprite.getWidth / 2.2f))
 
 
   def w1 = GameLoader.pixelsToMeters(sprite.getWidth / 3f)
@@ -141,7 +141,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   fixtureDefBottom.density = 0f
   fixtureDefBottom.isSensor = true
   fixtureDefBottom.shape = new PolygonShape()
-  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameLoader.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
+  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1 / 2, h2, new Vector2(0f, GameLoader.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
 
   fixtureDefTop = new FixtureDef
   fixtureDefTop.isSensor = true
@@ -214,8 +214,11 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
       sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
     }
     if(jumping) {
-      if(body.getLinearVelocity.y < 15f)
+      if(body.getLinearVelocity.y < 15f && lastJump + jumpMax > gameTime) {
         body.applyForceToCenter(0f, 250f, true)
+      } else {
+        fall(gameTime)
+      }
     }
   }
 
@@ -229,24 +232,24 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   }
 
   var jumping:Boolean = false
-  var jumpPower:Float = 0f
-  var jumpCooldown:Float = 0.3f
+  var jumpMax:Float = 0.45f
   var lastJump:Float = 0
   def moveUp(gameTime:Float): Unit = {
-    jumping = true
-    if(lastJump + jumpCooldown > gameTime) {
-      return
+    if(canJump()) {
+      jumping = true
+      lastJump = gameTime
     }
-    lastJump = gameTime
-
   }
 
   def canJump():Boolean = {
     for(contact:Contact <- GameLoader.world.getContactList()) {
-      if(!contact.getFixtureB.isSensor && contact.getFixtureA == fixtureBottom) {
+      if(contact.getFixtureB.isSensor == false && contact.getFixtureA == fixtureBottom && contact.getFixtureB.getBody != body) {
+        println(contact.getFixtureB.getBody.getUserData + " vs " + contact.getFixtureA.getBody.getUserData)
+
         return true
       }
-      if(!contact.getFixtureA.isSensor && contact.getFixtureB == fixtureBottom) {
+      if(contact.getFixtureA.isSensor == false && contact.getFixtureB == fixtureBottom && contact.getFixtureA.getBody != body) {
+        println(contact.getFixtureB.getBody.getUserData + " vs " + contact.getFixtureA.getBody.getUserData)
         return true
       }
     }
