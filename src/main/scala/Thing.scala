@@ -177,6 +177,8 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   sprite = new Sprite(texture)
 
+
+
   shape.setRadius(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f))
   //shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2.2f), GameLoader.pixelsToMeters(sprite.getWidth / 2.2f))
 
@@ -228,6 +230,9 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   var climbAnimation:Animation = new Animation(0.25f, GameLoader.player.get(8),GameLoader.player.get(9))
 
+  var hurtAnimation:Animation = new Animation(0.25f, GameLoader.player.get(48))
+  var deathAnimation:Animation = new Animation(0.25f, GameLoader.player.get(72),GameLoader.player.get(73),GameLoader.player.get(74),GameLoader.player.get(75))
+
   var attackAnimationLeft:Animation = new Animation(0.25f, GameLoader.player.get(40),GameLoader.player.get(41))
   var attackAnimationRight:Animation = new Animation(0.25f, GameLoader.player.get(44),GameLoader.player.get(45))
 
@@ -257,6 +262,21 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   }
 
   def move(gameTime:Float): Unit = {
+    if(dieing && deathStart + deathEnd < gameTime) {
+      destroy()
+      return
+    }
+    if(dieing) {
+      sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
+      return
+    }
+    if(lastDamage + damageCooldown < gameTime) {
+      takingDamage = false
+    }
+    if(takingDamage) {
+      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
+      return
+    }
     body.setGravityScale(1f)
     if(lastAttack + cooldown < gameTime) {
       attacking = false
@@ -369,7 +389,6 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   var attacking:Boolean = false
   def attack(gameTime:Float): Unit = {
     if(lastAttack + cooldown > gameTime) {
-      attacking = false
       return
     }
     attacking = true
@@ -386,10 +405,29 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   }
 
+  var takingDamage:Boolean = false
+  var lastDamage:Float = 0
+  var damageCooldown:Float = 0.3f
   override def damage(source:Thing, amount:Integer): Unit = {
+    def gameTime =  GameLoader.gameTime
+    if(lastDamage + damageCooldown > gameTime) {
+      return
+    }
+    takingDamage = true
+    lastDamage = gameTime
     life -= amount
-    if(life < 1)
-      destroy()
+    if(life < 1) die(gameTime)
+  }
+
+  var dieing:Boolean = false
+  var deathStart:Float = 0
+  var deathEnd:Float = 0.3f
+  def die(gameTime:Float): Unit = {
+    if(dieing) {
+      return
+    }
+    dieing = true
+    deathStart = gameTime
   }
 
   override def draw(batch:Batch): Unit = {
@@ -431,6 +469,9 @@ class Bullet(item_name:String, world:World, texture:TextureRegion, bodyType:Body
 
   sprite = new Sprite(texture)
 
+  var attackAnimationRight:Animation = new Animation(0.15f, GameLoader.player.get(64),GameLoader.player.get(65),GameLoader.player.get(66))
+  var attackAnimationLeft:Animation = new Animation(0.15f, GameLoader.player.get(69),GameLoader.player.get(70),GameLoader.player.get(71))
+
   shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getHeight / 2), GameLoader.pixelsToMeters(sprite.getWidth / 2))
 
 
@@ -454,9 +495,29 @@ class Bullet(item_name:String, world:World, texture:TextureRegion, bodyType:Body
     if(thing.isInstanceOf[Brick]) {
       //this.life = this.life
     } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
+
       contactList += thing
       thing.damage(this, 1)
     }
+  }
+  def move(gameTime:Float): Unit = {
+    val vel:Vector2 = body.getLinearVelocity
+    if(mov_h.equalsIgnoreCase("R")) {
+      vel.x = attacker.body.getLinearVelocity.x + 0.2f
+      sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
+    } else {
+      vel.x = attacker.body.getLinearVelocity.x - 0.2f
+      sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+    }
+    vel.y = attacker.body.getLinearVelocity.y + 1.1f
+    body.setLinearVelocity(vel)
+    if(life + created < GameLoader.gameTime) {
+      destroy()
+    }
+  }
+  override def draw(batch:Batch): Unit = {
+    move(GameLoader.gameTime)
+    super.draw(batch)
   }
 
 }

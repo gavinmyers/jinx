@@ -33,17 +33,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     new Being("player",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x, r.y)
 
-    //new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
+    new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
 
   }
 
   var debug:Boolean = false
   override def render(): Unit = {
-    if(Gdx.input.isKeyJustPressed(Input.Keys.B)) {
-      var b:Bullet = new Bullet("_bullet_"+Math.random(),GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, 0,0)
-    }
-
     def player = GameLoader.monsterDb("player")
+
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -68,6 +65,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
 
 
+    if(GameLoader.monsterDb.containsKey("monster")) {
+      def monster = GameLoader.monsterDb("monster")
+      monster.moveLeft(GameLoader.gameTime)
+    }
 
 
     GameLoader.batch.begin()
@@ -102,6 +103,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if(Gdx.input.isKeyJustPressed(Input.Keys.D))
       debug = debug == false
 
+    if(Gdx.input.isKeyJustPressed(Input.Keys.M))
+      new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, player.body.getPosition.x + 24, player.body.getPosition.y + 24)
+
     if(debug)
       GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
 
@@ -115,20 +119,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   def drawThings(): Unit = {
 
-    for(bullet <- GameLoader.bulletDb) {
 
-      val vel:Vector2 = bullet.body.getLinearVelocity
-      if(bullet.mov_h.equalsIgnoreCase("R")) {
-        vel.x = bullet.attacker.body.getLinearVelocity.x + 0.2f
-      } else {
-        vel.x = bullet.attacker.body.getLinearVelocity.x - 0.2f
-      }
-      vel.y = bullet.attacker.body.getLinearVelocity.y + 1.1f
-      bullet.body.setLinearVelocity(vel)
-      if(bullet.life + bullet.created < GameLoader.gameTime) {
-        bullet.destroy()
-      }
-    }
     for(thing <- GameLoader.thingDb) {
       thing.update(GameLoader.batch)
       thing.draw(GameLoader.batch)
