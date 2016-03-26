@@ -151,8 +151,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   extends Thing(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
   var life = 10
-  var walkRightAnimation:Animation = _
-  var walkLeftAnimation:Animation = _
+
 
   bodyDef = new BodyDef()
 
@@ -215,8 +214,16 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   body.setUserData(sprite)
 
-  walkRightAnimation = new Animation(0.15f, GameLoader.player.get(4),GameLoader.player.get(5))
-  walkLeftAnimation = new Animation(0.15f, GameLoader.player.get(6),GameLoader.player.get(7))
+  var walkRightAnimation:Animation = new Animation(0.15f, GameLoader.player.get(28),GameLoader.player.get(29))
+  var standRightAnimation:Animation = new Animation(0.15f, GameLoader.player.get(2))
+
+  var walkLeftAnimation:Animation = new Animation(0.15f, GameLoader.player.get(24),GameLoader.player.get(25))
+  var standLeftAnimation:Animation = new Animation(0.15f, GameLoader.player.get(3))
+
+  var climbAnimation:Animation = new Animation(0.25f, GameLoader.player.get(8),GameLoader.player.get(9))
+
+  var attackAnimationLeft:Animation = new Animation(0.25f, GameLoader.player.get(40),GameLoader.player.get(41))
+  var attackAnimationRight:Animation = new Animation(0.25f, GameLoader.player.get(44),GameLoader.player.get(45))
 
   GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
   light.attachToBody(body, 0, 0)
@@ -236,33 +243,51 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   def stop(gameTime:Float): Unit = {
     mov_h = ""
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
+    if(face_h == "R" && !attacking) {
+      sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
+    } else if (face_h == "L"  && !attacking) {
+      sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
+    }
   }
 
   def move(gameTime:Float): Unit = {
     body.setGravityScale(1f)
-
-    if(mov_h == "" && mov_v == "" && jumping == false) return stop(gameTime)
+    if(lastAttack + cooldown <git  gameTime) {
+      attacking = false
+    }
+    if(attacking) {
+      if(face_h == "R") {
+        sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
+      } else if(face_h == "L") {
+        sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+      }
+    }
+    if((mov_v == "" || canClimb == false) && mov_h == "" && jumping == false) return stop(gameTime)
 
     //Standing on a ladder
     if(canClimb) {
       body.setGravityScale(0.05f)
       if(mov_v == "U") {
         body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
-      }
-      if(mov_v == "D") {
+        sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+      } else if(mov_v == "D") {
         body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
+        sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
       }
+
     }
 
     if(mov_h == "R") {
       if(body.getLinearVelocity.x < 10f)
         body.applyForceToCenter(15f, 0f, true)
-      sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+      if(!attacking)
+        sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
     }
     if(mov_h == "L") {
       if(body.getLinearVelocity.x > -10f)
         body.applyForceToCenter(-15f, 0f, true)
-      sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+      if(!attacking)
+        sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
     }
     if(jumping) {
       if(body.getLinearVelocity.y < 15f && lastJump + jumpMax > gameTime) {
@@ -335,12 +360,13 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
+  var attacking:Boolean = false
   def attack(gameTime:Float): Unit = {
-
     if(lastAttack + cooldown > gameTime) {
+      attacking = false
       return
     }
-
+    attacking = true
     lastAttack = gameTime
     var x = sprite.getX
     if(face_h.equalsIgnoreCase("R")) {
@@ -348,7 +374,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
     }
     var y = sprite.getY + (sprite.getHeight / 2)
 
-    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
+    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, GameLoader.player(64), BodyDef.BodyType.DynamicBody, x, y)
     b.mov_h = face_h
     b.attacker = this
 
