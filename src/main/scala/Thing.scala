@@ -34,8 +34,10 @@ class Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
   var body:Body = _
   var shape:Shape = _
 
-  var direction:String = ""
-
+  var mov_h:String = ""
+  var mov_v:String = ""
+  var face_v:String = ""
+  var face_h:String = ""
 
   GameLoader.thingDb += this
 
@@ -95,6 +97,46 @@ class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
   body.setUserData(sprite)
   fixture.setUserData(this)
   GameLoader.groundDb += name -> this
+
+  override def contact(thing:Thing) : Unit = {
+
+  }
+
+  override def damage(source:Thing, amount:Integer): Unit = {
+
+  }
+}
+
+
+class Ladder(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+
+
+  bodyDef = new BodyDef()
+
+  bodyDef.`type` = bodyType
+  bodyDef.fixedRotation = true
+  bodyDef.position.set(GameLoader.pixelsToMeters(posX), GameLoader.pixelsToMeters(posY))
+
+  fixtureDef = new FixtureDef()
+
+  shape = new PolygonShape()
+
+  fixtureDef.shape = shape
+  fixtureDef.isSensor = true
+  fixtureDef.friction = 5f
+
+
+  sprite = new Sprite(texture)
+  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getWidth / 4), GameLoader.pixelsToMeters(sprite.getHeight / 2))
+
+
+  body = world.createBody(bodyDef)
+
+  fixture = body.createFixture(fixtureDef)
+
+  body.setUserData(sprite)
+  fixture.setUserData(this)
 
   override def contact(thing:Thing) : Unit = {
 
@@ -185,30 +227,39 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
   GameLoader.monsterDb += name -> this
 
-
   def fall(gameTime:Float): Unit = {
     jumping = false
+    mov_v = ""
     body.setLinearVelocity(body.getLinearVelocity.x, body.getLinearVelocity.y * 0.9f)
   }
 
   def stop(gameTime:Float): Unit = {
-    direction = ""
-    moveSpeed = 0f
+    mov_h = ""
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
-    sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
   }
 
-  var moveSpeed:Float = 0f
   def move(gameTime:Float): Unit = {
-    if(direction == "" && jumping == false) return stop(gameTime)
+    body.setGravityScale(1f)
 
-    moveSpeed += 0.5f
-    if(direction == "R") {
+    if(mov_h == "" && mov_v == "" && jumping == false) return stop(gameTime)
+
+    //Standing on a ladder
+    if(canClimb) {
+      body.setGravityScale(0.05f)
+      if(mov_v == "U") {
+        body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
+      }
+      if(mov_v == "D") {
+        body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
+      }
+    }
+
+    if(mov_h == "R") {
       if(body.getLinearVelocity.x < 10f)
         body.applyForceToCenter(15f, 0f, true)
       sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
     }
-    if(direction == "L") {
+    if(mov_h == "L") {
       if(body.getLinearVelocity.x > -10f)
         body.applyForceToCenter(-15f, 0f, true)
       sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
@@ -223,18 +274,24 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   }
 
   def moveRight(gameTime:Float): Unit = {
-    direction = "R"
-
+    mov_h = "R"
+    face_h = "R"
   }
-
   def moveLeft(gameTime:Float): Unit = {
-    direction = "L"
+    mov_h = "L"
+    face_h = "L"
+  }
+  def moveUp(gameTime:Float): Unit = {
+    mov_v = "U"
+  }
+  def moveDown(gameTime:Float): Unit = {
+    mov_v = "D"
   }
 
   var jumping:Boolean = false
   var jumpMax:Float = 0.45f
   var lastJump:Float = 0
-  def moveUp(gameTime:Float): Unit = {
+  def jump(gameTime:Float): Unit = {
     if(canJump()) {
       jumping = true
       lastJump = gameTime
@@ -242,20 +299,39 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
   }
 
   def canJump():Boolean = {
-    for(contact:Contact <- GameLoader.world.getContactList()) {
-      if(contact.getFixtureB.isSensor == false && contact.getFixtureA == fixtureBottom && contact.getFixtureB.getBody != body) {
-        println(contact.getFixtureB.getBody.getUserData + " vs " + contact.getFixtureA.getBody.getUserData)
 
+    for(contact:Contact <- GameLoader.world.getContactList()) {
+      if(contact.getFixtureB.isSensor == false
+        && contact.getFixtureA == fixtureBottom
+        && contact.getFixtureB.getBody != body) {
         return true
       }
-      if(contact.getFixtureA.isSensor == false && contact.getFixtureB == fixtureBottom && contact.getFixtureA.getBody != body) {
-        println(contact.getFixtureB.getBody.getUserData + " vs " + contact.getFixtureA.getBody.getUserData)
+      if(contact.getFixtureA.isSensor == false
+        && contact.getFixtureB == fixtureBottom
+        && contact.getFixtureA.getBody != body) {
         return true
       }
     }
     return false
   }
 
+  def canClimb():Boolean = {
+    for(contact:Contact <- GameLoader.world.getContactList()) {
+      if(contact.getFixtureB.isSensor == true
+        && contact.getFixtureA == fixture
+        && contact.getFixtureB.getBody != body
+        && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
+        return true
+      }
+      if(contact.getFixtureA.isSensor == true
+        && contact.getFixtureB == fixture
+        && contact.getFixtureA.getBody != body
+        && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
+        return true
+      }
+    }
+    return false
+  }
 
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
@@ -267,13 +343,13 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
     lastAttack = gameTime
     var x = sprite.getX
-    if(direction.equalsIgnoreCase("R")) {
+    if(face_h.equalsIgnoreCase("R")) {
       x = sprite.getX + (sprite.getWidth)
     }
     var y = sprite.getY + (sprite.getHeight / 2)
 
     var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, GameLoader.player(8), BodyDef.BodyType.DynamicBody, x, y)
-    b.direction = direction
+    b.mov_h = face_h
     b.attacker = this
 
   }

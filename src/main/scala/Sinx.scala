@@ -1,15 +1,11 @@
-
 import box2dLight.RayHandler
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.maps.objects.RectangleMapObject
-
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.{InputProcessor, Input, ApplicationAdapter, Gdx}
 import scala.collection.JavaConversions._
-
-
 
 class Sinx extends ApplicationAdapter with InputProcessor {
   println("Sinx")
@@ -17,13 +13,15 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   RayHandler.setGammaCorrection(true)
   RayHandler.useDiffuseLight(true)
 
-
   override def create(): Unit = {
     GameLoader.create()
 
     Gdx.input.setInputProcessor(this)
 
-    createLevel()
+    drawLayer("ground")
+
+    //fix
+    drawLadder("ladder")
 
     def r = GameLoader.levelMap
       .getLayers
@@ -73,7 +71,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
 
     GameLoader.batch.begin()
-    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("sky").asInstanceOf[TiledMapTileLayer])
+    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
     GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
     GameLoader.levelMapRenderer.render(Array(0,1,2))
     GameLoader.batch.end()
@@ -120,7 +118,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     for(bullet <- GameLoader.bulletDb) {
 
       val vel:Vector2 = bullet.body.getLinearVelocity
-      if(bullet.direction.equalsIgnoreCase("R")) {
+      if(bullet.mov_h.equalsIgnoreCase("R")) {
         vel.x = bullet.attacker.body.getLinearVelocity.x + 0.2f
       } else {
         vel.x = bullet.attacker.body.getLinearVelocity.x - 0.2f
@@ -137,10 +135,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
   }
 
-  def createLevel(): Unit = {
+  def drawLayer(name:String): Unit = {
     val tileX:Int = 24
     val tileY:Int = 24
-    val tmtl = GameLoader.levelMap.getLayers.get("ground").asInstanceOf[TiledMapTileLayer]
+    val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
     var x:Int = 0
     var y:Int = 0
 
@@ -157,6 +155,28 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
   }
 
+
+  def drawLadder(name:String): Unit = {
+    val tileX:Int = 24
+    val tileY:Int = 24
+    val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
+    var x:Int = 0
+    var y:Int = 0
+
+    for( x <- 0 to tmtl.getWidth) {
+      for(y <- 0 to tmtl.getHeight ){
+        val c = tmtl.getCell(x,y)
+        if(c != null) {
+          val posX:Int = x * tileX + 12
+          val posY:Int = y * tileY + 12
+          val t:TiledMapTile = c.getTile()
+          new Ladder("ladder"+x+"_"+y, GameLoader.world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
+        }
+      }
+    }
+  }
+
+
   var downButtons:Float = 0
   override def keyDown(keycode: Int): Boolean = {
 
@@ -171,6 +191,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if(Input.Keys.UP == keycode)
       player.moveUp(GameLoader.gameTime)
 
+    if(Input.Keys.DOWN == keycode)
+      player.moveDown(GameLoader.gameTime)
+
+    if(Input.Keys.Z == keycode)
+      player.jump(GameLoader.gameTime)
+
+    if(Input.Keys.X == keycode)
+      player.attack(GameLoader.gameTime)
 
     return true
   }
