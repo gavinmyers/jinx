@@ -28,10 +28,10 @@ class Bullet(item_name:String, world:World, as:ListBuffer[TextureRegion], posX:F
   fixtureDef.density = 0
   fixtureDef.isSensor = true
 
-  sprite = new Sprite(animationSheet(64))
+  sprite = new Sprite(animationSheet(0))
 
-  var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(64),animationSheet(65),animationSheet(66))
-  var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(69),animationSheet(70),animationSheet(71))
+  var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(0),animationSheet(1),animationSheet(2))
+  var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(8),animationSheet(9),animationSheet(10))
 
   shape.asInstanceOf[PolygonShape].setAsBox(GameUtil.pixelsToMeters(sprite.getHeight / 2), GameUtil.pixelsToMeters(sprite.getWidth / 2))
 

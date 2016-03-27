@@ -40,9 +40,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
-    new Being("player",GameLoader.world, player, r.x, r.y)
-    new Being("monster",GameLoader.world, player, r.x + 24, r.y + 24)
+    def bulletSheet = new Texture("bullet1.png")
+    val bullet:ListBuffer[TextureRegion] = ListBuffer()
+    for(tr <- TextureRegion.split(bulletSheet, 24, 24)) {
+      for(tx <- tr) {
+        bullet.append(tx)
+      }
+    }
 
+    var p = new Being("player",GameLoader.world, player, r.x, r.y)
+    p.bulletSheet = bullet
+
+    var m = new Being("monster",GameLoader.world, player, r.x + 24, r.y + 24)
+    m.bulletSheet = bullet
   }
 
   var debug:Boolean = false

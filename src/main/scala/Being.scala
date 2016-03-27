@@ -14,6 +14,8 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
 
   def animationSheet:ListBuffer[TextureRegion] = as
 
+  var bulletSheet:ListBuffer[TextureRegion] = _
+
   var life = 10
 
   bodyDef = new BodyDef()
@@ -242,7 +244,7 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
     }
     var y = sprite.getY + (sprite.getHeight / 2)
 
-    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, animationSheet, x, y)
+    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, bulletSheet, x, y)
     b.mov_h = face_h
     b.attacker = this
 
