@@ -9,7 +9,7 @@ import scala.collection.mutable.ListBuffer
 
 class Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
-  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 1024, new Color(1f, 1f, 1f, 0.2f), 12, 0, 0);
+  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.2f), 12, 0, 0);
 
   var name:String = item_name
 
@@ -114,6 +114,49 @@ class Brick(item_name:String, world:World, texture:TextureRegion, bodyType:BodyD
 
 
 class Ladder(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
+
+
+  bodyDef = new BodyDef()
+
+  bodyDef.`type` = bodyType
+  bodyDef.fixedRotation = true
+  bodyDef.position.set(GameLoader.pixelsToMeters(posX), GameLoader.pixelsToMeters(posY))
+
+  fixtureDef = new FixtureDef()
+
+  shape = new PolygonShape()
+
+  fixtureDef.shape = shape
+  fixtureDef.isSensor = true
+  fixtureDef.friction = 5f
+
+
+  sprite = new Sprite(texture)
+  shape.asInstanceOf[PolygonShape].setAsBox(GameLoader.pixelsToMeters(sprite.getWidth / 4), GameLoader.pixelsToMeters(sprite.getHeight / 2))
+
+
+  body = world.createBody(bodyDef)
+
+  fixture = body.createFixture(fixtureDef)
+
+
+
+  body.setUserData(sprite)
+  fixture.setUserData(this)
+
+  override def contact(thing:Thing) : Unit = {
+
+  }
+
+  override def damage(source:Thing, amount:Integer): Unit = {
+
+  }
+}
+
+
+
+class Corpse(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
   extends Thing(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float) {
 
 
@@ -437,6 +480,7 @@ class Being(item_name:String,world:World, texture:TextureRegion, bodyType:BodyDe
 
 
   override def destroy() : Unit = {
+    new Corpse(this.name + "_corpse", GameLoader.world, GameLoader.player.get(6), BodyDef.BodyType.StaticBody, GameLoader.metersToPixels(body.getPosition.x), GameLoader.metersToPixels(body.getPosition.y))
     light.setActive(false)
     GameLoader.world.destroyBody(body)
     GameLoader.thingDb -= this
