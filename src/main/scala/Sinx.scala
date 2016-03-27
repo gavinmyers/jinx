@@ -136,7 +136,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
 
     for(thing <- GameLoader.thingDb) {
-      thing.update(GameLoader.batch)
+      thing.update(GameLoader.gameTime)
       thing.draw(GameLoader.batch)
     }
   }

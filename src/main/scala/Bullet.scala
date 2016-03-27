@@ -62,7 +62,8 @@ class Bullet(item_name:String, world:World, as:ListBuffer[TextureRegion], posX:F
       thing.damage(this, 1)
     }
   }
-  def move(gameTime:Float): Unit = {
+
+  override def move(gameTime:Float): Unit = {
     val vel:Vector2 = body.getLinearVelocity
     if(mov_h.equalsIgnoreCase("R")) {
       vel.x = attacker.body.getLinearVelocity.x + 0.2f

@@ -42,9 +42,6 @@ class Thing() {
     sprite.draw(batch)
   }
 
-  def update(batch:Batch): Unit = {
-  }
-
   def destroy() : Unit = {
     GameLoader.thingDb -= this
   }
@@ -54,6 +51,14 @@ class Thing() {
   }
 
   def damage(source:Thing, amount:Integer): Unit = {
+
+  }
+
+  def update(gameTime:Float): Unit = {
+
+  }
+
+  def move(gameTime:Float): Unit = {
 
   }
 

@@ -105,66 +105,70 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
       sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
     }
   }
-
-  def move(gameTime:Float): Unit = {
+  override def update(gameTime:Float): Unit = {
     if(dieing && deathStart + deathEnd < gameTime) {
       destroy()
-      return
-    }
-    if(dieing) {
-      sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
       return
     }
     if(lastDamage + damageCooldown < gameTime) {
       takingDamage = false
     }
-    if(takingDamage) {
-      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
-      return
-    }
-    body.setGravityScale(1f)
     if(lastAttack + cooldown < gameTime) {
       attacking = false
     }
-    if(attacking) {
+
+    body.setGravityScale(1f)
+  }
+
+  override def move(gameTime:Float): Unit = {
+
+    if(dieing) {
+      sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
+
+    } else if(takingDamage) {
+      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
+
+    } else if(attacking) {
       if(face_h == "R") {
         sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
       } else if(face_h == "L") {
         sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
       }
-    }
-    if((mov_v == "" || canClimb == false) && mov_h == "" && jumping == false) return stop(gameTime)
 
-    //Standing on a ladder
-    if(canClimb) {
-      body.setGravityScale(0.05f)
-      if(mov_v == "U") {
-        body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
-        sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
-      } else if(mov_v == "D") {
-        body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
-        sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+    } else if((mov_v == "" || canClimb == false) && mov_h == "" && jumping == false) {
+      stop(gameTime)
+
+    } else {
+
+      if(jumping) {
+        if(body.getLinearVelocity.y < 15f && lastJump + jumpMax > gameTime) {
+          body.applyForceToCenter(0f, 250f, true)
+        } else {
+          fall(gameTime)
+        }
+      } else if(canClimb) {
+        //body.setGravityScale(0.01f)
+        if(mov_v == "U") {
+          body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
+          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+        } else if(mov_v == "D") {
+          body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
+          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+        }
+
       }
 
-    }
-
-    if(mov_h == "R") {
-      if(body.getLinearVelocity.x < 10f)
-        body.applyForceToCenter(15f, 0f, true)
-      if(!attacking)
-        sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
-    }
-    if(mov_h == "L") {
-      if(body.getLinearVelocity.x > -10f)
-        body.applyForceToCenter(-15f, 0f, true)
-      if(!attacking)
-        sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
-    }
-    if(jumping) {
-      if(body.getLinearVelocity.y < 15f && lastJump + jumpMax > gameTime) {
-        body.applyForceToCenter(0f, 250f, true)
-      } else {
-        fall(gameTime)
+      if(mov_h == "R") {
+        if(body.getLinearVelocity.x < 10f)
+          body.applyForceToCenter(15f, 0f, true)
+        if(!attacking)
+          sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+      }
+      if(mov_h == "L") {
+        if(body.getLinearVelocity.x > -10f)
+          body.applyForceToCenter(-15f, 0f, true)
+        if(!attacking)
+          sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
       }
     }
   }
