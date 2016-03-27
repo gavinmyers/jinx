@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="24" tileheight="24" nextobjectid="2">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="24" tileheight="24" nextobjectid="14">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="24" columns="8">
   <image source="levels.png" width="192" height="72"/>
  </tileset>
@@ -93,6 +93,12 @@
  </layer>
  <objectgroup name="positions">
   <object id="1" name="player_start" x="70.1614" y="91.7109" width="15.0346" height="14.0323"/>
+  <object id="2" name="hive" x="325.844" y="530.811" width="22.3361" height="18.3944"/>
+  <object id="6" name="hive" x="664.827" y="273.289"/>
+  <object id="7" x="923.663" y="277.23" height="2.62778"/>
+  <object id="11" name="hive" x="926.291" y="274.603"/>
+  <object id="12" name="hive" x="664.827" y="656.944"/>
+  <object id="13" name="down" x="924.977" y="924.977"/>
  </objectgroup>
  <layer name="ladder" width="40" height="40">
   <data encoding="csv">

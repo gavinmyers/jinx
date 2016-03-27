@@ -1,11 +1,13 @@
 import box2dLight.RayHandler
-import com.badlogic.gdx.graphics.{Color, GL20}
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.{Texture, Color, GL20}
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
 import com.badlogic.gdx.physics.box2d._
 import com.badlogic.gdx.{InputProcessor, Input, ApplicationAdapter, Gdx}
 import scala.collection.JavaConversions._
+import scala.collection.mutable.ListBuffer
 
 class Sinx extends ApplicationAdapter with InputProcessor {
   println("Sinx")
@@ -15,11 +17,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def create(): Unit = {
     GameLoader.create()
-
+    GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
     Gdx.input.setInputProcessor(this)
 
     drawLayer("ground")
-
     //fix
     drawLadder("ladder")
 
@@ -31,9 +32,16 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       .asInstanceOf[RectangleMapObject]
       .getRectangle
 
-    new Being("player",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x, r.y)
+    def playerSheet = new Texture("jayden.png")
+    val player:ListBuffer[TextureRegion] = ListBuffer()
+    for(tr <- TextureRegion.split(playerSheet, 24, 24)) {
+      for(tx <- tr) {
+        player.append(tx)
+      }
+    }
 
-    new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, r.x + 24, r.y + 24)
+    new Being("player",GameLoader.world, player, r.x, r.y)
+    new Being("monster",GameLoader.world, player, r.x + 24, r.y + 24)
 
   }
 
@@ -103,9 +111,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if(Gdx.input.isKeyJustPressed(Input.Keys.D))
       debug = debug == false
 
-    if(Gdx.input.isKeyJustPressed(Input.Keys.M))
-      new Being("monster",GameLoader.world, GameLoader.player.get(0), BodyDef.BodyType.DynamicBody, player.body.getPosition.x + 24, player.body.getPosition.y + 24)
-
     if(debug)
       GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
 
@@ -140,7 +145,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
           val posX:Int = x * tileX + 12
           val posY:Int = y * tileY + 12
           val t:TiledMapTile = c.getTile()
-          new Brick("ground_"+x+"_"+y, GameLoader.world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
+          new Brick("ground_"+x+"_"+y, GameLoader.world, t.getTextureRegion(), posX, posY)
         }
       }
     }

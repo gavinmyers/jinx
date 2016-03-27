@@ -9,16 +9,7 @@ import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
 import scala.collection.mutable.ListBuffer
 
 object GameLoader {
-
   def BOX_TO_WORLD = 32f
-
-  def pixelsToMeters(v:Float):Float = {
-    return v / BOX_TO_WORLD
-  }
-
-  def metersToPixels(v:Float):Float = {
-    return v * BOX_TO_WORLD
-  }
 
   def create():Unit = {
     GameLoader.camera.setToOrtho(false)
@@ -46,19 +37,6 @@ object GameLoader {
   lazy val layer:TiledMapTileLayer = levelMap.getLayers.get("sky").asInstanceOf[TiledMapTileLayer]
   lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
 
-  lazy val playerSheet = new Texture("jayden.png")
-
-  lazy val player:ListBuffer[TextureRegion] = ListBuffer()
-  for(tr <- TextureRegion.split(playerSheet, 24, 24)) {
-    for(tx <- tr) {
-      player.append(tx)
-    }
-  }
-
-
-
-  lazy val monsterSheet = new Texture("Humanoid0.png")
-  lazy val monsters = TextureRegion.split(monsterSheet, 16, 16).head
 
   var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()
   var groundDb:scala.collection.mutable.Map[String,Brick] = scala.collection.mutable.Map[String,Brick]()
@@ -67,3 +45,13 @@ object GameLoader {
 
 }
 
+object GameUtil {
+
+  def pixelsToMeters(v:Float):Float = {
+    return v / GameLoader.BOX_TO_WORLD
+  }
+
+  def metersToPixels(v:Float):Float = {
+    return v * GameLoader.BOX_TO_WORLD
+  }
+}
