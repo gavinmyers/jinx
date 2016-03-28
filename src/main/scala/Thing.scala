@@ -8,33 +8,14 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
 class Thing() {
-
-
-  var name:String = _
-
-  var created:Float = GameLoader.gameTime
-
-  var sprite:Sprite = _
-  var fixtureDefBottom:FixtureDef = _
-  var fixtureDefTop:FixtureDef = _
-  var fixtureDefRight:FixtureDef = _
-  var fixtureDefLeft:FixtureDef = _
-  var fixtureDef:FixtureDef = _
-
-  var fixtureBottom:Fixture = _
-  var fixtureTop:Fixture = _
-  var fixtureRight:Fixture = _
-  var fixtureLeft:Fixture = _
-  var fixture:Fixture = _
-
-  var bodyDef:BodyDef = _
-  var body:Body = _
-  var shape:Shape = _
-
+  var name:String = ""
+  var created:Float = 0
   var mov_h:String = ""
   var mov_v:String = ""
   var face_v:String = ""
   var face_h:String = ""
+  var sprite:Sprite = _
+  var body:Body = _
 
 
   def draw(batch:Batch): Unit = {

@@ -1,10 +1,13 @@
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
-import com.badlogic.gdx.physics.box2d.{PolygonShape, FixtureDef, BodyDef, World}
+import com.badlogic.gdx.physics.box2d._
 
-class Ladder(item_name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+class Ladder(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
   extends Thing() {
 
-
+  var fixtureDef:FixtureDef = _
+  var fixture:Fixture = _
+  var bodyDef:BodyDef = _
+  var shape:Shape = _
   bodyDef = new BodyDef()
 
   bodyDef.`type` = bodyType

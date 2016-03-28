@@ -40,6 +40,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
+    def zombieSheet = new Texture("zombie.png")
+    val zombie:ListBuffer[TextureRegion] = ListBuffer()
+    for(tr <- TextureRegion.split(zombieSheet, 24, 24)) {
+      for(tx <- tr) {
+        zombie.append(tx)
+      }
+    }
+
     def bulletSheet = new Texture("bullet1.png")
     val bullet:ListBuffer[TextureRegion] = ListBuffer()
     for(tr <- TextureRegion.split(bulletSheet, 24, 24)) {
@@ -48,11 +56,15 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
-    var p = new Being("player",GameLoader.world, player, r.x, r.y)
-    p.bulletSheet = bullet
+    var w:Weapon = new Weapon()
+    w.bulletSheet = bullet
 
-    var m = new Being("monster",GameLoader.world, player, r.x + 24, r.y + 24)
-    m.bulletSheet = bullet
+    var p = new Being("player",GameLoader.world, player, r.x, r.y, 1.0f, 1.0f)
+    p.weapon = w
+    w.controller = p
+
+    var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
+
   }
 
   var debug:Boolean = false
@@ -99,20 +111,24 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
-    drawThings()
+    for(thing <- GameLoader.thingDb) {
+      thing.update(GameLoader.gameTime)
+      thing.move(GameLoader.gameTime)
+      thing.draw(GameLoader.batch)
+    }
     GameLoader.batch.end()
 
     def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
     GameLoader.handler.setCombinedMatrix(debugMatrix)
     GameLoader.handler.updateAndRender()
 
-    for(contact <- GameLoader.world.getContactList) {
-      if(contact.getFixtureA == null || contact.getFixtureA.getUserData == null || contact.getFixtureB == null || contact.getFixtureB.getUserData == null) {
-      } else if(contact.getFixtureA.getUserData.isInstanceOf[Thing] && contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
+    for(c <- GameLoader.world.getContactList) {
+      if(c.getFixtureA == null || c.getFixtureA.getUserData == null || c.getFixtureB == null || c.getFixtureB.getUserData == null) {
+      } else if(c.getFixtureA.getUserData.isInstanceOf[Thing] && c.getFixtureB.getUserData.isInstanceOf[Thing]) {
         //a(b)
-        contact.getFixtureA.getUserData.asInstanceOf[Thing].contact(contact.getFixtureB.getUserData.asInstanceOf[Thing])
+        c.getFixtureA.getUserData.asInstanceOf[Thing].contact(c.getFixtureB.getUserData.asInstanceOf[Thing])
         //b(a)
-        contact.getFixtureB.getUserData.asInstanceOf[Thing].contact(contact.getFixtureA.getUserData.asInstanceOf[Thing])
+        c.getFixtureB.getUserData.asInstanceOf[Thing].contact(c.getFixtureA.getUserData.asInstanceOf[Thing])
       }
     }
 
@@ -129,16 +145,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def dispose(): Unit = {
     println("dispose")
-  }
-
-
-  def drawThings(): Unit = {
-
-
-    for(thing <- GameLoader.thingDb) {
-      thing.update(GameLoader.gameTime)
-      thing.draw(GameLoader.batch)
-    }
   }
 
   def drawLayer(name:String): Unit = {

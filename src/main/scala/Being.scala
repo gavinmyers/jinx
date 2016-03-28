@@ -6,80 +6,74 @@ import com.badlogic.gdx.physics.box2d._
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Float, posY:Float)
+class Being(name:String,
+            world:World,
+            animationSheet:ListBuffer[TextureRegion],
+            posX:Float,
+            posY:Float,
+            scaleX:Float,
+            scaleY:Float)
   extends Thing() {
+
+  this.created = GameLoader.gameTime
+  this.sprite = new Sprite(animationSheet(0))
+  sprite.setScale(scaleX, scaleY)
+  var width = sprite.getWidth * scaleX
+  var height = sprite.getHeight * scaleY
+
   lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0);
 
-  name = item_name
-
-  def animationSheet:ListBuffer[TextureRegion] = as
-
-  var bulletSheet:ListBuffer[TextureRegion] = _
-
+  var weapon:Weapon = new Weapon
   var life = 10
 
-  bodyDef = new BodyDef()
-
+  var bodyDef:BodyDef = new BodyDef()
   bodyDef.`type` = BodyDef.BodyType.DynamicBody
   bodyDef.fixedRotation = true
   bodyDef.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
 
-  fixtureDef = new FixtureDef()
-
-  //shape = new PolygonShape()
-  shape = new CircleShape()
+  var fixtureDef:FixtureDef = new FixtureDef()
+  var shape:Shape = new CircleShape()
   fixtureDef.shape = shape
   fixtureDef.friction = 0f
 
+  shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
+  //shape.asInstanceOf[PolygonShape].setAsBox(GameUtil.pixelsToMeters(height / 2.2f), GameUtil.pixelsToMeters(width / 2.2f))
 
-
-  sprite = new Sprite(animationSheet.get(0))
-
-
-
-  shape.setRadius(GameUtil.pixelsToMeters(sprite.getHeight / 2.2f))
-  //shape.asInstanceOf[PolygonShape].setAsBox(GameUtil.pixelsToMeters(sprite.getHeight / 2.2f), GameUtil.pixelsToMeters(sprite.getWidth / 2.2f))
-
-
-  def w1 = GameUtil.pixelsToMeters(sprite.getWidth / 3f)
-  def h1 = GameUtil.pixelsToMeters(sprite.getHeight / 3f)
-  def w2 = GameUtil.pixelsToMeters(sprite.getWidth / 4.5f)
-  def h2 = GameUtil.pixelsToMeters(sprite.getHeight / 4.5f)
-  fixtureDefBottom = new FixtureDef
+  def w1 = GameUtil.pixelsToMeters(width / 3f)
+  def h1 = GameUtil.pixelsToMeters(height / 3f)
+  def w2 = GameUtil.pixelsToMeters(width / 4.5f)
+  def h2 = GameUtil.pixelsToMeters(height / 4.5f)
+  var fixtureDefBottom = new FixtureDef
   fixtureDefBottom.density = 0f
   fixtureDefBottom.isSensor = true
   fixtureDefBottom.shape = new PolygonShape()
-  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1 / 2, h2, new Vector2(0f, GameUtil.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
+  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1 / 2, h2, new Vector2(0f, GameUtil.pixelsToMeters(-1 * height / 2.5f)), 0)
 
-  fixtureDefTop = new FixtureDef
+  var fixtureDefTop = new FixtureDef
   fixtureDefTop.isSensor = true
   fixtureDefTop.density = 0f
   fixtureDefTop.shape = new PolygonShape()
-  fixtureDefTop.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameUtil.pixelsToMeters(sprite.getHeight / 2.5f)), 0)
+  fixtureDefTop.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameUtil.pixelsToMeters(height / 2.5f)), 0)
 
+  this.body = world.createBody(bodyDef)
 
-  body = world.createBody(bodyDef)
+  var fixture = body.createFixture(fixtureDef)
+  var fixtureBottom = body.createFixture(fixtureDefBottom)
+  var fixtureTop = body.createFixture(fixtureDefTop)
 
-  fixture = body.createFixture(fixtureDef)
-  fixtureBottom = body.createFixture(fixtureDefBottom)
-  fixtureTop = body.createFixture(fixtureDefTop)
+  var walkRightAnimation:Animation = new Animation(0.15f, animationSheet(28),animationSheet(29))
+  var standRightAnimation:Animation = new Animation(0.15f, animationSheet(2))
 
+  var walkLeftAnimation:Animation = new Animation(0.15f, animationSheet(24),animationSheet(25))
+  var standLeftAnimation:Animation = new Animation(0.15f, animationSheet(3))
 
+  var climbAnimation:Animation = new Animation(0.25f, animationSheet(8),animationSheet(9))
 
+  var hurtAnimation:Animation = new Animation(0.25f, animationSheet(48))
+  var deathAnimation:Animation = new Animation(0.25f, animationSheet(72),animationSheet(73),animationSheet(74),animationSheet(75))
 
-  var walkRightAnimation:Animation = new Animation(0.15f, animationSheet.get(28),animationSheet.get(29))
-  var standRightAnimation:Animation = new Animation(0.15f, animationSheet.get(2))
-
-  var walkLeftAnimation:Animation = new Animation(0.15f, animationSheet.get(24),animationSheet.get(25))
-  var standLeftAnimation:Animation = new Animation(0.15f, animationSheet.get(3))
-
-  var climbAnimation:Animation = new Animation(0.25f, animationSheet.get(8),animationSheet.get(9))
-
-  var hurtAnimation:Animation = new Animation(0.25f, animationSheet.get(48))
-  var deathAnimation:Animation = new Animation(0.25f, animationSheet.get(72),animationSheet.get(73),animationSheet.get(74),animationSheet.get(75))
-
-  var attackAnimationLeft:Animation = new Animation(0.25f, animationSheet.get(40),animationSheet.get(41))
-  var attackAnimationRight:Animation = new Animation(0.25f, animationSheet.get(44),animationSheet.get(45))
+  var attackAnimationLeft:Animation = new Animation(0.25f, animationSheet(40),animationSheet(41))
+  var attackAnimationRight:Animation = new Animation(0.25f, animationSheet(44),animationSheet(45))
 
   light.attachToBody(body, 0, 0)
   light.setIgnoreAttachedBody(true)
@@ -99,13 +93,17 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
   def stop(gameTime:Float): Unit = {
     mov_h = ""
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
-    if(face_h == "R" && !attacking) {
+    if(face_h == "R" && !weapon.attacking) {
       sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
-    } else if (face_h == "L"  && !attacking) {
+    } else if (face_h == "L"  && !weapon.attacking) {
       sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
     }
   }
   override def update(gameTime:Float): Unit = {
+    if(weapon != null) {
+      weapon.update(gameTime)
+    }
+
     if(dieing && deathStart + deathEnd < gameTime) {
       destroy()
       return
@@ -113,10 +111,6 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
     if(lastDamage + damageCooldown < gameTime) {
       takingDamage = false
     }
-    if(lastAttack + cooldown < gameTime) {
-      attacking = false
-    }
-
     body.setGravityScale(1f)
   }
 
@@ -128,7 +122,7 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
     } else if(takingDamage) {
       sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
 
-    } else if(attacking) {
+    } else if(weapon.attacking) {
       if(face_h == "R") {
         sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
       } else if(face_h == "L") {
@@ -161,13 +155,13 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
       if(mov_h == "R") {
         if(body.getLinearVelocity.x < 10f)
           body.applyForceToCenter(15f, 0f, true)
-        if(!attacking)
+        if(!weapon.attacking)
           sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
       }
       if(mov_h == "L") {
         if(body.getLinearVelocity.x > -10f)
           body.applyForceToCenter(-15f, 0f, true)
-        if(!attacking)
+        if(!weapon.attacking)
           sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
       }
     }
@@ -233,25 +227,8 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
     return false
   }
 
-  var lastAttack:Float= 0
-  var cooldown:Float = 0.3f
-  var attacking:Boolean = false
   def attack(gameTime:Float): Unit = {
-    if(lastAttack + cooldown > gameTime) {
-      return
-    }
-    attacking = true
-    lastAttack = gameTime
-    var x = sprite.getX
-    if(face_h.equalsIgnoreCase("R")) {
-      x = sprite.getX + (sprite.getWidth)
-    }
-    var y = sprite.getY + (sprite.getHeight / 2)
-
-    var b:Bullet = new Bullet(name+"_bullet_"+Math.random(),GameLoader.world, bulletSheet, x, y)
-    b.mov_h = face_h
-    b.attacker = this
-
+    weapon.attack(gameTime)
   }
 
   var takingDamage:Boolean = false
@@ -280,13 +257,12 @@ class Being(item_name:String,world:World, as:ListBuffer[TextureRegion], posX:Flo
   }
 
   override def draw(batch:Batch): Unit = {
-    move(GameLoader.gameTime)
     super.draw(batch)
   }
 
 
   override def destroy() : Unit = {
-    new Corpse(this.name + "_corpse", GameLoader.world, animationSheet.get(6), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y))
+    new Corpse(this.name + "_corpse", GameLoader.world, animationSheet(6), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y), scaleX, scaleY)
     light.setActive(false)
     GameLoader.world.destroyBody(body)
     GameLoader.thingDb -= this
