@@ -24,6 +24,7 @@ class Being(name:String,
   lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0);
 
   var weapon:Weapon = new Weapon
+  var brain:Brain = new Brain(this)
   var life = 10
 
   var bodyDef:BodyDef = new BodyDef()
@@ -100,6 +101,10 @@ class Being(name:String,
     }
   }
   override def update(gameTime:Float): Unit = {
+    if(brain != null) {
+      brain.update(gameTime)
+    }
+
     if(weapon != null) {
       weapon.update(gameTime)
     }
