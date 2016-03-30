@@ -56,18 +56,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
-    var w:Weapon = new Weapon()
-    w.bulletSheet = bullet
+
 
     var p = new Being("player",GameLoader.world, player, r.x, r.y, 1.0f, 1.0f)
-    p.weapon = new Weapon()
+    p.weapon.bulletSheet = bullet
     p.brain = null
-    w.controller = p
 
     var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
-    w = new Weapon()
-    w.bulletSheet = bullet
-    m.weapon = w
+    m.weapon.bulletSheet = bullet
 
   }
 

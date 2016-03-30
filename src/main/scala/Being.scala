@@ -21,46 +21,51 @@ class Being(name:String,
   var width = sprite.getWidth * scaleX
   var height = sprite.getHeight * scaleY
 
-  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0);
-
-  var weapon:Weapon = new Weapon
+  var weapon:Weapon = new Weapon(this)
   var brain:Brain = new Brain(this)
   var life = 10
 
-  var bodyDef:BodyDef = new BodyDef()
-  bodyDef.`type` = BodyDef.BodyType.DynamicBody
-  bodyDef.fixedRotation = true
-  bodyDef.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
+  this.body = world
+    .createBody(
+      {val b: BodyDef = new BodyDef()
+        b.`type` = BodyDef.BodyType.DynamicBody
+        b.fixedRotation = true
+        b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
+        b})
 
-  var fixtureDef:FixtureDef = new FixtureDef()
-  var shape:Shape = new CircleShape()
-  fixtureDef.shape = shape
-  fixtureDef.friction = 0f
+  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0);
+  light.attachToBody(body, 0, 0)
+  light.setIgnoreAttachedBody(true)
+  light.setContactFilter(0,2,-1)
 
-  shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
-  //shape.asInstanceOf[PolygonShape].setAsBox(GameUtil.pixelsToMeters(height / 2.2f), GameUtil.pixelsToMeters(width / 2.2f))
+  var fixture = body.createFixture(
+      {val f:FixtureDef = new FixtureDef()
+        var shape:Shape = new CircleShape()
+        f.shape = shape
+        shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
+        f.friction = 0f; f})
 
-  def w1 = GameUtil.pixelsToMeters(width / 3f)
-  def h1 = GameUtil.pixelsToMeters(height / 3f)
-  def w2 = GameUtil.pixelsToMeters(width / 4.5f)
-  def h2 = GameUtil.pixelsToMeters(height / 4.5f)
-  var fixtureDefBottom = new FixtureDef
-  fixtureDefBottom.density = 0f
-  fixtureDefBottom.isSensor = true
-  fixtureDefBottom.shape = new PolygonShape()
-  fixtureDefBottom.shape.asInstanceOf[PolygonShape].setAsBox(w1 / 2, h2, new Vector2(0f, GameUtil.pixelsToMeters(-1 * height / 2.5f)), 0)
+  var fixtureBottom = body.createFixture(
+      {val f = new FixtureDef
+        f.density = 0f
+        f.isSensor = true
+        f.shape = new PolygonShape()
+        f.shape.asInstanceOf[PolygonShape]
+          .setAsBox(GameUtil.pixelsToMeters(width / 3f) / 2,
+            GameUtil.pixelsToMeters(height / 4.5f),
+            new Vector2(0f, GameUtil.pixelsToMeters(-1 * height / 2.5f)), 0)
+        f})
 
-  var fixtureDefTop = new FixtureDef
-  fixtureDefTop.isSensor = true
-  fixtureDefTop.density = 0f
-  fixtureDefTop.shape = new PolygonShape()
-  fixtureDefTop.shape.asInstanceOf[PolygonShape].setAsBox(w1, h2, new Vector2(0f, GameUtil.pixelsToMeters(height / 2.5f)), 0)
-
-  this.body = world.createBody(bodyDef)
-
-  var fixture = body.createFixture(fixtureDef)
-  var fixtureBottom = body.createFixture(fixtureDefBottom)
-  var fixtureTop = body.createFixture(fixtureDefTop)
+  var fixtureTop = body.createFixture(
+      {val f = new FixtureDef
+        f.isSensor = true
+        f.density = 0f
+        f.shape = new PolygonShape()
+        f.shape.asInstanceOf[PolygonShape]
+          .setAsBox(GameUtil.pixelsToMeters(width / 3f),
+            GameUtil.pixelsToMeters(height / 4.5f),
+            new Vector2(0f, GameUtil.pixelsToMeters(height / 2.5f)), 0)
+        f})
 
   var walkRightAnimation:Animation = new Animation(0.15f, animationSheet(28),animationSheet(29))
   var standRightAnimation:Animation = new Animation(0.15f, animationSheet(2))
@@ -76,9 +81,7 @@ class Being(name:String,
   var attackAnimationLeft:Animation = new Animation(0.25f, animationSheet(40),animationSheet(41))
   var attackAnimationRight:Animation = new Animation(0.25f, animationSheet(44),animationSheet(45))
 
-  light.attachToBody(body, 0, 0)
-  light.setIgnoreAttachedBody(true)
-  light.setContactFilter(0,2,-1)
+
 
   fixture.setUserData(this)
 

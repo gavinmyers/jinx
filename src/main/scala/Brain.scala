@@ -16,7 +16,7 @@ class Brain(controller:Being) {
     }
     thinking = true
     lastThought = gameTime
-    
+
   }
 
 }

@@ -2,13 +2,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 import scala.collection.mutable.ListBuffer
 
-class Weapon {
+class Weapon(controller:Being) {
 
 
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
   var attacking:Boolean = false
-  var controller:Being = _
 
   var bulletSheet:ListBuffer[TextureRegion] = _
 
