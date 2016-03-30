@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="24" tileheight="24" nextobjectid="14">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="24" tileheight="24" nextobjectid="15">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="24" columns="8">
   <image source="levels.png" width="192" height="72"/>
  </tileset>
@@ -99,6 +99,7 @@
   <object id="11" name="hive" x="926.291" y="274.603"/>
   <object id="12" name="hive" x="664.827" y="656.944"/>
   <object id="13" name="down" x="924.977" y="924.977"/>
+  <object id="14" name="boss" x="604.844" y="856.055" width="44.9827" height="44.9827"/>
  </objectgroup>
  <layer name="ladder" width="40" height="40">
   <data encoding="csv">

@@ -24,13 +24,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     //fix
     drawLadder("ladder")
 
-    def r = GameLoader.levelMap
-      .getLayers
-      .get("positions")
-      .getObjects
-      .get("player_start")
-      .asInstanceOf[RectangleMapObject]
-      .getRectangle
+
 
     def playerSheet = new Texture("jayden.png")
     val player:ListBuffer[TextureRegion] = ListBuffer()
@@ -57,16 +51,40 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
 
 
+    {
+      def r = GameLoader.levelMap
+        .getLayers
+        .get("positions")
+        .getObjects
+        .get("player_start")
+        .asInstanceOf[RectangleMapObject]
+        .getRectangle
 
-    var p = new Being("player",GameLoader.world, player, r.x, r.y, 1.0f, 1.0f)
-    p.weapon.bulletSheet = bullet
-    p.brain = null
+      var p = new Being("player",GameLoader.world, player, r.x, r.y, 1.0f, 1.0f)
+      p.weapon.bulletSheet = bullet
+      p.brain = null
 
-    var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
-    m.runMaxVelocity = 1.0f
-    m.weapon.cooldown = 1.0f
-    m.weapon.bulletSheet = bullet
 
+      var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
+      m.runMaxVelocity = 1.0f
+      m.weapon.cooldown = 1.0f
+      m.weapon.bulletSheet = bullet
+    }
+
+    {
+      def r = GameLoader.levelMap
+        .getLayers
+        .get("positions")
+        .getObjects
+        .get("boss")
+        .asInstanceOf[RectangleMapObject]
+        .getRectangle
+
+        var m = new Being("monster",GameLoader.world, zombie, r.x, r.y, 4.0f, 4.0f)
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+    }
   }
 
   var debug:Boolean = false
