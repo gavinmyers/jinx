@@ -122,6 +122,8 @@ class Being(name:String,
     body.setGravityScale(1f)
   }
 
+  var jumpMaxVelocity = 15f
+  var runMaxVelocity = 5f
   override def move(gameTime:Float): Unit = {
 
     if(dieing) {
@@ -143,7 +145,7 @@ class Being(name:String,
     } else {
 
       if(jumping) {
-        if(body.getLinearVelocity.y < 15f && lastJump + jumpMax > gameTime) {
+        if(body.getLinearVelocity.y < jumpMaxVelocity && lastJump + jumpMax > gameTime) {
           body.applyForceToCenter(0f, 250f, true)
         } else {
           fall(gameTime)
@@ -161,13 +163,13 @@ class Being(name:String,
       }
 
       if(mov_h == "R") {
-        if(body.getLinearVelocity.x < 10f)
+        if(body.getLinearVelocity.x < runMaxVelocity)
           body.applyForceToCenter(15f, 0f, true)
         if(!weapon.attacking)
           sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
       }
       if(mov_h == "L") {
-        if(body.getLinearVelocity.x > -10f)
+        if(body.getLinearVelocity.x > runMaxVelocity * -1)
           body.applyForceToCenter(-15f, 0f, true)
         if(!weapon.attacking)
           sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
@@ -272,8 +274,7 @@ class Being(name:String,
   override def destroy() : Unit = {
     new Corpse(this.name + "_corpse", GameLoader.world, animationSheet(6), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y), scaleX, scaleY)
     light.setActive(false)
-    GameLoader.world.destroyBody(body)
-    GameLoader.thingDb -= this
     GameLoader.monsterDb.remove(name)
+    super.destroy()
   }
 }

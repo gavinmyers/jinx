@@ -63,12 +63,20 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     p.brain = null
 
     var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
+    m.runMaxVelocity = 1.0f
+    m.weapon.cooldown = 1.0f
     m.weapon.bulletSheet = bullet
 
   }
 
   var debug:Boolean = false
   override def render(): Unit = {
+    for(thing <- GameLoader.thingDb) {
+      if(thing.destroyed == false) {
+        thing.update(GameLoader.gameTime)
+      }
+    }
+
     def player = GameLoader.monsterDb("player")
 
 
@@ -92,13 +100,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
 
     GameLoader.gameTime += Gdx.graphics.getDeltaTime()
+
     GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
+    for(thing <- GameLoader.thingDb) {
+      if(thing.destroyed == true) {
+        for(je:JointEdge <- thing.body.getJointList) {
+          GameLoader.world.destroyJoint(je.joint)
+        }
+        GameLoader.world.destroyBody(thing.body)
+        GameLoader.thingDb -= thing
+      }
 
-
-    if(GameLoader.monsterDb.containsKey("monster")) {
-      def monster = GameLoader.monsterDb("monster")
-      monster.moveLeft(GameLoader.gameTime)
     }
+
 
 
     GameLoader.batch.begin()
@@ -112,9 +126,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
     for(thing <- GameLoader.thingDb) {
-      thing.update(GameLoader.gameTime)
-      thing.move(GameLoader.gameTime)
-      thing.draw(GameLoader.batch)
+      if(thing.destroyed == false) {
+        thing.move(GameLoader.gameTime)
+        thing.draw(GameLoader.batch)
+      }
     }
     GameLoader.batch.end()
 
@@ -123,6 +138,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.handler.updateAndRender()
 
     for(c <- GameLoader.world.getContactList) {
+
       if(c.getFixtureA == null || c.getFixtureA.getUserData == null || c.getFixtureB == null || c.getFixtureB.getUserData == null) {
       } else if(c.getFixtureA.getUserData.isInstanceOf[Thing] && c.getFixtureB.getUserData.isInstanceOf[Thing]) {
         //a(b)

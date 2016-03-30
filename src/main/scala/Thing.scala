@@ -16,6 +16,7 @@ class Thing() {
   var face_h:String = ""
   var sprite:Sprite = _
   var body:Body = _
+  var destroyed:Boolean = false
 
 
   def draw(batch:Batch): Unit = {
@@ -24,7 +25,7 @@ class Thing() {
   }
 
   def destroy() : Unit = {
-    GameLoader.thingDb -= this
+    destroyed = true
   }
 
   def contact(thing:Thing) : Unit = {

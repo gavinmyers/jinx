@@ -49,14 +49,14 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
   GameLoader.thingDb += this
 
   override def destroy() : Unit = {
-    GameLoader.world.destroyBody(body)
-    GameLoader.thingDb -= this
     GameLoader.bulletDb -= this
+    super.destroy()
   }
 
   var contactList:ListBuffer[Thing] = ListBuffer()
   override def contact(thing:Thing) : Unit = {
-    if(thing.isInstanceOf[Brick]) {
+    if(thing == null) {
+    } else if(thing.isInstanceOf[Brick]) {
       //this.life = this.life
     } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
 
@@ -66,6 +66,7 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
   }
 
   override def move(gameTime:Float): Unit = {
+
     val vel:Vector2 = body.getLinearVelocity
     if(mov_h.equalsIgnoreCase("R")) {
       vel.x = attacker.body.getLinearVelocity.x + 0.2f
@@ -78,6 +79,7 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
     body.setLinearVelocity(vel)
     if(life + created < GameLoader.gameTime) {
       destroy()
+
     }
   }
   override def draw(batch:Batch): Unit = {
