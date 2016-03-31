@@ -17,7 +17,7 @@ allprojects {
         aiVersion = '1.7.0'
         gdxUtilsVersion = '0.13.1'
         slfjVersion = '1.7.5'
-        scalaVersion = '2.10.1'
+        scalaVersion = '2.11.0'
     }
 
     repositories {

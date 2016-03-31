@@ -95,16 +95,21 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
-    def player = GameLoader.monsterDb("player")
+
 
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     def lerp:Float = 4.1f
-    val position:Vector3 = GameLoader.camera.position;
-    position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime()
-    position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime()
+    val position:Vector3 = GameLoader.camera.position
+
+    if(GameLoader.monsterDb.contains("player") != false) {
+      def player = GameLoader.monsterDb("player")
+      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime()
+      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime()
+    }
+
 
     GameLoader.camera.position.set(position)
     GameLoader.backgroundCamera.position.set(position)
@@ -225,6 +230,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   var downButtons:Float = 0
   override def keyDown(keycode: Int): Boolean = {
+    if(GameLoader.monsterDb.contains("player") == false) return false
 
     def player = GameLoader.monsterDb("player")
 
@@ -250,6 +256,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   override def keyUp(keycode: Int): Boolean = {
+    if(GameLoader.monsterDb.contains("player") == false) return false
+
     def player = GameLoader.monsterDb("player")
 
     if((Input.Keys.LEFT == keycode && Gdx.input.isKeyPressed(Input.Keys.RIGHT) == false) || (Input.Keys.RIGHT == keycode && Gdx.input.isKeyPressed(Input.Keys.LEFT) == false))

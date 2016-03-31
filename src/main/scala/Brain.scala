@@ -3,10 +3,12 @@ import com.badlogic.gdx.physics.box2d.{CircleShape, Shape, FixtureDef, BodyDef}
 class Brain(controller:Being) {
 
   var lastThought:Float= 0
-  var cooldown:Float = 0.5f
+  var cooldown:Float = 1.5f
   var thinking:Boolean = false
 
   def update(gameTime:Float): Unit = {
+    if(GameLoader.monsterDb.contains("player") == false) return
+    
     if(lastThought + cooldown < gameTime) {
       thinking = false
       think(gameTime)
@@ -19,6 +21,8 @@ class Brain(controller:Being) {
     }
     thinking = true
     lastThought = gameTime
+
+
     def player = GameLoader.monsterDb("player")
     if(player.body.getPosition.x > controller.body.getPosition.x) {
       controller.moveRight(GameLoader.gameTime)
