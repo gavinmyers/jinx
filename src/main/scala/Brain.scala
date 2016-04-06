@@ -8,7 +8,7 @@ class Brain(controller:Being) {
 
   def update(gameTime:Float): Unit = {
     if(GameLoader.monsterDb.contains("player") == false) return
-    
+
     if(lastThought + cooldown < gameTime) {
       thinking = false
       think(gameTime)

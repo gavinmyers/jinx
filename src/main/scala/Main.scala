@@ -8,7 +8,7 @@ object Main {
     config.height = 8 * 48
 
     //config.fullscreen = true
-    println(config.fullscreen)
+    //println(config.fullscreen)
     new LwjglApplication(new Sinx(), config)
   }
 }

@@ -33,17 +33,25 @@ class Being(name:String,
         b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
         b})
 
-  lazy val light:PositionalLight = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0);
-  light.attachToBody(body, 0, 0)
-  light.setIgnoreAttachedBody(true)
-  light.setContactFilter(0,2,-1)
+  var light:PositionalLight = _
+
 
   var fixture = body.createFixture(
       {val f:FixtureDef = new FixtureDef()
         var shape:Shape = new CircleShape()
+        f.filter.categoryBits = 0x2
+        f.filter.maskBits = 0x1
         f.shape = shape
         shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
         f.friction = 0f; f})
+
+
+  var hitArea = body.createFixture(
+    {val f:FixtureDef = new FixtureDef()
+      var shape:Shape = new CircleShape()
+      f.shape = shape
+      shape.setRadius(GameUtil.pixelsToMeters(height / 6.2f))
+      f.friction = 0f; f})
 
   var fixtureBottom = body.createFixture(
       {val f = new FixtureDef
@@ -273,7 +281,9 @@ class Being(name:String,
 
   override def destroy() : Unit = {
     new Corpse(this.name + "_corpse", GameLoader.world, animationSheet(6), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y), scaleX, scaleY)
-    light.setActive(false)
+    if(light != null) {
+      light.setActive(false)
+    }
     GameLoader.monsterDb.remove(name)
     super.destroy()
   }

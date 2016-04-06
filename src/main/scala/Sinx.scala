@@ -1,4 +1,4 @@
-import box2dLight.RayHandler
+import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.{Texture, Color, GL20}
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -24,24 +24,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     //fix
     drawLadder("ladder")
 
-
-
-    def playerSheet = new Texture("jayden.png")
-    val player:ListBuffer[TextureRegion] = ListBuffer()
-    for(tr <- TextureRegion.split(playerSheet, 24, 24)) {
-      for(tx <- tr) {
-        player.append(tx)
-      }
-    }
-
-    def zombieSheet = new Texture("zombie.png")
-    val zombie:ListBuffer[TextureRegion] = ListBuffer()
-    for(tr <- TextureRegion.split(zombieSheet, 24, 24)) {
-      for(tx <- tr) {
-        zombie.append(tx)
-      }
-    }
-
     def bulletSheet = new Texture("bullet1.png")
     val bullet:ListBuffer[TextureRegion] = ListBuffer()
     for(tr <- TextureRegion.split(bulletSheet, 24, 24)) {
@@ -60,31 +42,54 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         .asInstanceOf[RectangleMapObject]
         .getRectangle
 
-      var p = new Being("player",GameLoader.world, player, r.x, r.y, 1.0f, 1.0f)
+      var p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
+      p.light = new PointLight(GameLoader.handler, 32, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
+      p.light.attachToBody(p.body, 0, 0)
+      p.light.setIgnoreAttachedBody(true)
+      p.light.setContactFilter(0,2,-1)
       p.weapon.bulletSheet = bullet
+      p.life = 50
       p.brain = null
 
 
-      var m = new Being("monster",GameLoader.world, zombie, r.x + 24, r.y + 24, 1.0f, 1.0f)
-      m.runMaxVelocity = 1.0f
-      m.weapon.cooldown = 1.0f
-      m.weapon.bulletSheet = bullet
-    }
+      for (x <- 0 to 5) {
+        var mod:Float = (((Math.random() * 125) + 20) / 100).toFloat
+        var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
 
-    {
-      def r = GameLoader.levelMap
-        .getLayers
-        .get("positions")
-        .getObjects
-        .get("boss")
-        .asInstanceOf[RectangleMapObject]
-        .getRectangle
-
-        var m = new Being("monster",GameLoader.world, zombie, r.x, r.y, 4.0f, 4.0f)
         m.runMaxVelocity = 1.0f
         m.weapon.cooldown = 1.0f
         m.weapon.bulletSheet = bullet
+      }
+
+      for (x <- 0 to 5) {
+        var mod:Float = (((Math.random() * 125) + 40) / 100).toFloat
+        var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+      }
+
+      for (x <- 0 to 5) {
+        var mod:Float = (((Math.random() * 125) + 60) / 100).toFloat
+        var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+      }
+
+      for (x <- 0 to 5) {
+        var mod:Float = (((Math.random() * 125) + 80) / 100).toFloat
+        var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+      }
     }
+
+
   }
 
   var debug:Boolean = false

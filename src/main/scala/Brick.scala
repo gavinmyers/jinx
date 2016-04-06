@@ -19,7 +19,8 @@ class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Fl
 
   fixtureDef.shape = shape
   fixtureDef.friction = 5f
-
+  //fixtureDef.filter.categoryBits = 0x2
+  //fixtureDef.filter.maskBits = 0x1
 
   sprite = new Sprite(texture)
   shape.setAsBox(GameUtil.pixelsToMeters(sprite.getHeight / 2), GameUtil.pixelsToMeters(sprite.getWidth / 2))
