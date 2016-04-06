@@ -26,8 +26,8 @@ class Chick(name:String,
     Chick.sheetTextures,
     posX:Float,
     posY:Float,
-    scaleX:Float,
-    scaleY:Float) {
+    scaleX * 0.5f,
+    scaleY * 0.5f) {
 
 
 }
