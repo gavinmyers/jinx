@@ -30,7 +30,7 @@ class Weapon(controller:Being) {
     }
     val y = controller.sprite.getY + (controller.height / 2)
 
-    val b: Bullet = new Bullet("bullet_" + Math.random(), GameLoader.world, bulletSheet, x, y)
+    val b: Bullet = new Bullet("bullet_" + Math.random(), GameLoader.world, bulletSheet, x, y, controller.scaleX, controller.scaleY)
     b.mov_h = controller.face_h
     b.attacker = controller
 

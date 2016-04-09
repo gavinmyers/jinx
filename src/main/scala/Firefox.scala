@@ -4,8 +4,8 @@ import com.badlogic.gdx.physics.box2d.World
 
 import scala.collection.mutable.ListBuffer
 
-object Lilac {
-  def sheet = new Texture("jayden.png")
+object Firefox {
+  def sheet = new Texture("firefox.png")
   val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
   for(tr <- TextureRegion.split(sheet, 24, 24)) {
     for(tx <- tr) {
@@ -14,21 +14,20 @@ object Lilac {
   }
 }
 
-class Lilac(name:String,
-              world:World,
-              posX:Float,
-              posY:Float,
-              scaleX:Float,
-              scaleY:Float)
+class Firefox(name:String,
+            world:World,
+            posX:Float,
+            posY:Float,
+            scaleX:Float,
+            scaleY:Float)
 
   extends Being(name:String,
     world:World,
-    Lilac.sheetTextures,
+    Firefox.sheetTextures,
     posX:Float,
     posY:Float,
     scaleX:Float,
     scaleY:Float) {
 
-  this.life = 100
 
 }

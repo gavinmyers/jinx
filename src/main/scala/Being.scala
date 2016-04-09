@@ -11,8 +11,8 @@ class Being(name:String,
             animationSheet:ListBuffer[TextureRegion],
             posX:Float,
             posY:Float,
-            scaleX:Float,
-            scaleY:Float)
+            val scaleX:Float,
+            val scaleY:Float)
   extends Thing() {
 
   this.created = GameLoader.gameTime
@@ -103,6 +103,7 @@ class Being(name:String,
   }
 
   def stop(gameTime:Float): Unit = {
+    body.setGravityScale(1f)
     mov_h = ""
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
     if(face_h == "R" && !weapon.attacking) {
@@ -127,12 +128,17 @@ class Being(name:String,
     if(lastDamage + damageCooldown < gameTime) {
       takingDamage = false
     }
-    body.setGravityScale(1f)
+
   }
 
   var jumpMaxVelocity = 15f
   var runMaxVelocity = 5f
   override def move(gameTime:Float): Unit = {
+    if(canClimb) {
+      body.setGravityScale(0f)
+    } else {
+      body.setGravityScale(1f)
+    }
 
     if(dieing) {
       sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
@@ -147,7 +153,7 @@ class Being(name:String,
         sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
       }
 
-    } else if((mov_v == "" || canClimb == false) && mov_h == "" && jumping == false) {
+    } else if(canClimb == false && mov_h == "" && jumping == false) {
       stop(gameTime)
 
     } else {
@@ -159,13 +165,14 @@ class Being(name:String,
           fall(gameTime)
         }
       } else if(canClimb) {
-        //body.setGravityScale(0.01f)
         if(mov_v == "U") {
           body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
           sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
         } else if(mov_v == "D") {
           body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
           sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+        } else {
+          body.setLinearVelocity(body.getLinearVelocity.x * .95f, body.getLinearVelocity.y * 0.7f)
         }
 
       }

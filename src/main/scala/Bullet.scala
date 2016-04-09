@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d._
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float, posY:Float)
+class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float, posY:Float,val scaleX:Float, val scaleY:Float)
   extends Thing() {
 
   this.created = GameLoader.gameTime
@@ -31,11 +31,14 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
   fixtureDef.isSensor = true
 
   sprite = new Sprite(animationSheet(0))
+  sprite.setScale(scaleX, scaleY)
+  var width = sprite.getWidth * scaleX
+  var height = sprite.getHeight * scaleY
 
   var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(0),animationSheet(1),animationSheet(2))
   var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(8),animationSheet(9),animationSheet(10))
 
-  shape.setAsBox(GameUtil.pixelsToMeters(sprite.getHeight / 2), GameUtil.pixelsToMeters(sprite.getWidth / 2))
+  shape.setAsBox(GameUtil.pixelsToMeters(width / 2), GameUtil.pixelsToMeters(height / 2))
 
 
   body = world.createBody(bodyDef)

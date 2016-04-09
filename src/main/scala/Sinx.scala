@@ -48,11 +48,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       p.light.setIgnoreAttachedBody(true)
       p.light.setContactFilter(0,2,-1)
       p.weapon.bulletSheet = bullet
-      p.life = 50
       p.brain = null
 
 
-      for (x <- 0 to 5) {
+      for (x <- 0 to 2) {
         var mod:Float = (((Math.random() * 125) + 20) / 100).toFloat
         var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
 
@@ -61,7 +60,25 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         m.weapon.bulletSheet = bullet
       }
 
-      for (x <- 0 to 5) {
+      for (x <- 0 to 4) {
+        var mod:Float = (((Math.random() * 25) + 100) / 100).toFloat
+        var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+      }
+
+      for (x <- 0 to 2) {
+        var mod:Float = (((Math.random() * 125) + 20) / 100).toFloat
+        var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+
+        m.runMaxVelocity = 1.0f
+        m.weapon.cooldown = 1.0f
+        m.weapon.bulletSheet = bullet
+      }
+
+      for (x <- 0 to 2) {
         var mod:Float = (((Math.random() * 125) + 40) / 100).toFloat
         var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
 
@@ -70,7 +87,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         m.weapon.bulletSheet = bullet
       }
 
-      for (x <- 0 to 5) {
+      for (x <- 0 to 2) {
         var mod:Float = (((Math.random() * 125) + 60) / 100).toFloat
         var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
 
@@ -79,7 +96,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         m.weapon.bulletSheet = bullet
       }
 
-      for (x <- 0 to 5) {
+      for (x <- 0 to 2) {
         var mod:Float = (((Math.random() * 125) + 80) / 100).toFloat
         var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
 
@@ -87,6 +104,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         m.weapon.cooldown = 1.0f
         m.weapon.bulletSheet = bullet
       }
+
     }
 
 
@@ -146,7 +164,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.batch.begin()
     //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
     GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    GameLoader.levelMapRenderer.render(Array(0,1,2))
+    GameLoader.levelMapRenderer.render(Array(0,1,2,3,4,5))
     GameLoader.batch.end()
 
 
@@ -159,6 +177,12 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         thing.draw(GameLoader.batch)
       }
     }
+    GameLoader.batch.end()
+
+    GameLoader.batch.begin()
+    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
+    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
+    GameLoader.levelMapRenderer.render(Array(6,7,8))
     GameLoader.batch.end()
 
     def debugMatrix:Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
@@ -177,6 +201,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
 
     //GameLoader.monsterDb("monster").handler.updateAndRender()
+
+
 
     if(Gdx.input.isKeyJustPressed(Input.Keys.D))
       debug = debug == false

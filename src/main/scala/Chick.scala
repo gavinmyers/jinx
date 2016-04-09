@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.box2d.World
 import scala.collection.mutable.ListBuffer
 
 object Chick {
+
     def sheet = new Texture("chick.png")
     val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
     for(tr <- TextureRegion.split(sheet, 24, 24)) {
@@ -29,5 +30,6 @@ class Chick(name:String,
     scaleX * 0.5f,
     scaleY * 0.5f) {
 
+    this.life = 1
 
 }
