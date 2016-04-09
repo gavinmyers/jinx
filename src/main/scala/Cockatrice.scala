@@ -29,5 +29,5 @@ class Cockatrice(name:String,
     scaleX:Float,
     scaleY:Float) {
 
-
+  this.canFly = true
 }

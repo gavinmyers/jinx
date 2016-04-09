@@ -24,6 +24,7 @@ class Being(name:String,
   var weapon:Weapon = new Weapon(this)
   var brain:Brain = new Brain(this)
   var life = 10
+  var canFly:Boolean = false
 
   this.body = world
     .createBody(
@@ -134,7 +135,7 @@ class Being(name:String,
   var jumpMaxVelocity = 15f
   var runMaxVelocity = 5f
   override def move(gameTime:Float): Unit = {
-    if(canClimb) {
+    if(canClimb || canFly) {
       body.setGravityScale(0f)
     } else {
       body.setGravityScale(1f)
@@ -237,13 +238,13 @@ class Being(name:String,
   def canClimb():Boolean = {
     for(contact:Contact <- GameLoader.world.getContactList()) {
       if(contact.getFixtureB.isSensor == true
-        && contact.getFixtureA == fixture
+        && contact.getFixtureA == hitArea
         && contact.getFixtureB.getBody != body
         && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
         return true
       }
       if(contact.getFixtureA.isSensor == true
-        && contact.getFixtureB == fixture
+        && contact.getFixtureB == hitArea
         && contact.getFixtureA.getBody != body
         && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
         return true

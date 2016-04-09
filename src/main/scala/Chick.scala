@@ -31,5 +31,6 @@ class Chick(name:String,
     scaleY * 0.5f) {
 
     this.life = 1
+    this.canFly = true
 
 }

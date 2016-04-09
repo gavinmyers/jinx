@@ -30,8 +30,9 @@ class Brain(controller:Being) {
       controller.moveLeft(GameLoader.gameTime)
     }
 
-    def c:Float = player.body.getPosition.x - controller.body.getPosition.x
-    if(c > -1 && c < 1) {
+    def cx:Float = player.body.getPosition.x - controller.body.getPosition.x
+    def cy:Float = player.body.getPosition.y - controller.body.getPosition.y
+    if(cx > -1 && cx < 1 && cy > -1 && cy < 1) {
       controller.attack(GameLoader.gameTime)
     }
     /*
