@@ -11,7 +11,7 @@ class Firebreath(controller:Being) extends Weapon(controller:Being) {
 
     var x = controller.sprite.getX
     if(controller.face_h.equalsIgnoreCase("R")) {
-      x += (controller.width)
+      x += controller.width
     }
     val y = controller.sprite.getY + (controller.height / 2)
 

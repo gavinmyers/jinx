@@ -18,9 +18,10 @@ class Thing() {
   var body:Body = _
   var destroyed:Boolean = false
 
+  init()
 
   def draw(batch:Batch): Unit = {
-    sprite.setPosition(GameUtil.metersToPixels(body.getPosition().x) - sprite.getWidth()/2 , GameUtil.metersToPixels(body.getPosition().y) - sprite.getHeight()/2 )
+    sprite.setPosition(GameUtil.metersToPixels(body.getPosition.x) - sprite.getWidth/2 , GameUtil.metersToPixels(body.getPosition.y) - sprite.getHeight/2 )
     sprite.draw(batch)
   }
 
@@ -41,6 +42,10 @@ class Thing() {
   }
 
   def move(gameTime:Float): Unit = {
+
+  }
+
+  def init(): Unit = {
 
   }
 

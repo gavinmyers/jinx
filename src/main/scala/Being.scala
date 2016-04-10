@@ -16,28 +16,36 @@ class Being(name:String,
   extends Thing() {
 
   this.created = GameLoader.gameTime
-  this.sprite = new Sprite(animationSheet(0))
-  sprite.setScale(scaleX, scaleY)
-  var width = sprite.getWidth * scaleX
-  var height = sprite.getHeight * scaleY
-
-  var weapon:Weapon = new Weapon(this)
-  var brain:Brain = new Brain(this)
-  var life = 10
-  var canFly:Boolean = false
-
-  this.body = world
-    .createBody(
-      {val b: BodyDef = new BodyDef()
-        b.`type` = BodyDef.BodyType.DynamicBody
-        b.fixedRotation = true
-        b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
-        b})
-
   var light:PositionalLight = _
+  var fixture: Fixture = _
+  var fixtureBottom: Fixture = _
+  var hitArea: Fixture = _
+  var weapon:Weapon = _
+  var brain:Brain = _
+  var canFly:Boolean = false
+  var life = 10
+  var width:Float = 0
+  var height:Float = 0
+
+  override def init(): Unit = {
+    this.sprite = new Sprite(animationSheet.head)
+    sprite.setScale(scaleX, scaleY)
+    this.width = sprite.getWidth * scaleX
+    this.height = sprite.getHeight * scaleY
+    this.weapon = new Weapon(this)
+    this.brain = new Brain(this)
+
+    this.body = world
+      .createBody(
+        {val b: BodyDef = new BodyDef()
+          b.`type` = BodyDef.BodyType.DynamicBody
+          b.fixedRotation = true
+          b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
+          b})
 
 
-  var fixture = body.createFixture(
+
+    this.fixture = body.createFixture(
       {val f:FixtureDef = new FixtureDef()
         var shape:Shape = new CircleShape()
         f.filter.categoryBits = 0x2
@@ -47,14 +55,14 @@ class Being(name:String,
         f.friction = 0f; f})
 
 
-  var hitArea = body.createFixture(
-    {val f:FixtureDef = new FixtureDef()
-      var shape:Shape = new CircleShape()
-      f.shape = shape
-      shape.setRadius(GameUtil.pixelsToMeters(height / 6.2f))
-      f.friction = 0f; f})
+    this.hitArea = body.createFixture(
+      {val f:FixtureDef = new FixtureDef()
+        var shape:Shape = new CircleShape()
+        f.shape = shape
+        shape.setRadius(GameUtil.pixelsToMeters(height / 6.2f))
+        f.friction = 0f; f})
 
-  var fixtureBottom = body.createFixture(
+    this.fixtureBottom = body.createFixture(
       {val f = new FixtureDef
         f.density = 0f
         f.isSensor = true
@@ -65,7 +73,7 @@ class Being(name:String,
             new Vector2(0f, GameUtil.pixelsToMeters(-1 * height / 2.5f)), 0)
         f})
 
-  var fixtureTop = body.createFixture(
+    var fixtureTop = body.createFixture(
       {val f = new FixtureDef
         f.isSensor = true
         f.density = 0f
@@ -75,6 +83,8 @@ class Being(name:String,
             GameUtil.pixelsToMeters(height / 4.5f),
             new Vector2(0f, GameUtil.pixelsToMeters(height / 2.5f)), 0)
         f})
+  }
+
 
   var walkRightAnimation:Animation = new Animation(0.15f, animationSheet(28),animationSheet(29))
   var standRightAnimation:Animation = new Animation(0.15f, animationSheet(2))
@@ -133,7 +143,7 @@ class Being(name:String,
   }
 
   var jumpMaxVelocity = 15f
-  var runMaxVelocity = 5f
+  var runMaxVelocity = 2.5f
   override def move(gameTime:Float): Unit = {
     if(canClimb || canFly) {
       body.setGravityScale(0f)
@@ -154,7 +164,7 @@ class Being(name:String,
         sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
       }
 
-    } else if(canClimb == false && mov_h == "" && jumping == false) {
+    } else if(!canClimb && mov_h == "" && !jumping) {
       stop(gameTime)
 
     } else {
@@ -218,39 +228,39 @@ class Being(name:String,
     }
   }
 
-  def canJump():Boolean = {
+  def canJump:Boolean = {
 
-    for(contact:Contact <- GameLoader.world.getContactList()) {
-      if(contact.getFixtureB.isSensor == false
+    for(contact:Contact <- GameLoader.world.getContactList) {
+      if(!contact.getFixtureB.isSensor
         && contact.getFixtureA == fixtureBottom
         && contact.getFixtureB.getBody != body) {
         return true
       }
-      if(contact.getFixtureA.isSensor == false
+      if(!contact.getFixtureA.isSensor
         && contact.getFixtureB == fixtureBottom
         && contact.getFixtureA.getBody != body) {
         return true
       }
     }
-    return false
+    false
   }
 
-  def canClimb():Boolean = {
-    for(contact:Contact <- GameLoader.world.getContactList()) {
-      if(contact.getFixtureB.isSensor == true
+  def canClimb:Boolean = {
+    for(contact:Contact <- GameLoader.world.getContactList) {
+      if(contact.getFixtureB.isSensor
         && contact.getFixtureA == hitArea
         && contact.getFixtureB.getBody != body
         && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
         return true
       }
-      if(contact.getFixtureA.isSensor == true
+      if(contact.getFixtureA.isSensor
         && contact.getFixtureB == hitArea
         && contact.getFixtureA.getBody != body
         && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
         return true
       }
     }
-    return false
+    false
   }
 
   def attack(gameTime:Float): Unit = {

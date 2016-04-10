@@ -48,10 +48,10 @@ object GameLoader {
 object GameUtil {
 
   def pixelsToMeters(v:Float):Float = {
-    return v / GameLoader.BOX_TO_WORLD
+    v / GameLoader.BOX_TO_WORLD
   }
 
   def metersToPixels(v:Float):Float = {
-    return v * GameLoader.BOX_TO_WORLD
+    v * GameLoader.BOX_TO_WORLD
   }
 }

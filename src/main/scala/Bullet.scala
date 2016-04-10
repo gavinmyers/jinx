@@ -4,52 +4,44 @@ import com.badlogic.gdx.physics.box2d._
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float, posY:Float,val scaleX:Float, val scaleY:Float)
+class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float,val scaleX:Float, val scaleY:Float)
   extends Thing() {
-
   this.created = GameLoader.gameTime
-
   var life = 0.3
-
-  var attacker:Thing = null
-  def animationSheet:ListBuffer[TextureRegion] = as
-
-
-  var bodyDef = new BodyDef()
-
-  bodyDef.`type` = BodyDef.BodyType.DynamicBody
-  bodyDef.fixedRotation = true
-  bodyDef.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
-
-  var fixtureDef = new FixtureDef()
-
-  var shape = new PolygonShape()
-
-  fixtureDef.shape = shape
-  fixtureDef.friction = 0.1f
-  fixtureDef.density = 0
-  fixtureDef.isSensor = true
-
-  sprite = new Sprite(animationSheet(0))
-  sprite.setScale(scaleX, scaleY)
-  var width = sprite.getWidth * scaleX
-  var height = sprite.getHeight * scaleY
-
+  var fixture: Fixture = _
+  var attacker:Thing = _
   var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
   var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
 
-  shape.setAsBox(GameUtil.pixelsToMeters(width / 2), GameUtil.pixelsToMeters(height / 2))
+  override def init(): Unit = {
+    this.sprite = new Sprite(animationSheet.head)
+    this.sprite.setScale(scaleX, scaleY)
 
+    var width = sprite.getWidth * scaleX
+    var height = sprite.getHeight * scaleY
 
-  body = world.createBody(bodyDef)
+    this.body = world
+      .createBody(
+        {val b: BodyDef = new BodyDef()
+          b.`type` = BodyDef.BodyType.DynamicBody
+          b.fixedRotation = true
+          b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
+          b})
 
-  var fixture = body.createFixture(fixtureDef)
+    this.fixture = body.createFixture(
+      {val f:FixtureDef = new FixtureDef()
+        var shape:Shape = new CircleShape()
+        f.isSensor = true
+        f.shape = shape
+        shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
+        f.friction = 0f; f})
 
-  body.setUserData(sprite)
-  fixture.setUserData(this)
+    body.setUserData(sprite)
+    fixture.setUserData(this)
 
-  GameLoader.bulletDb += this
-  GameLoader.thingDb += this
+    GameLoader.bulletDb += this
+    GameLoader.thingDb += this
+  }
 
   override def destroy() : Unit = {
     GameLoader.bulletDb -= this
@@ -59,26 +51,33 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
   var contactList:ListBuffer[Thing] = ListBuffer()
   override def contact(thing:Thing) : Unit = {
     if(thing == null) {
-    } else if(thing.isInstanceOf[Brick]) {
-      //this.life = this.life
-    } else if(thing.isInstanceOf[Being] && contactList.contains(thing) == false && thing != attacker) {
-
-      contactList += thing
-      thing.damage(this, 1)
+    } else thing match {
+      case _: Brick =>
+        moving = false
+      case _: Being if !contactList.contains(thing) && thing != attacker =>
+        contactList += thing
+        thing.damage(this, 1)
+      case _ =>
     }
   }
 
+  var moving:Boolean = true
   override def move(gameTime:Float): Unit = {
 
     val vel:Vector2 = body.getLinearVelocity
     if(mov_h.equalsIgnoreCase("R")) {
       vel.x = attacker.body.getLinearVelocity.x + 0.2f
-      sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
+      this.sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
     } else {
       vel.x = attacker.body.getLinearVelocity.x - 0.2f
-      sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+      this.sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
     }
     vel.y = attacker.body.getLinearVelocity.y + 1.1f
+    if(!moving) {
+      vel.x = attacker.body.getLinearVelocity.x * 0.99f
+      vel.y = attacker.body.getLinearVelocity.y * 0.99f
+      this.body.setGravityScale(0f)
+    }
     body.setLinearVelocity(vel)
     if(life + created < GameLoader.gameTime) {
       destroy()

@@ -40,6 +40,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       p.light.setIgnoreAttachedBody(true)
       p.light.setContactFilter(0, 2, -1)
       p.brain = null
+      p.runMaxVelocity = 5f
 
 
       for (x <- 0 to 2) {
@@ -81,7 +82,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def render(): Unit = {
     for (thing <- GameLoader.thingDb) {
-      if (thing.destroyed == false) {
+      if (!thing.destroyed) {
         thing.update(GameLoader.gameTime)
       }
     }
@@ -95,10 +96,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     def lerp: Float = 4.1f
     val position: Vector3 = GameLoader.camera.position
 
-    if (GameLoader.monsterDb.contains("player") != false) {
+    if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
-      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime()
-      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime()
+      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
+      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
     }
 
 
@@ -113,11 +114,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.handler.setCombinedMatrix(GameLoader.camera)
     GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
 
-    GameLoader.gameTime += Gdx.graphics.getDeltaTime()
+    GameLoader.gameTime += Gdx.graphics.getDeltaTime
 
-    GameLoader.world.step(Gdx.graphics.getDeltaTime(), 6, 2)
+    GameLoader.world.step(Gdx.graphics.getDeltaTime, 6, 2)
     for (thing <- GameLoader.thingDb) {
-      if (thing.destroyed == true) {
+      if (thing.destroyed) {
         for (je: JointEdge <- thing.body.getJointList) {
           GameLoader.world.destroyJoint(je.joint)
         }
@@ -140,7 +141,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
     for (thing <- GameLoader.thingDb) {
-      if (thing.destroyed == false) {
+      if (!thing.destroyed) {
         thing.move(GameLoader.gameTime)
         thing.draw(GameLoader.batch)
       }
@@ -153,18 +154,20 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.levelMapRenderer.render(Array(6, 7, 8))
     GameLoader.batch.end()
 
-    def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix().cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
+    def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix.cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
     GameLoader.handler.setCombinedMatrix(debugMatrix)
     GameLoader.handler.updateAndRender()
 
     for (c <- GameLoader.world.getContactList) {
 
       if (c.getFixtureA == null || c.getFixtureA.getUserData == null || c.getFixtureB == null || c.getFixtureB.getUserData == null) {
-      } else if (c.getFixtureA.getUserData.isInstanceOf[Thing] && c.getFixtureB.getUserData.isInstanceOf[Thing]) {
-        //a(b)
-        c.getFixtureA.getUserData.asInstanceOf[Thing].contact(c.getFixtureB.getUserData.asInstanceOf[Thing])
-        //b(a)
-        c.getFixtureB.getUserData.asInstanceOf[Thing].contact(c.getFixtureA.getUserData.asInstanceOf[Thing])
+      } else c.getFixtureA.getUserData match {
+        case thing: Thing if c.getFixtureB.getUserData.isInstanceOf[Thing] =>
+          //a(b)
+          thing.contact(c.getFixtureB.getUserData.asInstanceOf[Thing])
+          //b(a)
+          c.getFixtureB.getUserData.asInstanceOf[Thing].contact(thing)
+        case _ =>
       }
     }
 
@@ -172,7 +175,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
 
     if (Gdx.input.isKeyJustPressed(Input.Keys.D))
-      debug = debug == false
+      debug = !debug
 
     if (debug)
       GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
@@ -197,8 +200,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         if (c != null) {
           val posX: Int = x * tileX + 12
           val posY: Int = y * tileY + 12
-          val t: TiledMapTile = c.getTile()
-          new Brick("ground_" + x + "_" + y, GameLoader.world, t.getTextureRegion(), posX, posY)
+          val t: TiledMapTile = c.getTile
+          new Brick("ground_" + x + "_" + y, GameLoader.world, t.getTextureRegion, posX, posY)
         }
       }
     }
@@ -218,8 +221,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         if (c != null) {
           val posX: Int = x * tileX + 12
           val posY: Int = y * tileY + 12
-          val t: TiledMapTile = c.getTile()
-          new Ladder("ladder" + x + "_" + y, GameLoader.world, t.getTextureRegion(), BodyDef.BodyType.StaticBody, posX, posY)
+          val t: TiledMapTile = c.getTile
+          new Ladder("ladder" + x + "_" + y, GameLoader.world, t.getTextureRegion, BodyDef.BodyType.StaticBody, posX, posY)
         }
       }
     }
@@ -229,7 +232,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var downButtons: Float = 0
 
   override def keyDown(keycode: Int): Boolean = {
-    if (GameLoader.monsterDb.contains("player") == false) return false
+    if (!GameLoader.monsterDb.contains("player")) return false
 
     def player = GameLoader.monsterDb("player")
 
@@ -251,15 +254,15 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.X == keycode)
       player.attack(GameLoader.gameTime)
 
-    return true
+    true
   }
 
   override def keyUp(keycode: Int): Boolean = {
-    if (GameLoader.monsterDb.contains("player") == false) return false
+    if (!GameLoader.monsterDb.contains("player")) return false
 
     def player = GameLoader.monsterDb("player")
 
-    if ((Input.Keys.LEFT == keycode && Gdx.input.isKeyPressed(Input.Keys.RIGHT) == false) || (Input.Keys.RIGHT == keycode && Gdx.input.isKeyPressed(Input.Keys.LEFT) == false))
+    if (Input.Keys.LEFT == keycode && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Input.Keys.RIGHT == keycode && !Gdx.input.isKeyPressed(Input.Keys.LEFT))
       player.stop(GameLoader.gameTime)
 
     if (Input.Keys.UP == keycode)
@@ -268,32 +271,32 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.SPACE == keycode)
       player.attack(GameLoader.gameTime)
 
-    return true
+    true
   }
 
   override def mouseMoved(screenX: Int, screenY: Int): Boolean = {
-    return true
+    true
   }
 
   override def keyTyped(character: Char): Boolean = {
-    return true
+    true
   }
 
 
   override def touchDown(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
-    return true
+    true
   }
 
   override def scrolled(amount: Int): Boolean = {
-    return true
+    true
   }
 
   override def touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean = {
-    return true
+    true
   }
 
   override def touchDragged(screenX: Int, screenY: Int, pointer: Int): Boolean = {
-    return true
+    true
   }
 }
 
