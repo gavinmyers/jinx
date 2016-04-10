@@ -25,15 +25,18 @@ class Brain(controller:Being) {
 
     def player = GameLoader.monsterDb("player")
     if(player.body.getPosition.x > controller.body.getPosition.x) {
-      controller.moveRight(GameLoader.gameTime)
+      controller.moveRight(gameTime)
     } else {
-      controller.moveLeft(GameLoader.gameTime)
+      controller.moveLeft(gameTime)
     }
 
     def cx:Float = player.body.getPosition.x - controller.body.getPosition.x
     def cy:Float = player.body.getPosition.y - controller.body.getPosition.y
     if(cx > -1 && cx < 1 && cy > -1 && cy < 1) {
-      controller.attack(GameLoader.gameTime)
+      controller.attack(gameTime)
+    }
+    if(controller.weapon.lastAttack + (controller.weapon.cooldown * 2) < gameTime) {
+      controller.attack(gameTime)
     }
     /*
 

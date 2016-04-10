@@ -1,6 +1,17 @@
+import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 
 import scala.collection.mutable.ListBuffer
+
+object Weapon {
+  def sheet = new Texture("bullet1.png")
+  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(sheet, 24, 24)) {
+    for(tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
+}
 
 class Weapon(controller:Being) {
 
@@ -8,8 +19,6 @@ class Weapon(controller:Being) {
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
   var attacking:Boolean = false
-
-  var bulletSheet:ListBuffer[TextureRegion] = _
 
   def update(gameTime:Float): Unit = {
     if(lastAttack + cooldown < gameTime) {
@@ -30,7 +39,7 @@ class Weapon(controller:Being) {
     }
     val y = controller.sprite.getY + (controller.height / 2)
 
-    val b: Bullet = new Bullet("bullet_" + Math.random(), GameLoader.world, bulletSheet, x, y, controller.scaleX, controller.scaleY)
+    val b: Bullet = new Bullet("bullet_" + Math.random(), GameLoader.world, Weapon.sheetTextures, x, y, controller.scaleX, controller.scaleY)
     b.mov_h = controller.face_h
     b.attacker = controller
 

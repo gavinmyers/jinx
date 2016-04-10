@@ -29,6 +29,9 @@ class Phoenix(name:String,
     scaleX:Float,
     scaleY:Float) {
 
+  this.weapon = new Firebreath(this)
   this.canFly = true
+
+
 
 }

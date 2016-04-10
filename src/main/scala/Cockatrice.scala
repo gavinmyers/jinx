@@ -30,4 +30,5 @@ class Cockatrice(name:String,
     scaleY:Float) {
 
   this.canFly = true
+  this.weapon = new Stonegaze(this)
 }

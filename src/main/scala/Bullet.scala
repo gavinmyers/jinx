@@ -35,8 +35,8 @@ class Bullet(name:String, world:World, as:ListBuffer[TextureRegion], posX:Float,
   var width = sprite.getWidth * scaleX
   var height = sprite.getHeight * scaleY
 
-  var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(0),animationSheet(1),animationSheet(2))
-  var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(8),animationSheet(9),animationSheet(10))
+  var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
+  var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
 
   shape.setAsBox(GameUtil.pixelsToMeters(width / 2), GameUtil.pixelsToMeters(height / 2))
 
