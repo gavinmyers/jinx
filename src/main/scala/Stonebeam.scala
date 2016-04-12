@@ -9,6 +9,7 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
   attackAnimationLeft  = new Animation(0.05f, animationSheet(24),animationSheet(25),animationSheet(26),animationSheet(27))
   life = 2.5f
   stone = true
+  effects = List(new Petrification())
 
   override def init(): Unit = {
     this.sprite = new Sprite(animationSheet.head)

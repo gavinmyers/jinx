@@ -10,6 +10,7 @@ class Iceball(name:String, world:World, animationSheet:ListBuffer[TextureRegion]
   life = 2.5f
 
   ice = true
+  effects = List(new Freeze())
 
   override def move(gameTime:Float): Unit = {
     body.setGravityScale(0.25f)

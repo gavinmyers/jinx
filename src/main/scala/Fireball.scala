@@ -10,6 +10,7 @@ class Fireball(name:String, world:World, animationSheet:ListBuffer[TextureRegion
   life = 2.5f
 
   fire = true
+  effects = List(new Burn())
 
   override def move(gameTime:Float): Unit = {
     body.setGravityScale(0.25f)

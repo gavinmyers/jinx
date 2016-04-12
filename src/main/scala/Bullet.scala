@@ -15,7 +15,7 @@ class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion],
   var stone:Boolean = false
   var poison:Boolean = false
 
-  var effects
+  var effects:List[Effect] = _
 
   var damage:Float = 1
 
