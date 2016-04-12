@@ -1,0 +1,3 @@
+class Burn extends Effect {
+
+}

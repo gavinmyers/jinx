@@ -1,0 +1,3 @@
+class Poison extends Effect {
+
+}

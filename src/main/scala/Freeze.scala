@@ -1,0 +1,3 @@
+class Freeze extends Effect {
+
+}

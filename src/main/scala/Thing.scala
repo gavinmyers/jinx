@@ -49,6 +49,10 @@ class Thing() {
 
   }
 
+  def apply(effect:Effect): Unit = {
+
+  }
+
 }
 
 

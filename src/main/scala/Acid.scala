@@ -1,0 +1,3 @@
+class Acid extends Effect {
+
+}
