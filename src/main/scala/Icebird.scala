@@ -4,8 +4,8 @@ import com.badlogic.gdx.physics.box2d.World
 
 import scala.collection.mutable.ListBuffer
 
-object Cockatrice {
-  def sheet = new Texture("cockatrice.png")
+object Icebird {
+  def sheet = new Texture("icebird.png")
   val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
   for(tr <- TextureRegion.split(sheet, 24, 24)) {
     for(tx <- tr) {
@@ -14,22 +14,26 @@ object Cockatrice {
   }
 }
 
-class Cockatrice(name:String,
-             world:World,
-             posX:Float,
-             posY:Float,
-             scaleX:Float,
-             scaleY:Float)
+class Icebird(name:String,
+              world:World,
+              posX:Float,
+              posY:Float,
+              scaleX:Float,
+              scaleY:Float)
 
   extends Being(name:String,
     world:World,
-    Cockatrice.sheetTextures,
+    Icebird.sheetTextures,
     posX:Float,
     posY:Float,
     scaleX:Float,
     scaleY:Float) {
 
-  this.stoneResistance = 1f
+  this.iceResistance = 1f
+  this.fireResistance = -1f
+  this.weapon = new Icebreath(this)
   this.canFly = true
-  this.weapon = new Stonegaze(this)
+
+
+
 }

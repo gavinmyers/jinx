@@ -41,7 +41,7 @@ class Ladder(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
 
   }
 
-  override def damage(source:Thing, amount:Integer): Unit = {
+  override def damage(source:Thing, amount:Float): Unit = {
 
   }
 }

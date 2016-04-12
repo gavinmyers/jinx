@@ -8,6 +8,15 @@ class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion],
   extends Thing() {
   this.created = GameLoader.gameTime
   var life = 0.3
+
+  var ice:Boolean = false
+  var fire:Boolean = false
+  var acid:Boolean = false
+  var stone:Boolean = false
+  var poison:Boolean = false
+
+  var damage:Float = 1
+
   var fixture: Fixture = _
   var attacker:Thing = _
   var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
@@ -56,7 +65,7 @@ class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion],
         moving = false
       case _: Being if !contactList.contains(thing) && thing != attacker =>
         contactList += thing
-        thing.damage(this, 1)
+        thing.damage(this, damage)
       case _ =>
     }
   }

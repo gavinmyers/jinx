@@ -33,7 +33,7 @@ class Thing() {
     //do nothing
   }
 
-  def damage(source:Thing, amount:Integer): Unit = {
+  def damage(source:Thing, amount:Float): Unit = {
 
   }
 

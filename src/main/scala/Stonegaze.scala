@@ -2,6 +2,7 @@ class Stonegaze(controller:Being) extends Weapon(controller:Being) {
 
   cooldown = 1.5f
 
+
   override def attack(gameTime:Float): Unit = {
     if(lastAttack + cooldown > gameTime) {
       return

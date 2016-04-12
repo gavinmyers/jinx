@@ -43,32 +43,38 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       p.runMaxVelocity = 5f
 
 
-      for (x <- 0 to 2) {
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
         var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 4) {
+
+      for (x <- 0 to 1) {
+        var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
+        var m = new Icebird("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+      }
+
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
         var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 2) {
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
         var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 2) {
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
         var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 2) {
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
         var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 2) {
+      for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
         var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
@@ -191,9 +197,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     val tileX: Int = 24
     val tileY: Int = 24
     val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
-    var x: Int = 0
-    var y: Int = 0
-
     for (x <- 0 to tmtl.getWidth) {
       for (y <- 0 to tmtl.getHeight) {
         val c = tmtl.getCell(x, y)
@@ -212,9 +215,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     val tileX: Int = 24
     val tileY: Int = 24
     val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
-    var x: Int = 0
-    var y: Int = 0
-
     for (x <- 0 to tmtl.getWidth) {
       for (y <- 0 to tmtl.getHeight) {
         val c = tmtl.getCell(x, y)

@@ -23,9 +23,16 @@ class Being(name:String,
   var weapon:Weapon = _
   var brain:Brain = _
   var canFly:Boolean = false
-  var life = 10
+  var life:Float = 100
   var width:Float = 0
   var height:Float = 0
+
+  var fireResistance:Float = 0f
+  var iceResistance:Float = 0f
+  var poisonResistance:Float = 0f
+  var stoneResistance:Float = 0f
+  var acidResistance:Float = 0f
+
 
   override def init(): Unit = {
     this.sprite = new Sprite(animationSheet.head)
@@ -228,7 +235,7 @@ class Being(name:String,
     }
   }
 
-  def canJump:Boolean = {
+  def canJump():Boolean = {
 
     for(contact:Contact <- GameLoader.world.getContactList) {
       if(!contact.getFixtureB.isSensor
@@ -270,11 +277,26 @@ class Being(name:String,
   var takingDamage:Boolean = false
   var lastDamage:Float = 0
   var damageCooldown:Float = 0.3f
-  override def damage(source:Thing, amount:Integer): Unit = {
+  override def damage(source:Thing, amount:Float): Unit = {
+
+    if(!source.isInstanceOf[Bullet]) {
+      return //eh?
+    }
+
+    def b:Bullet = source.asInstanceOf[Bullet]
+
     def gameTime =  GameLoader.gameTime
     if(lastDamage + damageCooldown > gameTime) {
       return
     }
+
+    if(b.ice) {
+      //this.sprite.setColor(this.sprite.getColor.r / 5f,this.sprite.getColor.g / 5f,this.sprite.getColor.b * 2f, 1f)
+    }
+    if(b.fire) {
+      //this.sprite.setColor(this.sprite.getColor.r * 2f,this.sprite.getColor.g / 5f,this.sprite.getColor.b / 5, 1f)
+    }
+
     takingDamage = true
     lastDamage = gameTime
     life -= amount
@@ -293,7 +315,9 @@ class Being(name:String,
   }
 
   override def draw(batch:Batch): Unit = {
+    GameLoader.font.getData.setScale(0.5f)
     super.draw(batch)
+    GameLoader.font.draw(GameLoader.batch, this.life.toInt.toString, GameUtil.metersToPixels(this.body.getPosition.x), GameUtil.metersToPixels(this.body.getPosition.y + GameUtil.pixelsToMeters(sprite.getHeight * scaleY)))
   }
 
 

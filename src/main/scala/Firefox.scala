@@ -29,5 +29,7 @@ class Firefox(name:String,
     scaleX:Float,
     scaleY:Float) {
 
+  this.fireResistance = 1f
+  this.iceResistance = -1f
 
 }

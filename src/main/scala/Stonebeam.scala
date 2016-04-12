@@ -8,7 +8,7 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
   attackAnimationRight = new Animation(0.05f, animationSheet(24),animationSheet(25),animationSheet(26),animationSheet(27))
   attackAnimationLeft  = new Animation(0.05f, animationSheet(24),animationSheet(25),animationSheet(26),animationSheet(27))
   life = 2.5f
-
+  stone = true
 
   override def init(): Unit = {
     this.sprite = new Sprite(animationSheet.head)
@@ -27,10 +27,10 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
 
     this.fixture = body.createFixture(
       {val f:FixtureDef = new FixtureDef()
-        var shape:Shape = new CircleShape()
+        var shape:PolygonShape = new PolygonShape()
         f.isSensor = true
         f.shape = shape
-        shape.setRadius(GameUtil.pixelsToMeters(height / 4.2f))
+        shape.setAsBox(GameUtil.pixelsToMeters(width / 2.2f), GameUtil.pixelsToMeters(height / 4.2f))
         f.friction = 0f; f})
 
     body.setUserData(sprite)
