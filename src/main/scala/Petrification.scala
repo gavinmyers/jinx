@@ -7,7 +7,7 @@ class Petrification(name:String, world:World, attacker:Thing, receiver:Thing, po
   def animationSheet:ListBuffer[TextureRegion] = Effect.sheetTextures
   def effectAnimation = new Animation(5f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19))
   this.life = 5
-  
+
   override def move(gameTime:Float): Unit = {
     sprite.setRegion(effectAnimation.getKeyFrame(gameTime, true))
     super.move(gameTime)

@@ -10,7 +10,7 @@ class Burn(name:String, world:World, attacker:Thing, receiver:Thing, posX:Float,
   override def move(gameTime:Float): Unit = {
     sprite.setRegion(effectAnimation.getKeyFrame(gameTime, true))
     super.move(gameTime)
-  }
+  }ls
 
   override def init(): Unit = {
     this.sprite = new Sprite(Effect.sheetTextures.head)
