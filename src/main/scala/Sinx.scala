@@ -81,7 +81,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     }
 
-
   }
 
   var debug: Boolean = false
@@ -92,9 +91,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         thing.update(GameLoader.gameTime)
       }
     }
-
-
-
 
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)

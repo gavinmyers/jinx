@@ -41,6 +41,7 @@ object GameLoader {
   var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()
   var groundDb:scala.collection.mutable.Map[String,Brick] = scala.collection.mutable.Map[String,Brick]()
   var thingDb:ListBuffer[Thing] = ListBuffer()
+  var effectDb:ListBuffer[Effect] = ListBuffer()
   var bulletDb:ListBuffer[Bullet] = ListBuffer()
 
 }

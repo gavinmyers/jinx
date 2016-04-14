@@ -10,7 +10,6 @@ class Iceball(name:String, world:World, animationSheet:ListBuffer[TextureRegion]
   life = 2.5f
 
   ice = true
-  effects = List(new Freeze())
 
   override def move(gameTime:Float): Unit = {
     body.setGravityScale(0.25f)
@@ -32,18 +31,6 @@ class Iceball(name:String, world:World, animationSheet:ListBuffer[TextureRegion]
     if(life + created < GameLoader.gameTime) {
       destroy()
 
-    }
-  }
-
-  override def contact(thing:Thing) : Unit = {
-    if(thing == null) {
-    } else thing match {
-      case _: Brick =>
-        moving = false
-      case _: Being if !contactList.contains(thing) && thing != attacker =>
-        contactList += thing
-        thing.damage(this, 1)
-      case _ =>
     }
   }
 }

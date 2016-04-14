@@ -289,12 +289,19 @@ class Being(name:String,
     if(lastDamage + damageCooldown > gameTime) {
       return
     }
-
-    if(b.ice) {
-      //this.sprite.setColor(this.sprite.getColor.r / 5f,this.sprite.getColor.g / 5f,this.sprite.getColor.b * 2f, 1f)
-    }
+    var x = sprite.getX + (sprite.getWidth / 2)
+    val y = sprite.getY + sprite.getHeight
     if(b.fire) {
-      //this.sprite.setColor(this.sprite.getColor.r * 2f,this.sprite.getColor.g / 5f,this.sprite.getColor.b / 5, 1f)
+      this.apply(new Burn(name, world, b.attacker, this, x, y, scaleX, scaleY))
+    }
+    if(b.ice) {
+      this.apply(new Freeze(name, world, b.attacker, this, x, y, scaleX, scaleY))
+    }
+    if(b.acid) {
+      //thing.apply(new Acid)
+    }
+    if(b.stone) {
+      this.apply(new Petrification(name, world, b.attacker, this, x, y, scaleX, scaleY))
     }
 
     takingDamage = true

@@ -1,3 +1,3 @@
-class Acid extends Effect {
+import com.badlogic.gdx.physics.box2d.World
 
-}
+class Acid {}
