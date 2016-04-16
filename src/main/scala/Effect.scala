@@ -1,7 +1,9 @@
+import javax.sound.midi.Receiver
+
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{TextureRegion, Batch}
+import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion, Batch}
 import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.physics.box2d.{Fixture, World}
+import com.badlogic.gdx.physics.box2d._
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,15 +17,46 @@ object Effect {
   }
 }
 
-class Effect(name:String, world:World, attacker:Thing, receiver:Thing, posX:Float, posY:Float,val scaleX:Float, val scaleY:Float) extends Thing() {
+class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var intensity:Float = 1.0f, var life:Float = 1.3f, var cooldown:Float = 1) extends Thing {
 
   this.created = GameLoader.gameTime
-  var life = 1.3
+  var lastCooldown = this.created
   var fixture: Fixture = _
 
+
   override def init(): Unit = {
+    this.sprite = new Sprite(Effect.sheetTextures.head)
+    this.sprite.setScale(scaleX, scaleY)
+
+    var width = sprite.getWidth * scaleX
+    var height = sprite.getHeight * scaleY
+
+    this.body = GameLoader.world
+      .createBody(
+        {val b: BodyDef = new BodyDef()
+          val x = receiver.sprite.getX + (receiver.sprite.getWidth / 2)
+          val y = receiver.sprite.getY + receiver.sprite.getHeight
+          b.`type` = BodyDef.BodyType.DynamicBody
+          b.fixedRotation = true
+          b.position.set(GameUtil.pixelsToMeters(x), GameUtil.pixelsToMeters(y))
+          b})
+
+    this.fixture = body.createFixture(
+      {val f:FixtureDef = new FixtureDef()
+        var shape:PolygonShape = new PolygonShape()
+        f.isSensor = true
+        f.shape = shape
+        shape.setAsBox(GameUtil.pixelsToMeters(width / 2f), GameUtil.pixelsToMeters(height / 2f))
+        f.friction = 0f; f})
+
+    body.setUserData(sprite)
+    fixture.setUserData(this)
     GameLoader.effectDb += this
     GameLoader.thingDb += this
+  }
+
+  def grow(): Unit = {
+
   }
 
   override def destroy() : Unit = {

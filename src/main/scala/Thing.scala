@@ -7,11 +7,13 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Thing() {
+class Thing {
   var name:String = ""
   var created:Float = 0
   var mov_h:String = ""
   var mov_v:String = ""
+  var scaleX:Float = 1.0f
+  var scaleY:Float = 1.0f
   var face_v:String = ""
   var face_h:String = ""
   var sprite:Sprite = _
@@ -33,7 +35,11 @@ class Thing() {
     //do nothing
   }
 
-  def damage(source:Thing, amount:Float): Unit = {
+  def damage(source:Bullet, amount:Float): Unit = {
+
+  }
+
+  def damage(source:Effect, amount:Float): Unit = {
 
   }
 
@@ -50,6 +56,10 @@ class Thing() {
   }
 
   def apply(effect:Effect): Unit = {
+
+  }
+
+  def petrify(): Unit = {
 
   }
 

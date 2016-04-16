@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d._
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float,val scaleX:Float, val scaleY:Float)
+class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float)
   extends Thing() {
   this.created = GameLoader.gameTime
   var life = 0.3

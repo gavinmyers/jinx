@@ -11,8 +11,8 @@ class Being(name:String,
             animationSheet:ListBuffer[TextureRegion],
             posX:Float,
             posY:Float,
-            val scaleX:Float,
-            val scaleY:Float)
+            scaleX:Float,
+            scaleY:Float)
   extends Thing() {
 
   this.created = GameLoader.gameTime
@@ -274,34 +274,33 @@ class Being(name:String,
     weapon.attack(gameTime)
   }
 
+  override def damage(source:Effect, amount:Float): Unit = {
+    def gameTime =  GameLoader.gameTime
+    life -= amount
+    if(life < 1) die(gameTime)
+  }
+
   var takingDamage:Boolean = false
   var lastDamage:Float = 0
   var damageCooldown:Float = 0.3f
-  override def damage(source:Thing, amount:Float): Unit = {
-
-    if(!source.isInstanceOf[Bullet]) {
-      return //eh?
-    }
-
-    def b:Bullet = source.asInstanceOf[Bullet]
+  override def damage(source:Bullet, amount:Float): Unit = {
 
     def gameTime =  GameLoader.gameTime
     if(lastDamage + damageCooldown > gameTime) {
       return
     }
-    var x = sprite.getX + (sprite.getWidth / 2)
-    val y = sprite.getY + sprite.getHeight
-    if(b.fire) {
-      this.apply(new Burn(name, world, b.attacker, this, x, y, scaleX, scaleY))
+
+    if(source.fire) {
+      this.apply(new Burn(this, source.attacker, source))
     }
-    if(b.ice) {
-      this.apply(new Freeze(name, world, b.attacker, this, x, y, scaleX, scaleY))
+    if(source.ice) {
+      this.apply(new Freeze(this, source.attacker, source))
     }
-    if(b.acid) {
+    if(source.acid) {
       //thing.apply(new Acid)
     }
-    if(b.stone) {
-      this.apply(new Petrification(name, world, b.attacker, this, x, y, scaleX, scaleY))
+    if(source.stone) {
+      this.apply(new Petrification(this, source.attacker, source))
     }
 
     takingDamage = true
@@ -327,6 +326,15 @@ class Being(name:String,
     GameLoader.font.draw(GameLoader.batch, this.life.toInt.toString, GameUtil.metersToPixels(this.body.getPosition.x), GameUtil.metersToPixels(this.body.getPosition.y + GameUtil.pixelsToMeters(sprite.getHeight * scaleY)))
   }
 
+  override def petrify() : Unit = {
+    var c = new Corpse(this.name + "_corpse", GameLoader.world, animationSheet(0), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y), scaleX, scaleY)
+    if(light != null) {
+      light.setActive(false)
+    }
+    c.sprite.setColor(100,100,100,1)
+    GameLoader.monsterDb.remove(name)
+    super.destroy()
+  }
 
   override def destroy() : Unit = {
     new Corpse(this.name + "_corpse", GameLoader.world, animationSheet(6), BodyDef.BodyType.StaticBody, GameUtil.metersToPixels(body.getPosition.x), GameUtil.metersToPixels(body.getPosition.y), scaleX, scaleY)

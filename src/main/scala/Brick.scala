@@ -44,8 +44,6 @@ class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Fl
 
   }
 
-  override def damage(source:Thing, amount:Float): Unit = {
 
-  }
 }
 

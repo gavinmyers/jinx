@@ -1,43 +1,19 @@
-import com.badlogic.gdx.graphics.g2d.{TextureRegion, Animation, Sprite}
-import com.badlogic.gdx.physics.box2d.{World, PolygonShape, FixtureDef, BodyDef}
+import com.badlogic.gdx.graphics.g2d.{Batch, TextureRegion, Animation, Sprite}
+import com.badlogic.gdx.physics.box2d._
 
 import scala.collection.mutable.ListBuffer
 
-class Burn(name:String, world:World, attacker:Thing, receiver:Thing, posX:Float, posY:Float,override val scaleX:Float, override val scaleY:Float) extends Effect(name:String, world:World, attacker:Thing, receiver:Thing, posX:Float, posY:Float,scaleX:Float, scaleY:Float) {
+class Burn(receiver:Thing, attacker:Thing, source:Thing, intensity:Float = 1.0f, life:Float = 2.0f, cooldown:Float = 1)
+  extends Effect(receiver:Thing, attacker:Thing, source:Thing, intensity:Float, life:Float, cooldown:Float) {
   def animationSheet:ListBuffer[TextureRegion] = Effect.sheetTextures
   def effectAnimation = new Animation(0.15f, animationSheet(0),animationSheet(1),animationSheet(2),animationSheet(3))
 
   override def move(gameTime:Float): Unit = {
+    if(lastCooldown + cooldown < gameTime) {
+      receiver.damage(this, 5)
+      lastCooldown = gameTime
+    }
     sprite.setRegion(effectAnimation.getKeyFrame(gameTime, true))
     super.move(gameTime)
-  }ls
-
-  override def init(): Unit = {
-    this.sprite = new Sprite(Effect.sheetTextures.head)
-    this.sprite.setScale(scaleX, scaleY)
-
-    var width = sprite.getWidth * scaleX
-    var height = sprite.getHeight * scaleY
-
-    this.body = world
-      .createBody(
-        {val b: BodyDef = new BodyDef()
-          b.`type` = BodyDef.BodyType.DynamicBody
-          b.fixedRotation = true
-          b.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
-          b})
-
-    this.fixture = body.createFixture(
-      {val f:FixtureDef = new FixtureDef()
-        var shape:PolygonShape = new PolygonShape()
-        f.isSensor = true
-        f.shape = shape
-        shape.setAsBox(GameUtil.pixelsToMeters(width / 2f), GameUtil.pixelsToMeters(height / 2f))
-        f.friction = 0f; f})
-
-    body.setUserData(sprite)
-    fixture.setUserData(this)
-
-    super.init()
   }
 }
