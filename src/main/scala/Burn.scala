@@ -10,7 +10,7 @@ class Burn(receiver:Thing, attacker:Thing, source:Thing, intensity:Float = 1.0f,
 
   override def move(gameTime:Float): Unit = {
     if(lastCooldown + cooldown < gameTime) {
-      receiver.damage(this, 5)
+      receiver.damage(this, 5 * this.intensity)
       lastCooldown = gameTime
     }
     sprite.setRegion(effectAnimation.getKeyFrame(gameTime, true))

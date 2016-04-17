@@ -56,11 +56,15 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
   }
 
   def grow(): Unit = {
-
+    this.scaleX += 0.25f
+    this.scaleY += 0.25f
+    this.intensity += 0.25f
+    this.life = this.life * this.intensity
   }
 
   override def destroy() : Unit = {
     GameLoader.effectDb -= this
+    this.receiver.cease(this)
     super.destroy()
   }
 
@@ -70,6 +74,7 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
 
   override def move(gameTime:Float): Unit = {
     this.body.setGravityScale(0f)
+    this.sprite.setScale(scaleX, scaleY)
     val vel:Vector2 = body.getLinearVelocity
     vel.x = receiver.body.getLinearVelocity.x
     vel.y = receiver.body.getLinearVelocity.y

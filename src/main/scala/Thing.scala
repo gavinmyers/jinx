@@ -19,6 +19,7 @@ class Thing {
   var sprite:Sprite = _
   var body:Body = _
   var destroyed:Boolean = false
+  var effectDb:ListBuffer[Effect] = ListBuffer()
 
   init()
 
@@ -56,7 +57,18 @@ class Thing {
   }
 
   def apply(effect:Effect): Unit = {
+    for(e:Effect <- this.effectDb) {
+      if(e.getClass.equals(effect.getClass)) {
+        e.grow()
+        effect.destroy()
+        return
+      }
+    }
+    effectDb += effect
+  }
 
+  def cease(effect:Effect): Unit = {
+    effectDb -= effect
   }
 
   def petrify(): Unit = {

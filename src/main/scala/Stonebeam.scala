@@ -44,10 +44,10 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
     body.setGravityScale(0.0f)
     val vel:Vector2 = body.getLinearVelocity
     if(mov_h.equalsIgnoreCase("R")) {
-      vel.x += 0.1f
+      vel.x += 0.05f
       sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
     } else {
-      vel.x -= 0.1f
+      vel.x -= 0.05f
       sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
     }
     vel.y = 0f

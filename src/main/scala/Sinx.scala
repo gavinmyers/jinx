@@ -108,8 +108,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.camera.position.set(position)
     GameLoader.backgroundCamera.position.set(position)
 
-    GameLoader.camera.zoom = 1f
-    GameLoader.backgroundCamera.zoom = 1f
+    GameLoader.camera.zoom = 0.5f
+    GameLoader.backgroundCamera.zoom = 0.5f
 
     GameLoader.camera.update()
     GameLoader.backgroundCamera.update()
