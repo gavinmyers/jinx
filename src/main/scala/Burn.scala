@@ -8,6 +8,8 @@ class Burn(receiver:Thing, attacker:Thing, source:Thing, intensity:Float = 1.0f,
   def animationSheet:ListBuffer[TextureRegion] = Effect.sheetTextures
   def effectAnimation = new Animation(0.15f, animationSheet(0),animationSheet(1),animationSheet(2),animationSheet(3))
 
+  this.opposite = classOf[Freeze]
+
   override def move(gameTime:Float): Unit = {
     if(lastCooldown + cooldown < gameTime) {
       receiver.damage(this, 5 * this.intensity)

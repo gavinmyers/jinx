@@ -1,6 +1,6 @@
 import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import com.badlogic.gdx.graphics.{Texture, Color, GL20}
+import com.badlogic.gdx.graphics.{OrthographicCamera, Texture, Color, GL20}
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
@@ -42,48 +42,55 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       p.brain = null
       p.runMaxVelocity = 5f
 
-
+/*
       for (x <- 0 to 1) {
         var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
         var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-
-      for (x <- 0 to 1) {
+*/
+      /*
+      for (x <- 0 to 5) {
         var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
         var m = new Icebird("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
-
-      for (x <- 0 to 1) {
-        var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
-        var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
-
-      for (x <- 0 to 1) {
-        var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
-        var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
-
-      for (x <- 0 to 1) {
-        var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
-        var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
-
-      for (x <- 0 to 1) {
+      for (x <- 0 to 5) {
         var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
         var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
       }
 
-      for (x <- 0 to 1) {
-        var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
-        var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
+            for (x <- 0 to 5) {
+              var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
+              var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
 
+            for (x <- 0 to 1) {
+              var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
+              var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
+
+            for (x <- 0 to 1) {
+              var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
+              var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
+
+            for (x <- 0 to 1) {
+              var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
+              var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
+
+            for (x <- 0 to 1) {
+              var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
+              var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
+      */
     }
 
   }
 
   var debug: Boolean = false
+  var background:Boolean = false
+  var backgroundPosition:Vector3 = new Vector3()
 
   override def render(): Unit = {
     for (thing <- GameLoader.thingDb) {
@@ -95,26 +102,46 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    def lerp: Float = 4.1f
+    def lerp: Float = 40.1f
     val position: Vector3 = GameLoader.camera.position
+    val backgroundPallalaxTmp:Array[Vector3] = Array.fill[Vector3](10)(new Vector3())
+
 
     if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
+
+      if(!background && player.sprite.getX != 0) {
+        backgroundPosition.x = player.sprite.getX
+        backgroundPosition.y = player.sprite.getY
+        background = true
+      }
+
+      if(background) {
+        backgroundPallalaxTmp(0).y = position.y
+        backgroundPallalaxTmp(0).x = backgroundPosition.x
+        var spd = 0.05f
+        for(i <- 1 to 8) {
+          backgroundPallalaxTmp(i).x =  backgroundPosition.x - ((backgroundPosition.x - player.sprite.getX) * spd)
+          backgroundPallalaxTmp(i).y = position.y
+          spd += 0.1f
+        }
+
+      }
+
       position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
       position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
     }
 
 
     GameLoader.camera.position.set(position)
-    GameLoader.backgroundCamera.position.set(position)
 
     GameLoader.camera.zoom = 0.5f
-    GameLoader.backgroundCamera.zoom = 0.5f
+    GameLoader.parallalaxCameras.foreach(f => f.zoom = 0.5f)
 
     GameLoader.camera.update()
-    GameLoader.backgroundCamera.update()
-    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
-    GameLoader.batch.setProjectionMatrix(GameLoader.backgroundCamera.combined)
+    GameLoader.parallalaxCameras.foreach(f => f.update())
+
+
 
     GameLoader.gameTime += Gdx.graphics.getDeltaTime
 
@@ -130,16 +157,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     }
 
+    for(i <- 0 to 9) {
+      GameLoader.parallalaxCameras(i).position.set(backgroundPallalaxTmp(i))
+      GameLoader.batch.setProjectionMatrix(GameLoader.parallalaxCameras(i).combined)
+      GameLoader.batch.begin()
+      //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
+      GameLoader.levelMapRenderer.setView(GameLoader.parallalaxCameras(i))
+      GameLoader.levelMapRenderer.render(Array(i))
+      GameLoader.batch.end()
+    }
 
 
-    GameLoader.batch.begin()
-    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
-    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    GameLoader.levelMapRenderer.render(Array(0, 1, 2, 3, 4, 5))
-    GameLoader.batch.end()
-
-
-
+    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
+    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
     for (thing <- GameLoader.thingDb) {
@@ -152,8 +182,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     GameLoader.batch.begin()
     //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
-    GameLoader.levelMapRenderer.setView(GameLoader.backgroundCamera)
-    GameLoader.levelMapRenderer.render(Array(6, 7, 8))
+    GameLoader.levelMapRenderer.setView(GameLoader.camera)
+    GameLoader.levelMapRenderer.render(Array(13, 14, 15))
     GameLoader.batch.end()
 
     def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix.cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)

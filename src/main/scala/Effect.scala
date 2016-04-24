@@ -21,6 +21,7 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
 
   this.created = GameLoader.gameTime
   var lastCooldown = this.created
+  var opposite:AnyRef = _
   var fixture: Fixture = _
 
 
@@ -60,6 +61,15 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
     this.scaleY += 0.25f
     this.intensity += 0.25f
     this.life = this.life * this.intensity
+    this.created = GameLoader.gameTime
+  }
+
+  def shrink(): Unit = {
+    this.scaleX -= 0.25f
+    this.scaleY -= 0.25f
+    this.intensity -= 0.25f
+    this.life = this.life - this.intensity
+    this.created += (this.created * 0.25f)
   }
 
   override def destroy() : Unit = {

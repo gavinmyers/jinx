@@ -8,6 +8,8 @@ class Freeze(receiver:Thing, attacker:Thing, source:Thing, intensity:Float = 1.0
   def animationSheet:ListBuffer[TextureRegion] = Effect.sheetTextures
   def effectAnimation = new Animation(0.15f, animationSheet(8),animationSheet(9),animationSheet(10),animationSheet(11))
 
+  this.opposite = classOf[Burn]
+
   override def move(gameTime:Float): Unit = {
     if(lastCooldown + cooldown < gameTime) {
       receiver.damage(this, 5)

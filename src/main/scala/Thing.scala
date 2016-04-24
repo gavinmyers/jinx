@@ -58,7 +58,11 @@ class Thing {
 
   def apply(effect:Effect): Unit = {
     for(e:Effect <- this.effectDb) {
-      if(e.getClass.equals(effect.getClass)) {
+      if(effect.opposite != null && e.getClass.equals(effect.opposite)) {
+        e.shrink()
+        effect.destroy()
+        return
+      } else if(e.getClass.equals(effect.getClass)) {
         e.grow()
         effect.destroy()
         return

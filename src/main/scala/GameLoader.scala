@@ -1,5 +1,5 @@
 import box2dLight.{PositionalLight, PointLight, RayHandler}
-import com.badlogic.gdx.graphics.{Color, Texture, OrthographicCamera}
+import com.badlogic.gdx.graphics.{OrthographicCamera, Color, Texture}
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, BitmapFont, SpriteBatch}
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
@@ -13,7 +13,8 @@ object GameLoader {
 
   def create():Unit = {
     GameLoader.camera.setToOrtho(false)
-    GameLoader.backgroundCamera.setToOrtho(false)
+    GameLoader.parallalaxCameras.map(x => x.setToOrtho(false))
+
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
     GameLoader.camera.translate(0, 0, 0)
   }
@@ -22,7 +23,8 @@ object GameLoader {
 
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
-  lazy val backgroundCamera: OrthographicCamera = new OrthographicCamera()
+  lazy val parallalaxCameras:Array[OrthographicCamera] = Array.fill[OrthographicCamera](10)(new OrthographicCamera())
+
   lazy val world: World = new World(new Vector2(0, -75f), true)
   lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
