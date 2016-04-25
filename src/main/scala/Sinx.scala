@@ -1,6 +1,7 @@
 import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.{OrthographicCamera, Texture, Color, GL20}
+import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
 import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
@@ -26,21 +27,39 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
 
     {
-      def r = GameLoader.levelMap
-        .getLayers
-        .get("positions")
-        .getObjects
-        .get("player_start")
-        .asInstanceOf[RectangleMapObject]
-        .getRectangle
+      {
+        def r = GameLoader.levelMap
+          .getLayers
+          .get("positions")
+          .getObjects
+          .get("player_start")
+          .asInstanceOf[RectangleMapObject]
+          .getRectangle
 
-      var p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
-      p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
-      p.light.attachToBody(p.body, 0, 0)
-      p.light.setIgnoreAttachedBody(true)
-      p.light.setContactFilter(0, 2, -1)
-      p.brain = null
-      p.runMaxVelocity = 5f
+        var p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
+        p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
+        p.light.attachToBody(p.body, 0, 0)
+        p.light.setIgnoreAttachedBody(true)
+        p.light.setContactFilter(0, 2, -1)
+        p.brain = null
+        p.runMaxVelocity = 5f
+
+      }
+
+      for(mo:MapObject <- GameLoader.levelMap.getLayers.get("positions").getObjects) {
+        if("scenery_ember".equalsIgnoreCase(mo.getName)) {
+          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
+          for (i <- 0 to r.width.toInt by 24) {
+            var f = new Embers("ember", GameLoader.world, r.x + i + 12, r.y + 12)
+          }
+        }
+        if("scenery_fire".equalsIgnoreCase(mo.getName)) {
+          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
+          for (i <- 0 to r.width.toInt by 24) {
+            var f = new Flames("fire", GameLoader.world, r.x + i + 12, r.y + 12)
+          }
+        }
+      }
 
 /*
       for (x <- 0 to 1) {
@@ -109,6 +128,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
+      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
+      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
 
       if(!background && player.sprite.getX != 0) {
         backgroundPosition.x = player.sprite.getX
@@ -120,7 +141,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         backgroundPallalaxTmp(0).y = position.y
         backgroundPallalaxTmp(0).x = backgroundPosition.x
         var spd = 0.05f
-        for(i <- 1 to 8) {
+        for(i <- 1 to 9) {
           backgroundPallalaxTmp(i).x =  backgroundPosition.x - ((backgroundPosition.x - player.sprite.getX) * spd)
           backgroundPallalaxTmp(i).y = position.y
           spd += 0.1f
@@ -128,8 +149,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
       }
 
-      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
-      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
+
     }
 
 
@@ -164,14 +184,24 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
       GameLoader.levelMapRenderer.setView(GameLoader.parallalaxCameras(i))
       GameLoader.levelMapRenderer.render(Array(i))
+
       GameLoader.batch.end()
     }
+
 
 
     GameLoader.handler.setCombinedMatrix(GameLoader.camera)
     GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
     GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
+
+    for (thing <- GameLoader.sceneryDb) {
+      if (!thing.destroyed) {
+        thing.move(GameLoader.gameTime)
+        thing.draw(GameLoader.batch)
+      }
+    }
+
     for (thing <- GameLoader.thingDb) {
       if (!thing.destroyed) {
         thing.move(GameLoader.gameTime)
@@ -183,7 +213,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.batch.begin()
     //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
-    GameLoader.levelMapRenderer.render(Array(13, 14, 15))
+    GameLoader.levelMapRenderer.render(Array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
     GameLoader.batch.end()
 
     def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix.cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)

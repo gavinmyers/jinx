@@ -45,6 +45,7 @@ object GameLoader {
   var thingDb:ListBuffer[Thing] = ListBuffer()
   var effectDb:ListBuffer[Effect] = ListBuffer()
   var bulletDb:ListBuffer[Bullet] = ListBuffer()
+  var sceneryDb:ListBuffer[Scenery] = ListBuffer()
 
 }
 
