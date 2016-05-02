@@ -25,7 +25,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     //fix
     drawLadder("ladder")
 
-
     {
       {
         def r = GameLoader.levelMap
@@ -36,7 +35,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
           .asInstanceOf[RectangleMapObject]
           .getRectangle
 
-        var p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
+        val p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
         p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
         p.light.attachToBody(p.body, 0, 0)
         p.light.setIgnoreAttachedBody(true)
@@ -49,14 +48,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       for(mo:MapObject <- GameLoader.levelMap.getLayers.get("positions").getObjects) {
         if("scenery_ember".equalsIgnoreCase(mo.getName)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          for (i <- 0 to r.width.toInt by 24) {
-            var f = new Embers("ember", GameLoader.world, r.x + i + 12, r.y + 12)
+          for (i <- 0.to(r.width.toInt) by 24) {
+            new Embers("ember", GameLoader.world, r.x + i + 12, r.y + 12)
           }
         }
         if("scenery_fire".equalsIgnoreCase(mo.getName)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          for (i <- 0 to r.width.toInt by 24) {
-            var f = new Flames("fire", GameLoader.world, r.x + i + 12, r.y + 12)
+          for (i <- 0.to(r.width.toInt) by 24) {
+            new Flames("fire", GameLoader.world, r.x + i + 12, r.y + 12)
           }
         }
       }
@@ -108,8 +107,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   var debug: Boolean = false
-  var background:Boolean = false
-  var backgroundPosition:Vector3 = new Vector3()
+  var initialPosition:Vector3 = new Vector3()
 
   override def render(): Unit = {
     for (thing <- GameLoader.thingDb) {
@@ -121,7 +119,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    def lerp: Float = 40.1f
+    def lerp: Float = 99f
     val position: Vector3 = GameLoader.camera.position
     val backgroundPallalaxTmp:Array[Vector3] = Array.fill[Vector3](10)(new Vector3())
 
@@ -129,27 +127,25 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
       position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
-      position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
+      //position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
+      position.y = initialPosition.y
 
-      if(!background && player.sprite.getX != 0) {
-        backgroundPosition.x = player.sprite.getX
-        backgroundPosition.y = player.sprite.getY
-        background = true
+      if(initialPosition.x == 0 && player.sprite.getX != 0) {
+        initialPosition.x = player.sprite.getX
+        initialPosition.y = player.sprite.getY
       }
 
-      if(background) {
+      if(player.sprite.getX != 0) {
         backgroundPallalaxTmp(0).y = position.y
-        backgroundPallalaxTmp(0).x = backgroundPosition.x
-        var spd = 0.05f
+        backgroundPallalaxTmp(0).x = initialPosition.x
+        var spd = 0.1f
         for(i <- 1 to 9) {
-          backgroundPallalaxTmp(i).x =  backgroundPosition.x - ((backgroundPosition.x - player.sprite.getX) * spd)
+          backgroundPallalaxTmp(i).x =  initialPosition.x - ((initialPosition.x - player.sprite.getX) * spd)
           backgroundPallalaxTmp(i).y = position.y
           spd += 0.1f
         }
 
       }
-
-
     }
 
 
