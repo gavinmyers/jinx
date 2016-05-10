@@ -33,10 +33,8 @@ object GameLoader {
 
   lazy val font: BitmapFont = new BitmapFont()
 
-  lazy val levelMap:TiledMap = new TmxMapLoader().load("level01.tmx")
-  lazy val level:Texture = new Texture("levels.png")
-  lazy val levels = TextureRegion.split(level, 24, 24).head
-  lazy val layer:TiledMapTileLayer = levelMap.getLayers.get("sky").asInstanceOf[TiledMapTileLayer]
+  lazy val levelMap:TiledMap = new TmxMapLoader().load("forest01.tmx")
+
   lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
 
 

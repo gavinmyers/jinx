@@ -178,7 +178,12 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       GameLoader.batch.setProjectionMatrix(GameLoader.parallalaxCameras(i).combined)
       GameLoader.batch.begin()
       //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
-      GameLoader.levelMapRenderer.setView(GameLoader.parallalaxCameras(i))
+      def camera = GameLoader.parallalaxCameras(i)
+      def x:Float = camera.position.x - camera.viewportWidth * camera.zoom
+      def y:Float = camera.position.y - camera.viewportHeight * camera.zoom
+      def width:Float = camera.viewportWidth * camera.zoom * 2
+      def height:Float = camera.viewportHeight * camera.zoom * 4
+      GameLoader.levelMapRenderer.setView(camera.combined, x, y, width, height)
       GameLoader.levelMapRenderer.render(Array(i))
 
       GameLoader.batch.end()
