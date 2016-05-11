@@ -17,10 +17,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   RayHandler.useDiffuseLight(true)
 
   override def create(): Unit = {
-    loadLevel("level01")
+    loadLevel("level01", "level01_w")
   }
 
-  def loadLevel(level:String): Unit = {
+  def loadLevel(level:String, target:String): Unit = {
     GameLoader.create(level)
     GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
     Gdx.input.setInputProcessor(this)
@@ -29,30 +29,26 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     //fix
     drawLadder("ladder")
 
-    {
-      {
-        def r = GameLoader.levelMap
-          .getLayers
-          .get("positions")
-          .getObjects
-          .get("player_start")
-          .asInstanceOf[RectangleMapObject]
-          .getRectangle
-
-        val p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
-        p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
-        p.light.attachToBody(p.body, 0, 0)
-        p.light.setIgnoreAttachedBody(true)
-        p.light.setContactFilter(0, 2, -1)
-        p.brain = null
-        p.runMaxVelocity = 5f
-
-      }
 
       for(mo:MapObject <- GameLoader.levelMap.getLayers.get("positions").getObjects) {
+        if("target".equalsIgnoreCase(mo.getName)) {
+          if(target.equalsIgnoreCase(mo.getProperties.get("id").toString)) {
+            def r = mo.asInstanceOf[RectangleMapObject].getRectangle
+            val p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
+            p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
+            p.light.attachToBody(p.body, 0, 0)
+            p.light.setIgnoreAttachedBody(true)
+            p.light.setContactFilter(0, 2, -1)
+            p.brain = null
+            p.runMaxVelocity = 5f
+          }
+        }
+
         if("exit".equalsIgnoreCase(mo.getName)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          new Exit("exit", mo.getProperties.get("goto").toString, GameLoader.world, r.x + 12, r.y + 12, r.width, r.height)
+          println(mo.getProperties.get("goto"))
+          println(mo.getProperties.get("target"))
+          new Exit("exit", mo.getProperties.get("goto").toString, mo.getProperties.get("target").toString, GameLoader.world, r.x + 12, r.y + 12, r.width, r.height)
         }
         if("scenery_ember".equalsIgnoreCase(mo.getName)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
@@ -110,7 +106,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
               var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
             }
       */
-    }
   }
 
   var debug: Boolean = false
@@ -118,7 +113,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def render(): Unit = {
     if("".equalsIgnoreCase(GameLoader.goto) == false) {
-      loadLevel(GameLoader.goto)
+      loadLevel(GameLoader.goto, GameLoader.target)
       GameLoader.goto = ""
     }
 

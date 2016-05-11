@@ -16,7 +16,7 @@ class Being(name:String,
   extends Thing() {
 
   this.created = GameLoader.gameTime
-  var light:PositionalLight = _
+
   var fixture: Fixture = _
   var fixtureBottom: Fixture = _
   var hitArea: Fixture = _

@@ -3,7 +3,7 @@ import com.badlogic.gdx.physics.box2d._
 
 import scala.collection.mutable.ListBuffer
 
-class Exit(name:String, destination:String, world:World, posX:Float, posY:Float, width:Float, height:Float) extends Thing() {
+class Exit(name:String, destination:String, target:String, world:World, posX:Float, posY:Float, width:Float, height:Float) extends Thing() {
   var fixture: Fixture = _
 
   override def init(): Unit = {
@@ -38,11 +38,11 @@ class Exit(name:String, destination:String, world:World, posX:Float, posY:Float,
   }
 
   override def contact(thing:Thing) : Unit = {
-    println("CONTACT" + thing.name)
     if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
       if(thing == player) {
         GameLoader.goto = this.destination
+        GameLoader.target = this.target
       }
     }
   }

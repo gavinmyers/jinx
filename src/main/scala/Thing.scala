@@ -8,6 +8,7 @@ import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
 class Thing {
+  var light:PositionalLight = _
   var name:String = ""
   var created:Float = 0
   var mov_h:String = ""

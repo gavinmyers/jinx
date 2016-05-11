@@ -30,6 +30,9 @@ object GameLoader {
 
   def reset():Unit = {
     for (thing <- GameLoader.thingDb) {
+      if(thing.light != null) {
+        thing.light.remove()
+      }
       for (je:JointEdge <- thing.body.getJointList) {
         GameLoader.world.destroyJoint(je.joint)
       }
@@ -57,6 +60,7 @@ object GameLoader {
   var gameTime:Float = 0
 
   var goto:String = ""
+  var target:String = ""
 
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
