@@ -4,22 +4,59 @@ import com.badlogic.gdx.graphics.g2d.{TextureRegion, BitmapFont, SpriteBatch}
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import com.badlogic.gdx.math.{Matrix4, Vector2}
-import com.badlogic.gdx.physics.box2d.{BodyDef, Box2DDebugRenderer, World}
+import com.badlogic.gdx.physics.box2d.{JointEdge, BodyDef, Box2DDebugRenderer, World}
+import scala.collection.JavaConversions._
 
 import scala.collection.mutable.ListBuffer
 
 object GameLoader {
   def BOX_TO_WORLD = 32f
 
-  def create():Unit = {
+  def create(level:String):Unit = {
+    this.reset()
+
+    levelMap = new TmxMapLoader().load(level + ".tmx")
+    levelMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
+
     GameLoader.camera.setToOrtho(false)
     GameLoader.parallalaxCameras.map(x => x.setToOrtho(false))
 
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
     GameLoader.camera.translate(0, 0, 0)
+
+
+
+  }
+
+  def reset():Unit = {
+    for (thing <- GameLoader.thingDb) {
+      for (je:JointEdge <- thing.body.getJointList) {
+        GameLoader.world.destroyJoint(je.joint)
+      }
+      GameLoader.world.destroyBody(thing.body)
+      GameLoader.thingDb -= thing
+    }
+
+    for (thing <- GameLoader.sceneryDb) {
+      for (je:JointEdge <- thing.body.getJointList) {
+        GameLoader.world.destroyJoint(je.joint)
+      }
+      GameLoader.world.destroyBody(thing.body)
+      GameLoader.sceneryDb -= thing
+    }
+
+
+    this.monsterDb = scala.collection.mutable.Map[String,Being]()
+    this.groundDb = scala.collection.mutable.Map[String,Brick]()
+    this.thingDb = ListBuffer()
+    this.effectDb = ListBuffer()
+    this.bulletDb = ListBuffer()
+    this.sceneryDb = ListBuffer()
   }
 
   var gameTime:Float = 0
+
+  var goto:String = ""
 
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
@@ -33,9 +70,8 @@ object GameLoader {
 
   lazy val font: BitmapFont = new BitmapFont()
 
-  lazy val levelMap:TiledMap = new TmxMapLoader().load("forest01.tmx")
-
-  lazy val levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
+  var levelMap:TiledMap = _
+  var levelMapRenderer:OrthogonalTiledMapRenderer = _
 
 
   var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()

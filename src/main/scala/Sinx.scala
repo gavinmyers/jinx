@@ -17,7 +17,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   RayHandler.useDiffuseLight(true)
 
   override def create(): Unit = {
-    GameLoader.create()
+    loadLevel("level01")
+  }
+
+  def loadLevel(level:String): Unit = {
+    GameLoader.create(level)
     GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
     Gdx.input.setInputProcessor(this)
 
@@ -46,6 +50,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
 
       for(mo:MapObject <- GameLoader.levelMap.getLayers.get("positions").getObjects) {
+        if("exit".equalsIgnoreCase(mo.getName)) {
+          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
+          new Exit("exit", mo.getProperties.get("goto").toString, GameLoader.world, r.x + 12, r.y + 12, r.width, r.height)
+        }
         if("scenery_ember".equalsIgnoreCase(mo.getName)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
           for (i <- 0.to(r.width.toInt) by 24) {
@@ -60,13 +68,13 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         }
       }
 
-/*
-      for (x <- 0 to 1) {
-        var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
-        var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
+      /*
+            for (x <- 0 to 1) {
+              var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
+              var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+            }
 
-*/
+      */
       /*
       for (x <- 0 to 5) {
         var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
@@ -103,13 +111,17 @@ class Sinx extends ApplicationAdapter with InputProcessor {
             }
       */
     }
-
   }
 
   var debug: Boolean = false
   var initialPosition:Vector3 = new Vector3()
 
   override def render(): Unit = {
+    if("".equalsIgnoreCase(GameLoader.goto) == false) {
+      loadLevel(GameLoader.goto)
+      GameLoader.goto = ""
+    }
+
     for (thing <- GameLoader.thingDb) {
       if (!thing.destroyed) {
         thing.update(GameLoader.gameTime)
