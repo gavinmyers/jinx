@@ -7,6 +7,12 @@ import net.dermetfan.gdx.graphics.g2d.Box2DSprite
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
+object Thing  {
+  def floor:Short = 0x0001
+  def creature:Short = 0x0002
+  def tool:Short = 0x0003
+};
+
 class Thing {
   var light:PositionalLight = _
   var name:String = ""

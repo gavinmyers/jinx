@@ -24,6 +24,7 @@ class Being(name:String,
   var brain:Brain = _
   var canFly:Boolean = false
   var life:Float = 100
+  var lifeMax:Float = 100
   var width:Float = 0
   var height:Float = 0
 
@@ -55,8 +56,8 @@ class Being(name:String,
     this.fixture = body.createFixture(
       {val f:FixtureDef = new FixtureDef()
         var shape:Shape = new CircleShape()
-        f.filter.categoryBits = 0x2
-        f.filter.maskBits = 0x1
+        f.filter.categoryBits = Thing.creature
+        f.filter.maskBits = (Thing.floor | Thing.creature).toShort
         f.shape = shape
         shape.setRadius(GameUtil.pixelsToMeters(height / 2.2f))
         f.friction = 0f; f})
@@ -66,6 +67,8 @@ class Being(name:String,
       {val f:FixtureDef = new FixtureDef()
         var shape:Shape = new CircleShape()
         f.shape = shape
+        f.filter.categoryBits = Thing.creature
+        f.filter.maskBits = (Thing.floor | Thing.creature).toShort
         shape.setRadius(GameUtil.pixelsToMeters(height / 6.2f))
         f.friction = 0f; f})
 
@@ -321,9 +324,9 @@ class Being(name:String,
   }
 
   override def draw(batch:Batch): Unit = {
-    GameLoader.font.getData.setScale(0.5f)
+    //GameLoader.font.getData.setScale(0.5f)
     super.draw(batch)
-    GameLoader.font.draw(GameLoader.batch, this.life.toInt.toString, GameUtil.metersToPixels(this.body.getPosition.x), GameUtil.metersToPixels(this.body.getPosition.y + GameUtil.pixelsToMeters(sprite.getHeight * scaleY)))
+    //GameLoader.font.draw(GameLoader.batch, this.life.toInt.toString, GameUtil.metersToPixels(this.body.getPosition.x), GameUtil.metersToPixels(this.body.getPosition.y + GameUtil.pixelsToMeters(sprite.getHeight * scaleY)))
   }
 
   override def petrify() : Unit = {

@@ -24,6 +24,9 @@ object GameLoader {
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
     GameLoader.camera.translate(0, 0, 0)
 
+    GameLoader.guiCamera.setToOrtho(false)
+    GameLoader.guiCamera.translate(0,0,0)
+
 
 
   }
@@ -53,6 +56,7 @@ object GameLoader {
     this.groundDb = scala.collection.mutable.Map[String,Brick]()
     this.thingDb = ListBuffer()
     this.effectDb = ListBuffer()
+    this.toolDb = ListBuffer()
     this.bulletDb = ListBuffer()
     this.sceneryDb = ListBuffer()
   }
@@ -64,6 +68,7 @@ object GameLoader {
 
   lazy val batch: SpriteBatch = new SpriteBatch()
   lazy val camera: OrthographicCamera = new OrthographicCamera()
+  lazy val guiCamera: OrthographicCamera = new OrthographicCamera()
   lazy val parallalaxCameras:Array[OrthographicCamera] = Array.fill[OrthographicCamera](10)(new OrthographicCamera())
 
   lazy val world: World = new World(new Vector2(0, -75f), true)
@@ -82,6 +87,7 @@ object GameLoader {
   var groundDb:scala.collection.mutable.Map[String,Brick] = scala.collection.mutable.Map[String,Brick]()
   var thingDb:ListBuffer[Thing] = ListBuffer()
   var effectDb:ListBuffer[Effect] = ListBuffer()
+  var toolDb:ListBuffer[Tool] = ListBuffer()
   var bulletDb:ListBuffer[Bullet] = ListBuffer()
   var sceneryDb:ListBuffer[Scenery] = ListBuffer()
 

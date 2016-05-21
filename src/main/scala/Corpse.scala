@@ -7,7 +7,7 @@ class Corpse(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
 
   var bodyDef = new BodyDef()
 
-  bodyDef.`type` = BodyDef.BodyType.StaticBody
+  bodyDef.`type` = BodyDef.BodyType.DynamicBody
   bodyDef.fixedRotation = true
   bodyDef.position.set(GameUtil.pixelsToMeters(posX), GameUtil.pixelsToMeters(posY))
 
@@ -16,11 +16,10 @@ class Corpse(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
   var shape = new CircleShape()
 
   fixtureDef.shape = shape
-  fixtureDef.isSensor = true
-  fixtureDef.friction = 0f
-  fixtureDef.filter.categoryBits = 0x2
-  fixtureDef.filter.maskBits = 0x1
-
+  fixtureDef.isSensor = false
+  fixtureDef.filter.categoryBits = Thing.tool
+  fixtureDef.filter.maskBits = Thing.floor
+  fixtureDef.friction = 10f
 
   sprite = new Sprite(texture)
   sprite.setScale(scaleX, scaleY)
@@ -28,13 +27,14 @@ class Corpse(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
   var width = sprite.getWidth * scaleX
   var height = sprite.getHeight * scaleY
 
-  shape.setRadius(GameUtil.pixelsToMeters(height))
+  shape.setRadius(GameUtil.pixelsToMeters(height / 3f))
 
   body = world.createBody(bodyDef)
 
   var fixture = body.createFixture(fixtureDef)
   body.setUserData(sprite)
   fixture.setUserData(this)
+
   GameLoader.thingDb += this
 
   override def contact(thing:Thing) : Unit = {

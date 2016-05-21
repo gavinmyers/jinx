@@ -19,7 +19,7 @@ class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Fl
 
   fixtureDef.shape = shape
   fixtureDef.friction = 5f
-  //fixtureDef.filter.categoryBits = 0x2
+  fixtureDef.filter.categoryBits = Thing.floor
   //fixtureDef.filter.maskBits = 0x1
 
   sprite = new Sprite(texture)

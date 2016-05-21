@@ -1,5 +1,7 @@
 import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{OrthographicCamera, Texture, Color, GL20}
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
@@ -41,6 +43,18 @@ class Sinx extends ApplicationAdapter with InputProcessor {
             p.light.setContactFilter(0, 2, -1)
             p.brain = null
             p.runMaxVelocity = 5f
+            new Fishingrod( GameLoader.world, r.x + 24, r.y + 24)
+
+                                    for (x <- 0 to 5) {
+                                      var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
+                                      var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+                                    }
+                                    for (x <- 0 to 5) {
+                                      var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
+                                      var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+                                    }
+
+            /* */
           }
         }
 
@@ -71,41 +85,34 @@ class Sinx extends ApplicationAdapter with InputProcessor {
             }
 
       */
-      /*
-      for (x <- 0 to 5) {
-        var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
-        var m = new Icebird("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
-      for (x <- 0 to 5) {
-        var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
-        var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-      }
 
-            for (x <- 0 to 5) {
-              var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
-              var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
 
-            for (x <- 0 to 1) {
-              var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
-              var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
+    /*
+               for (x <- 0 to 5) {
+                 var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
+                 var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+               }
 
-            for (x <- 0 to 1) {
-              var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
-              var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
+               for (x <- 0 to 1) {
+                 var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
+                 var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+               }
 
-            for (x <- 0 to 1) {
-              var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
-              var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
+               for (x <- 0 to 1) {
+                 var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
+                 var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+               }
 
-            for (x <- 0 to 1) {
-              var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
-              var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
-      */
+               for (x <- 0 to 1) {
+                 var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
+                 var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+               }
+
+               for (x <- 0 to 1) {
+                 var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
+                 var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
+               }
+         */
   }
 
   var debug: Boolean = false
@@ -133,6 +140,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (GameLoader.monsterDb.contains("player")) {
       def player = GameLoader.monsterDb("player")
+      player.life = player.lifeMax
       position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
       //position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
       position.y = initialPosition.y
@@ -149,6 +157,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         for(i <- 1 to 9) {
           backgroundPallalaxTmp(i).x =  initialPosition.x - ((initialPosition.x - player.sprite.getX) * spd)
           backgroundPallalaxTmp(i).y = position.y
+          //backgroundPallalaxTmp(i).y =  initialPosition.y - ((initialPosition.y - player.sprite.getY) * spd)
           spd += 0.1f
         }
 
@@ -201,7 +210,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.handler.setCombinedMatrix(GameLoader.camera)
     GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
     GameLoader.batch.begin()
-    GameLoader.font.draw(GameLoader.batch, "Hello World", 500, 500)
 
     for (thing <- GameLoader.sceneryDb) {
       if (!thing.destroyed) {
@@ -223,6 +231,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     GameLoader.levelMapRenderer.setView(GameLoader.camera)
     GameLoader.levelMapRenderer.render(Array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
     GameLoader.batch.end()
+
 
     def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix.cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
     GameLoader.handler.setCombinedMatrix(debugMatrix)
@@ -249,6 +258,32 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (debug)
       GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
+
+
+    {
+    var sr:ShapeRenderer = new ShapeRenderer()
+    sr.setColor(Color.BLACK)
+    sr.begin(ShapeType.Filled)
+    sr.box(0f,0f,0f,Gdx.graphics.getWidth(),400f,0f)
+    sr.end()
+    }
+
+    {
+    var sr:ShapeRenderer = new ShapeRenderer()
+    sr.setColor(Color.DARK_GRAY)
+    sr.begin(ShapeType.Filled)
+    sr.box(0f,400f,0f,Gdx.graphics.getWidth(),6f,0f)
+    sr.end()
+    }
+
+    {
+      def player = GameLoader.monsterDb("player")
+      var sr:ShapeRenderer = new ShapeRenderer()
+      sr.setColor(Color.GREEN)
+      sr.begin(ShapeType.Filled)
+      sr.box(0f,400f,0f,Gdx.graphics.getWidth() * (player.life / player.lifeMax),4f,0f)
+      sr.end()
+    }
 
   }
 
