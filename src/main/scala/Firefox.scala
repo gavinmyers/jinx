@@ -15,14 +15,14 @@ object Firefox {
 }
 
 class Firefox(name:String,
-            world:World,
+            room:Room,
             posX:Float,
             posY:Float,
             scaleX:Float,
             scaleY:Float)
 
   extends Being(name:String,
-    world:World,
+    room:Room,
     Firefox.sheetTextures,
     posX:Float,
     posY:Float,

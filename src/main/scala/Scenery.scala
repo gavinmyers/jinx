@@ -17,7 +17,7 @@ object Scenery {
   }
 }
 
-class Scenery(name:String, world:World, posX:Float, posY:Float) extends Thing {
+class Scenery(name:String, room:Room, posX:Float, posY:Float) extends Thing(room:Room) {
 
   this.created = GameLoader.gameTime
   var fixture: Fixture = _
@@ -33,7 +33,7 @@ class Scenery(name:String, world:World, posX:Float, posY:Float) extends Thing {
     var width = sprite.getWidth * scaleX
     var height = sprite.getHeight * scaleY
 
-    this.body = world
+    this.body = room.world
       .createBody(
         {val b: BodyDef = new BodyDef()
           b.`type` = BodyDef.BodyType.StaticBody
@@ -52,7 +52,7 @@ class Scenery(name:String, world:World, posX:Float, posY:Float) extends Thing {
     body.setUserData(sprite)
     fixture.setUserData(this)
 
-    GameLoader.sceneryDb += this
+    room.sceneryDb += this
   }
 
 

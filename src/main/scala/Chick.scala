@@ -16,14 +16,14 @@ object Chick {
 }
 
 class Chick(name:String,
-    world:World,
+    room:Room,
     posX:Float,
     posY:Float,
     scaleX:Float,
     scaleY:Float)
 
   extends Being(name:String,
-    world:World,
+    room:Room,
     Chick.sheetTextures,
     posX:Float,
     posY:Float,

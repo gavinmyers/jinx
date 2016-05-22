@@ -1,16 +1,10 @@
 import box2dLight.{PointLight, RayHandler}
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
-import com.badlogic.gdx.graphics.{OrthographicCamera, Texture, Color, GL20}
-import com.badlogic.gdx.maps.MapObject
-import com.badlogic.gdx.maps.objects.RectangleMapObject
-import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer}
-import com.badlogic.gdx.math.{Vector3, Matrix4, Rectangle, Vector2}
-import com.badlogic.gdx.physics.box2d._
-import com.badlogic.gdx.{InputProcessor, Input, ApplicationAdapter, Gdx}
+import com.badlogic.gdx.graphics.{Color, GL20}
+import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
+
 import scala.collection.JavaConversions._
-import scala.collection.mutable.ListBuffer
 
 class Sinx extends ApplicationAdapter with InputProcessor {
   println("Sinx")
@@ -18,113 +12,43 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   RayHandler.setGammaCorrection(true)
   RayHandler.useDiffuseLight(true)
 
+  var debug: Boolean = false
+  var downButtons: Float = 0
+
   override def create(): Unit = {
+    Gdx.input.setInputProcessor(this)
     loadLevel("level01", "level01_w")
   }
 
-  def loadLevel(level:String, target:String): Unit = {
-    GameLoader.create(level)
-    GameLoader.handler.setAmbientLight(0.2f, 0.2f, 0.2f, 0.6f)
-    Gdx.input.setInputProcessor(this)
+  def loadLevel(level: String, target: String): Unit = {
+    if (GameLoader.roomDb.contains(level)) {
+      GameLoader.room = GameLoader.roomDb(level)
+      GameLoader.room.start(target)
 
-    drawLayer("ground")
-    //fix
-    drawLadder("ladder")
-
-
-      for(mo:MapObject <- GameLoader.levelMap.getLayers.get("positions").getObjects) {
-        if("target".equalsIgnoreCase(mo.getName)) {
-          if(target.equalsIgnoreCase(mo.getProperties.get("id").toString)) {
-            def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-            val p = new Lilac("player", GameLoader.world, r.x, r.y, 1.0f, 1.0f)
-            p.light = new PointLight(GameLoader.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
-            p.light.attachToBody(p.body, 0, 0)
-            p.light.setIgnoreAttachedBody(true)
-            p.light.setContactFilter(0, 2, -1)
-            p.brain = null
-            p.runMaxVelocity = 5f
-            new Fishingrod( GameLoader.world, r.x + 24, r.y + 24)
-
-                                    for (x <- 0 to 5) {
-                                      var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
-                                      var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-                                    }
-                                    for (x <- 0 to 5) {
-                                      var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
-                                      var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-                                    }
-
-            /* */
-          }
-        }
-
-        if("exit".equalsIgnoreCase(mo.getName)) {
-          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          println(mo.getProperties.get("goto"))
-          println(mo.getProperties.get("target"))
-          new Exit("exit", mo.getProperties.get("goto").toString, mo.getProperties.get("target").toString, GameLoader.world, r.x + 12, r.y + 12, r.width, r.height)
-        }
-        if("scenery_ember".equalsIgnoreCase(mo.getName)) {
-          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          for (i <- 0.to(r.width.toInt) by 24) {
-            new Embers("ember", GameLoader.world, r.x + i + 12, r.y + 12)
-          }
-        }
-        if("scenery_fire".equalsIgnoreCase(mo.getName)) {
-          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
-          for (i <- 0.to(r.width.toInt) by 24) {
-            new Flames("fire", GameLoader.world, r.x + i + 12, r.y + 12)
-          }
-        }
+    } else {
+      val room: Room = new Room(level)
+      room.init(target)
+      if (GameLoader.player == null) {
+        GameLoader.player = new Lilac("player", room, 0, 0, 1.0f, 1.0f)
+        GameLoader.player.brain = null
+        GameLoader.player.runMaxVelocity = 5f
       }
-
-      /*
-            for (x <- 0 to 1) {
-              var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
-              var m = new Chick("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-            }
-
-      */
-
-
-    /*
-               for (x <- 0 to 5) {
-                 var mod: Float = (((Math.random() * 25) + 100) / 100).toFloat
-                 var m = new Firefox("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-               }
-
-               for (x <- 0 to 1) {
-                 var mod: Float = (((Math.random() * 125) + 20) / 100).toFloat
-                 var m = new Snake("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-               }
-
-               for (x <- 0 to 1) {
-                 var mod: Float = (((Math.random() * 125) + 40) / 100).toFloat
-                 var m = new Cockatrice("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-               }
-
-               for (x <- 0 to 1) {
-                 var mod: Float = (((Math.random() * 125) + 60) / 100).toFloat
-                 var m = new Phoenix("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-               }
-
-               for (x <- 0 to 1) {
-                 var mod: Float = (((Math.random() * 125) + 80) / 100).toFloat
-                 var m = new Zombie("monster", GameLoader.world, r.x + 248, r.y, 1.0f * mod, 1.0f * mod)
-               }
-         */
+      GameLoader.room = room
+    }
+    GameLoader.player.goto(GameLoader.room,GameLoader.room.startX, GameLoader.room.startY)
+    GameLoader.player.light = new PointLight(GameLoader.room.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
+    GameLoader.player.light.attachToBody(GameLoader.player.body, 0, 0)
+    GameLoader.player.light.setIgnoreAttachedBody(true)
+    GameLoader.player.light.setContactFilter(0, 2, -1)
   }
 
-  var debug: Boolean = false
-  var initialPosition:Vector3 = new Vector3()
-
   override def render(): Unit = {
-    if("".equalsIgnoreCase(GameLoader.goto) == false) {
+    if ("".equalsIgnoreCase(GameLoader.goto) == false) {
       loadLevel(GameLoader.goto, GameLoader.target)
       GameLoader.goto = ""
     }
 
-    for (thing <- GameLoader.thingDb) {
+    for (thing <- GameLoader.room.thingDb) {
       if (!thing.destroyed) {
         thing.update(GameLoader.gameTime)
       }
@@ -133,111 +57,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-    def lerp: Float = 99f
-    val position: Vector3 = GameLoader.camera.position
-    val backgroundPallalaxTmp:Array[Vector3] = Array.fill[Vector3](10)(new Vector3())
-
-
-    if (GameLoader.monsterDb.contains("player")) {
-      def player = GameLoader.monsterDb("player")
-      player.life = player.lifeMax
-      position.x += (player.sprite.getX - position.x) * lerp * Gdx.graphics.getDeltaTime
-      //position.y += (player.sprite.getY - position.y) * lerp * Gdx.graphics.getDeltaTime
-      position.y = initialPosition.y
-
-      if(initialPosition.x == 0 && player.sprite.getX != 0) {
-        initialPosition.x = player.sprite.getX
-        initialPosition.y = player.sprite.getY
-      }
-
-      if(player.sprite.getX != 0) {
-        backgroundPallalaxTmp(0).y = position.y
-        backgroundPallalaxTmp(0).x = initialPosition.x
-        var spd = 0.1f
-        for(i <- 1 to 9) {
-          backgroundPallalaxTmp(i).x =  initialPosition.x - ((initialPosition.x - player.sprite.getX) * spd)
-          backgroundPallalaxTmp(i).y = position.y
-          //backgroundPallalaxTmp(i).y =  initialPosition.y - ((initialPosition.y - player.sprite.getY) * spd)
-          spd += 0.1f
-        }
-
-      }
-    }
-
-
-    GameLoader.camera.position.set(position)
-
-    GameLoader.camera.zoom = 0.5f
-    GameLoader.parallalaxCameras.foreach(f => f.zoom = 0.5f)
-
-    GameLoader.camera.update()
-    GameLoader.parallalaxCameras.foreach(f => f.update())
-
-
-
     GameLoader.gameTime += Gdx.graphics.getDeltaTime
+    GameLoader.room.draw(debug)
 
-    GameLoader.world.step(Gdx.graphics.getDeltaTime, 6, 2)
-    for (thing <- GameLoader.thingDb) {
-      if (thing.destroyed) {
-        for (je: JointEdge <- thing.body.getJointList) {
-          GameLoader.world.destroyJoint(je.joint)
-        }
-        GameLoader.world.destroyBody(thing.body)
-        GameLoader.thingDb -= thing
-      }
-
-    }
-
-    for(i <- 0 to 9) {
-      GameLoader.parallalaxCameras(i).position.set(backgroundPallalaxTmp(i))
-      GameLoader.batch.setProjectionMatrix(GameLoader.parallalaxCameras(i).combined)
-      GameLoader.batch.begin()
-      //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
-      def camera = GameLoader.parallalaxCameras(i)
-      def x:Float = camera.position.x - camera.viewportWidth * camera.zoom
-      def y:Float = camera.position.y - camera.viewportHeight * camera.zoom
-      def width:Float = camera.viewportWidth * camera.zoom * 2
-      def height:Float = camera.viewportHeight * camera.zoom * 4
-      GameLoader.levelMapRenderer.setView(camera.combined, x, y, width, height)
-      GameLoader.levelMapRenderer.render(Array(i))
-
-      GameLoader.batch.end()
-    }
-
-
-
-    GameLoader.handler.setCombinedMatrix(GameLoader.camera)
-    GameLoader.batch.setProjectionMatrix(GameLoader.camera.combined)
-    GameLoader.batch.begin()
-
-    for (thing <- GameLoader.sceneryDb) {
-      if (!thing.destroyed) {
-        thing.move(GameLoader.gameTime)
-        thing.draw(GameLoader.batch)
-      }
-    }
-
-    for (thing <- GameLoader.thingDb) {
-      if (!thing.destroyed) {
-        thing.move(GameLoader.gameTime)
-        thing.draw(GameLoader.batch)
-      }
-    }
-    GameLoader.batch.end()
-
-    GameLoader.batch.begin()
-    //GameLoader.levelMapRenderer.renderTileLayer(GameLoader.levelMap.getLayers().get("ladder").asInstanceOf[TiledMapTileLayer])
-    GameLoader.levelMapRenderer.setView(GameLoader.camera)
-    GameLoader.levelMapRenderer.render(Array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
-    GameLoader.batch.end()
-
-
-    def debugMatrix: Matrix4 = GameLoader.batch.getProjectionMatrix.cpy().scale(GameLoader.BOX_TO_WORLD, GameLoader.BOX_TO_WORLD, 0f)
-    GameLoader.handler.setCombinedMatrix(debugMatrix)
-    GameLoader.handler.updateAndRender()
-
-    for (c <- GameLoader.world.getContactList) {
+    for (c <- GameLoader.room.world.getContactList) {
 
       if (c.getFixtureA == null || c.getFixtureA.getUserData == null || c.getFixtureB == null || c.getFixtureB.getUserData == null) {
       } else c.getFixtureA.getUserData match {
@@ -250,90 +73,44 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       }
     }
 
-    //GameLoader.monsterDb("monster").handler.updateAndRender()
-
-
     if (Gdx.input.isKeyJustPressed(Input.Keys.D))
       debug = !debug
 
-    if (debug)
-      GameLoader.debugRenderer.render(GameLoader.world, debugMatrix)
-
-
     {
-    var sr:ShapeRenderer = new ShapeRenderer()
-    sr.setColor(Color.BLACK)
-    sr.begin(ShapeType.Filled)
-    sr.box(0f,0f,0f,Gdx.graphics.getWidth(),400f,0f)
-    sr.end()
+      var sr: ShapeRenderer = new ShapeRenderer()
+      sr.setColor(Color.BLACK)
+      sr.begin(ShapeType.Filled)
+      sr.box(0f, 0f, 0f, Gdx.graphics.getWidth(), 400f, 0f)
+      sr.end()
     }
 
     {
-    var sr:ShapeRenderer = new ShapeRenderer()
-    sr.setColor(Color.DARK_GRAY)
-    sr.begin(ShapeType.Filled)
-    sr.box(0f,400f,0f,Gdx.graphics.getWidth(),6f,0f)
-    sr.end()
+      var sr: ShapeRenderer = new ShapeRenderer()
+      sr.setColor(Color.DARK_GRAY)
+      sr.begin(ShapeType.Filled)
+      sr.box(0f, 400f, 0f, Gdx.graphics.getWidth(), 6f, 0f)
+      sr.end()
     }
 
     {
-      def player = GameLoader.monsterDb("player")
-      var sr:ShapeRenderer = new ShapeRenderer()
+      def player = GameLoader.player
+      var sr: ShapeRenderer = new ShapeRenderer()
       sr.setColor(Color.GREEN)
       sr.begin(ShapeType.Filled)
-      sr.box(0f,400f,0f,Gdx.graphics.getWidth() * (player.life / player.lifeMax),4f,0f)
+      sr.box(0f, 400f, 0f, Gdx.graphics.getWidth() * (player.life / player.lifeMax), 4f, 0f)
       sr.end()
     }
 
   }
 
-
   override def dispose(): Unit = {
     println("dispose")
   }
 
-  def drawLayer(name: String): Unit = {
-    val tileX: Int = 24
-    val tileY: Int = 24
-    val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
-    for (x <- 0 to tmtl.getWidth) {
-      for (y <- 0 to tmtl.getHeight) {
-        val c = tmtl.getCell(x, y)
-        if (c != null) {
-          val posX: Int = x * tileX + 12
-          val posY: Int = y * tileY + 12
-          val t: TiledMapTile = c.getTile
-          new Brick("ground_" + x + "_" + y, GameLoader.world, t.getTextureRegion, posX, posY)
-        }
-      }
-    }
-  }
-
-
-  def drawLadder(name: String): Unit = {
-    val tileX: Int = 24
-    val tileY: Int = 24
-    val tmtl = GameLoader.levelMap.getLayers.get(name).asInstanceOf[TiledMapTileLayer]
-    for (x <- 0 to tmtl.getWidth) {
-      for (y <- 0 to tmtl.getHeight) {
-        val c = tmtl.getCell(x, y)
-        if (c != null) {
-          val posX: Int = x * tileX + 12
-          val posY: Int = y * tileY + 12
-          val t: TiledMapTile = c.getTile
-          new Ladder("ladder" + x + "_" + y, GameLoader.world, t.getTextureRegion, BodyDef.BodyType.StaticBody, posX, posY)
-        }
-      }
-    }
-  }
-
-
-  var downButtons: Float = 0
-
   override def keyDown(keycode: Int): Boolean = {
-    if (!GameLoader.monsterDb.contains("player")) return false
+    if (GameLoader.player == null) return false
 
-    def player = GameLoader.monsterDb("player")
+    def player = GameLoader.player
 
     if (Input.Keys.LEFT == keycode)
       player.moveLeft(GameLoader.gameTime)
@@ -357,9 +134,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   override def keyUp(keycode: Int): Boolean = {
-    if (!GameLoader.monsterDb.contains("player")) return false
+    if (GameLoader.player == null) return false
 
-    def player = GameLoader.monsterDb("player")
+    def player = GameLoader.player
 
     if (Input.Keys.LEFT == keycode && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Input.Keys.RIGHT == keycode && !Gdx.input.isKeyPressed(Input.Keys.LEFT))
       player.stop(GameLoader.gameTime)

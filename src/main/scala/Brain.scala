@@ -7,7 +7,7 @@ class Brain(controller:Being) {
   var thinking:Boolean = false
 
   def update(gameTime:Float): Unit = {
-    if(!GameLoader.monsterDb.contains("player")) return
+    if(GameLoader.player == null) return
 
     if(lastThought + cooldown < gameTime) {
       thinking = false
@@ -23,7 +23,7 @@ class Brain(controller:Being) {
     lastThought = gameTime
 
 
-    def player = GameLoader.monsterDb("player")
+    def player = GameLoader.player
     if(player.body.getPosition.x > controller.body.getPosition.x) {
       controller.moveRight(gameTime)
     } else {

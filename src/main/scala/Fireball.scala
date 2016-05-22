@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.World
 
 import scala.collection.mutable.ListBuffer
 
-class Fireball(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
+class Fireball(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
   attackAnimationRight = new Animation(0.05f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
   attackAnimationLeft = new Animation(0.05f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
   life = 2.5f

@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d.World
 
 import scala.collection.mutable.ListBuffer
 
-class Iceball(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
+class Iceball(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
   attackAnimationRight = new Animation(0.05f, animationSheet(32),animationSheet(33),animationSheet(34),animationSheet(35),animationSheet(36),animationSheet(37),animationSheet(38),animationSheet(37))
   attackAnimationLeft = new Animation(0.05f, animationSheet(32),animationSheet(33),animationSheet(34),animationSheet(35),animationSheet(36),animationSheet(37),animationSheet(38),animationSheet(37))
   life = 2.5f

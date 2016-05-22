@@ -18,7 +18,7 @@ class Icebreath(controller:Being) extends Weapon(controller:Being) {
     for (i <- 0 to 2) {
       val xr:Float = (Math.random() * controller.sprite.getWidth).toFloat
       val yr:Float = (Math.random() * controller.sprite.getHeight).toFloat
-      val b: Bullet = new Iceball("bullet_" + Math.random(), GameLoader.world, Weapon.sheetTextures, x + xr, y + yr, controller.scaleX, controller.scaleY)
+      val b: Bullet = new Iceball("bullet_" + Math.random(), controller.location, Weapon.sheetTextures, x + xr, y + yr, controller.scaleX, controller.scaleY)
       b.mov_h = controller.face_h
       b.attacker = controller
     }

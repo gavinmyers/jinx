@@ -15,14 +15,14 @@ object Snake {
 }
 
 class Snake(name:String,
-            world:World,
+            room:Room,
             posX:Float,
             posY:Float,
             scaleX:Float,
             scaleY:Float)
 
   extends Being(name:String,
-    world:World,
+    room:Room,
     Snake.sheetTextures,
     posX:Float,
     posY:Float,

@@ -13,7 +13,8 @@ object Thing  {
   def tool:Short = 0x0003
 };
 
-class Thing {
+class Thing(r:Room) {
+  var location:Room = r
   var light:PositionalLight = _
   var name:String = ""
   var created:Float = 0
@@ -27,6 +28,7 @@ class Thing {
   var body:Body = _
   var destroyed:Boolean = false
   var effectDb:ListBuffer[Effect] = ListBuffer()
+  var inventoryDb:ListBuffer[Thing] = ListBuffer()
 
   init()
 
@@ -59,7 +61,15 @@ class Thing {
 
   }
 
+  def goto(r2:Room, newPosX:Float, newPosY:Float): Unit = {
+    this.location = r2
+  }
+
   def init(): Unit = {
+
+  }
+
+  def setPosition(newPosX:Float, newPosY:Float): Unit = {
 
   }
 

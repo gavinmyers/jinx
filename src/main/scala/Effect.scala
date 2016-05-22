@@ -17,7 +17,7 @@ object Effect {
   }
 }
 
-class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var intensity:Float = 1.0f, var life:Float = 1.3f, var cooldown:Float = 1) extends Thing {
+class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var intensity:Float = 1.0f, var life:Float = 1.3f, var cooldown:Float = 1) extends Thing(receiver.location) {
 
   this.created = GameLoader.gameTime
   var lastCooldown = this.created
@@ -32,7 +32,7 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
     var width = sprite.getWidth * scaleX
     var height = sprite.getHeight * scaleY
 
-    this.body = GameLoader.world
+    this.body = receiver.location.world
       .createBody(
         {val b: BodyDef = new BodyDef()
           val x = receiver.sprite.getX + (receiver.sprite.getWidth / 2)
@@ -52,8 +52,8 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
 
     body.setUserData(sprite)
     fixture.setUserData(this)
-    GameLoader.effectDb += this
-    GameLoader.thingDb += this
+    receiver.location.effectDb += this
+    receiver.location.thingDb += this
   }
 
   def grow(): Unit = {
@@ -73,7 +73,7 @@ class Effect(var receiver:Thing, var attacker:Thing, var source:Thing, var inten
   }
 
   override def destroy() : Unit = {
-    GameLoader.effectDb -= this
+    receiver.location.effectDb -= this
     this.receiver.cease(this)
     super.destroy()
   }

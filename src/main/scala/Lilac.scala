@@ -15,14 +15,14 @@ object Lilac {
 }
 
 class Lilac(name:String,
-              world:World,
+              room:Room,
               posX:Float,
               posY:Float,
               scaleX:Float,
               scaleY:Float)
 
   extends Being(name:String,
-    world:World,
+    room:Room,
     Lilac.sheetTextures,
     posX:Float,
     posY:Float,

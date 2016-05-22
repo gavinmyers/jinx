@@ -2,8 +2,8 @@ import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
 import scala.collection.mutable.ListBuffer
 
-class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Float)
-  extends Thing() {
+class Brick(name:String,room:Room,texture:TextureRegion, posX:Float, posY:Float)
+  extends Thing(room:Room) {
 
   this.created = GameLoader.gameTime
 
@@ -26,7 +26,7 @@ class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Fl
   shape.setAsBox(GameUtil.pixelsToMeters(sprite.getHeight / 2), GameUtil.pixelsToMeters(sprite.getWidth / 2))
 
 
-  body = world.createBody(bodyDef)
+  body = room.world.createBody(bodyDef)
 
   var fixture = body.createFixture(fixtureDef)
 
@@ -37,8 +37,8 @@ class Brick(name:String, world:World, texture:TextureRegion, posX:Float, posY:Fl
 
   body.setUserData(sprite)
   fixture.setUserData(this)
-  GameLoader.groundDb += name -> this
-  GameLoader.thingDb += this
+  room.groundDb += name -> this
+  room.thingDb += this
 
   override def contact(thing:Thing) : Unit = {
 

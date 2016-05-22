@@ -4,7 +4,7 @@ import com.badlogic.gdx.physics.box2d._
 
 import scala.collection.mutable.ListBuffer
 
-class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
+class Stonebeam(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float,  scaleY:Float) extends Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float) {
   attackAnimationRight = new Animation(0.05f, animationSheet(24),animationSheet(25),animationSheet(26),animationSheet(27))
   attackAnimationLeft  = new Animation(0.05f, animationSheet(24),animationSheet(25),animationSheet(26),animationSheet(27))
   life = 2.5f
@@ -17,7 +17,7 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
     var width = sprite.getWidth * scaleX
     var height = sprite.getHeight * scaleY
 
-    this.body = world
+    this.body = room.world
       .createBody(
         {val b: BodyDef = new BodyDef()
           b.`type` = BodyDef.BodyType.DynamicBody
@@ -36,8 +36,8 @@ class Stonebeam(name:String, world:World, animationSheet:ListBuffer[TextureRegio
     body.setUserData(sprite)
     fixture.setUserData(this)
 
-    GameLoader.bulletDb += this
-    GameLoader.thingDb += this
+    room.bulletDb += this
+    room.thingDb += this
   }
 
   override def move(gameTime:Float): Unit = {

@@ -15,7 +15,7 @@ object Tool {
 }
 
 
-class Tool(world:World, texture:TextureRegion, posX:Float, posY:Float) extends Thing() {
+class Tool(room:Room, texture:TextureRegion, posX:Float, posY:Float) extends Thing(room:Room) {
   var fixture: Fixture = _
 
   override def init(): Unit = {
@@ -24,7 +24,7 @@ class Tool(world:World, texture:TextureRegion, posX:Float, posY:Float) extends T
     var width = sprite.getWidth
     var height = sprite.getHeight
 
-    this.body = GameLoader.world
+    this.body = room.world
       .createBody(
         {val b: BodyDef = new BodyDef()
           val x = posX
@@ -46,7 +46,7 @@ class Tool(world:World, texture:TextureRegion, posX:Float, posY:Float) extends T
 
     body.setUserData(sprite)
     fixture.setUserData(this)
-    GameLoader.toolDb += this
-    GameLoader.thingDb += this
+    room.toolDb += this
+    room.thingDb += this
   }
 }

@@ -1,8 +1,8 @@
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
 
-class Ladder(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
-  extends Thing() {
+class Ladder(name:String, room:Room, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float)
+  extends Thing(room:Room) {
 
   var fixtureDef:FixtureDef = _
   var fixture:Fixture = _
@@ -27,7 +27,7 @@ class Ladder(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
   shape.asInstanceOf[PolygonShape].setAsBox(GameUtil.pixelsToMeters(sprite.getWidth / 4), GameUtil.pixelsToMeters(sprite.getHeight / 2))
 
 
-  body = world.createBody(bodyDef)
+  body = room.world.createBody(bodyDef)
 
   fixture = body.createFixture(fixtureDef)
 
@@ -35,7 +35,7 @@ class Ladder(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
 
   body.setUserData(sprite)
   fixture.setUserData(this)
-  GameLoader.thingDb += this
+  room.thingDb += this
 
   override def contact(thing:Thing) : Unit = {
 

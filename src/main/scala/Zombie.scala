@@ -15,14 +15,14 @@ object Zombie {
 }
 
 class Zombie(name:String,
-              world:World,
+              room:Room,
               posX:Float,
               posY:Float,
               scaleX:Float,
               scaleY:Float)
 
   extends Being(name:String,
-    world:World,
+    room:Room,
     Zombie.sheetTextures,
     posX:Float,
     posY:Float,

@@ -1,8 +1,8 @@
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
 
-class Corpse(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float, scaleX:Float, scaleY:Float)
-  extends Thing() {
+class Corpse(name:String, room:Room, texture:TextureRegion, bodyType:BodyDef.BodyType, posX:Float, posY:Float, scaleX:Float, scaleY:Float)
+  extends Thing(room:Room) {
 
 
   var bodyDef = new BodyDef()
@@ -29,13 +29,13 @@ class Corpse(name:String, world:World, texture:TextureRegion, bodyType:BodyDef.B
 
   shape.setRadius(GameUtil.pixelsToMeters(height / 3f))
 
-  body = world.createBody(bodyDef)
+  body = room.world.createBody(bodyDef)
 
   var fixture = body.createFixture(fixtureDef)
   body.setUserData(sprite)
   fixture.setUserData(this)
 
-  GameLoader.thingDb += this
+  room.thingDb += this
 
   override def contact(thing:Thing) : Unit = {
 

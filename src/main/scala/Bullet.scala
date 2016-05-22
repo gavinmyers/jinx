@@ -4,8 +4,8 @@ import com.badlogic.gdx.physics.box2d._
 import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
-class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float)
-  extends Thing() {
+class Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], posX:Float, posY:Float, scaleX:Float, scaleY:Float)
+  extends Thing(room:Room) {
   this.created = GameLoader.gameTime
   var life = 0.3
 
@@ -30,7 +30,7 @@ class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion],
     var width = sprite.getWidth * scaleX
     var height = sprite.getHeight * scaleY
 
-    this.body = world
+    this.body = room.world
       .createBody(
         {val b: BodyDef = new BodyDef()
           b.`type` = BodyDef.BodyType.DynamicBody
@@ -49,12 +49,12 @@ class Bullet(name:String, world:World, animationSheet:ListBuffer[TextureRegion],
     body.setUserData(sprite)
     fixture.setUserData(this)
 
-    GameLoader.bulletDb += this
-    GameLoader.thingDb += this
+    room.bulletDb += this
+    room.thingDb += this
   }
 
   override def destroy() : Unit = {
-    GameLoader.bulletDb -= this
+    room.bulletDb -= this
     super.destroy()
   }
 
