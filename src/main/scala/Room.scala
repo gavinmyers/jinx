@@ -75,7 +75,8 @@ class Room(name:String) {
 
     for (mo: MapObject <- levelMap.getLayers.get("positions").getObjects) {
       if ("target".equalsIgnoreCase(mo.getName)) {
-        new Phoenix("phoenix", this, startX, startY, 1.0f, 1.0f)
+        //new Phoenix("phoenix", this, startX, startY, 1.0f, 1.0f)
+        new Fishingrod(this, startX, startY)
       }
       if ("exit".equalsIgnoreCase(mo.getName)) {
         def r = mo.asInstanceOf[RectangleMapObject].getRectangle
@@ -165,10 +166,15 @@ class Room(name:String) {
 
     for (thing <- thingDb) {
       if (thing.destroyed) {
+
         for (je: JointEdge <- thing.body.getJointList) {
           world.destroyJoint(je.joint)
         }
         world.destroyBody(thing.body)
+        if(thing.light != null && thing.light.isActive()) {
+          thing.light.setActive(false)
+          thing.light.dispose()
+        }
         thingDb -= thing
       }
 

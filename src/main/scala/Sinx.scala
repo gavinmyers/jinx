@@ -30,16 +30,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       room.init(target)
       if (GameLoader.player == null) {
         GameLoader.player = new Lilac("player", room, 0, 0, 1.0f, 1.0f)
+        //GameLoader.player.weapon = new
         GameLoader.player.brain = null
         GameLoader.player.runMaxVelocity = 5f
       }
       GameLoader.room = room
     }
     GameLoader.player.goto(GameLoader.room,GameLoader.room.startX, GameLoader.room.startY)
-    GameLoader.player.light = new PointLight(GameLoader.room.handler, 128, new Color(1f, 1f, 1f, 0.8f), 24, 0, 0)
+    /*
+    GameLoader.player.light = new PointLight(GameLoader.room.handler, 128, new Color(1f, 1f, 1f, 0.4f), 24, 0, 0)
     GameLoader.player.light.attachToBody(GameLoader.player.body, 0, 0)
     GameLoader.player.light.setIgnoreAttachedBody(true)
     GameLoader.player.light.setContactFilter(0, 2, -1)
+    */
   }
 
   override def render(): Unit = {
@@ -142,6 +145,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       player.stop(GameLoader.gameTime)
 
     if (Input.Keys.UP == keycode)
+      player.fall(GameLoader.gameTime)
+
+    if (Input.Keys.DOWN == keycode)
       player.fall(GameLoader.gameTime)
 
     if (Input.Keys.SPACE == keycode)

@@ -1,3 +1,5 @@
+import box2dLight.PointLight
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.{Batch, Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
@@ -17,7 +19,7 @@ class Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], p
 
 
   var damage:Float = 1
-
+  var lightIntensity:Float = 0.3f
   var fixture: Fixture = _
   var attacker:Thing = _
   var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
@@ -48,6 +50,12 @@ class Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], p
 
     body.setUserData(sprite)
     fixture.setUserData(this)
+
+    light = new PointLight(location.handler, 24, new Color(1f, 1f, 1f, lightIntensity), 4, 0, 0)
+    light.attachToBody(body, 0, 0)
+    light.setIgnoreAttachedBody(true)
+    light.setContactFilter(0, 2, -1)
+
 
     room.bulletDb += this
     room.thingDb += this

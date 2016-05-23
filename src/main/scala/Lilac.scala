@@ -31,4 +31,5 @@ class Lilac(name:String,
 
   this.life = 100
 
+  this.weapon = new Claw(this)
 }

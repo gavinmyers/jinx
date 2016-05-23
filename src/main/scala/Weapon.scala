@@ -13,17 +13,33 @@ object Weapon {
   }
 }
 
-class Weapon(controller:Being) {
-
-
+class Weapon(controller:Being) extends Thing(controller.location) {
   var lastAttack:Float= 0
   var cooldown:Float = 0.3f
   var attacking:Boolean = false
 
-  def update(gameTime:Float): Unit = {
+  override def update(gameTime:Float): Unit = {
     if(lastAttack + cooldown < gameTime) {
       attacking = false
     }
+  }
+
+  def attackXY():Tuple2[Float,Float] = {
+
+    var x = controller.sprite.getX
+    if(controller.mov_h.equalsIgnoreCase("") && (controller.mov_v.equalsIgnoreCase("U") || controller.mov_v.equalsIgnoreCase("D"))) {
+      x += (controller.width / 2)
+    } else if(controller.face_h.equalsIgnoreCase("R")) {
+      x += controller.width
+    }
+
+    var y = controller.sprite.getY + (controller.height / 2)
+    if(controller.mov_v.equalsIgnoreCase("U")) {
+      y += controller.height
+    } else if(controller.mov_v.equalsIgnoreCase("D")) {
+      y -= controller.height
+    }
+    return (x,y)
   }
 
   def attack(gameTime:Float): Unit = {
@@ -32,17 +48,14 @@ class Weapon(controller:Being) {
     }
     attacking = true
     lastAttack = gameTime
+    fire()
+  }
 
-    var x = controller.sprite.getX
-    if(controller.face_h.equalsIgnoreCase("R")) {
-      x += controller.width
-    }
-    val y = controller.sprite.getY + (controller.height / 2)
-
-    val b: Bullet = new Bullet("bullet_" + Math.random(), controller.location, Weapon.sheetTextures, x, y, controller.scaleX, controller.scaleY)
+  def fire() :Unit = {
+    def xy = attackXY()
+    val b: Bullet = new Bullet("bullet_" + Math.random(), controller.location, Weapon.sheetTextures, xy._1, xy._2, controller.scaleX, controller.scaleY)
     b.mov_h = controller.face_h
     b.attacker = controller
-
   }
 
 }

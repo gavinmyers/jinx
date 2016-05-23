@@ -39,6 +39,10 @@ class Being(name: String,
     this.location.monsterDb -= name
     this.location.thingDb -= this
     if(this.body != null) {
+      if(light != null && light.isActive()) {
+        light.setActive(false)
+        light.dispose()
+      }
       for (je: JointEdge <- body.getJointList) {
         this.location.world.destroyJoint(je.joint)
       }

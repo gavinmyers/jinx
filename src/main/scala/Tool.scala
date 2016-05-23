@@ -41,7 +41,7 @@ class Tool(room:Room, texture:TextureRegion, posX:Float, posY:Float) extends Thi
         f.filter.categoryBits = Thing.tool
         f.filter.maskBits = Thing.floor
         f.shape = shape
-        shape.setAsBox(GameUtil.pixelsToMeters(width / 2f), GameUtil.pixelsToMeters(height / 2f))
+        shape.setAsBox(GameUtil.pixelsToMeters(width / 3f), GameUtil.pixelsToMeters(height / 3f))
         f.friction = 0f; f})
 
     body.setUserData(sprite)
