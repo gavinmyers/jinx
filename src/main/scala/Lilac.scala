@@ -29,6 +29,10 @@ class Lilac(name:String,
     scaleX:Float,
     scaleY:Float) {
 
+  override def init():Unit = {
+    this.luminance = 0.4f
+  }
+
   this.life = 100
 
   this.weapon = new Claw(this)

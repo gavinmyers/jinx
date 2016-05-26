@@ -16,6 +16,7 @@ object Thing  {
 class Thing(r:Room) {
   var location:Room = r
   var light:PositionalLight = _
+  var luminance:Float = 0f
   var name:String = ""
   var created:Float = 0
   var mov_h:String = ""

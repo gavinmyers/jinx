@@ -1,4 +1,5 @@
 import box2dLight.{PointLight, RayHandler}
+import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
@@ -17,6 +18,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def create(): Unit = {
     Gdx.input.setInputProcessor(this)
+    def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("Sergey_Cheremisinov_-_05_-_Fog.mp3"))
+    mp3Sound.play(0.5f)
     loadLevel("level01", "level01_w")
   }
 

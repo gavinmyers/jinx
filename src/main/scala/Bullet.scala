@@ -19,7 +19,8 @@ class Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], p
 
 
   var damage:Float = 1
-  var lightIntensity:Float = 0.3f
+  luminance = 0.3f
+
   var fixture: Fixture = _
   var attacker:Thing = _
   var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
@@ -51,11 +52,12 @@ class Bullet(name:String, room:Room, animationSheet:ListBuffer[TextureRegion], p
     body.setUserData(sprite)
     fixture.setUserData(this)
 
-    light = new PointLight(location.handler, 24, new Color(1f, 1f, 1f, lightIntensity), 4, 0, 0)
-    light.attachToBody(body, 0, 0)
-    light.setIgnoreAttachedBody(true)
-    light.setContactFilter(0, 2, -1)
-
+    if(luminance > 0f) {
+      light = new PointLight(location.handler, 24, new Color(1f, 1f, 1f, luminance), 4, 0, 0)
+      light.attachToBody(body, 0, 0)
+      light.setIgnoreAttachedBody(true)
+      light.setContactFilter(0, 2, -1)
+    }
 
     room.bulletDb += this
     room.thingDb += this

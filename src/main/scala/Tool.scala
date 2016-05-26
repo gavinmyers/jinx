@@ -1,4 +1,5 @@
-import com.badlogic.gdx.graphics.Texture
+import box2dLight.PointLight
+import com.badlogic.gdx.graphics.{Color, Texture}
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
 
@@ -46,6 +47,14 @@ class Tool(room:Room, texture:TextureRegion, posX:Float, posY:Float) extends Thi
 
     body.setUserData(sprite)
     fixture.setUserData(this)
+
+    if(luminance > 0f) {
+      light = new PointLight(location.handler, 24, new Color(1f, 1f, 1f, luminance), 4, 0, 0)
+      light.attachToBody(body, 0, 0)
+      light.setIgnoreAttachedBody(true)
+      //light.setContactFilter(0, 2, -1)
+    }
+
     room.toolDb += this
     room.thingDb += this
   }

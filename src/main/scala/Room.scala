@@ -72,11 +72,10 @@ class Room(name:String) {
     start(target)
     drawLayer("ground")
     drawLadder("ladder")
-
+    new Lantern(this, startX, startY)
     for (mo: MapObject <- levelMap.getLayers.get("positions").getObjects) {
       if ("target".equalsIgnoreCase(mo.getName)) {
         //new Phoenix("phoenix", this, startX, startY, 1.0f, 1.0f)
-        new Fishingrod(this, startX, startY)
       }
       if ("exit".equalsIgnoreCase(mo.getName)) {
         def r = mo.asInstanceOf[RectangleMapObject].getRectangle

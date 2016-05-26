@@ -59,6 +59,10 @@ class Being(name: String,
   }
 
   def buildBody(newPosX:Float, newPosY:Float):Unit = {
+    if(this.sprite == null) {
+      this.sprite = new Sprite(animationSheet.head)
+    }
+
     sprite.setScale(scaleX, scaleY)
     this.width = sprite.getWidth * scaleX
     this.height = sprite.getHeight * scaleY
@@ -123,6 +127,14 @@ class Being(name: String,
             new Vector2(0f, GameUtil.pixelsToMeters(height / 2.5f)), 0)
         f
       })
+
+    if(luminance > 0f) {
+      light = new PointLight(location.handler, 24, new Color(1f, 1f, 1f, luminance), 4, 0, 0)
+      light.attachToBody(body, 0, 0)
+      light.setIgnoreAttachedBody(true)
+      light.setContactFilter(0, 2, -1)
+    }
+
     fixture.setUserData(this)
   }
 
