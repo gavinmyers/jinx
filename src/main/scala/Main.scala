@@ -4,10 +4,10 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration
 object Main {
   def main(args: Array[String]): Unit = {
     val config:LwjglApplicationConfiguration = new LwjglApplicationConfiguration()
-    config.width = 12 * 48
-    config.height = 8 * 48
+    config.width = 24 * 48
+    config.height = 16 * 48
 
-    config.fullscreen = true
+    config.fullscreen = false
     //println(config.fullscreen)
     new LwjglApplication(new Sinx(), config)
   }

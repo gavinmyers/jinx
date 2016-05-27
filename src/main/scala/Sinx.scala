@@ -18,7 +18,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def create(): Unit = {
     Gdx.input.setInputProcessor(this)
-    def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("Sergey_Cheremisinov_-_05_-_Fog.mp3"))
+    def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
     mp3Sound.play(0.5f)
     loadLevel("level01", "level01_w")
   }
@@ -82,11 +82,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Gdx.input.isKeyJustPressed(Input.Keys.D))
       debug = !debug
 
+    def width:Float = Gdx.graphics.getWidth
+    def height:Float = Gdx.graphics.getHeight() * 0.45f
+
     {
       var sr: ShapeRenderer = new ShapeRenderer()
       sr.setColor(Color.BLACK)
       sr.begin(ShapeType.Filled)
-      sr.box(0f, 0f, 0f, Gdx.graphics.getWidth(), 400f, 0f)
+      sr.box(0f, 0f, 0f, width, height, 0f)
       sr.end()
     }
 
@@ -94,7 +97,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       var sr: ShapeRenderer = new ShapeRenderer()
       sr.setColor(Color.DARK_GRAY)
       sr.begin(ShapeType.Filled)
-      sr.box(0f, 400f, 0f, Gdx.graphics.getWidth(), 6f, 0f)
+      sr.box(0f, height, 0f, width, 6f, 0f)
       sr.end()
     }
 
@@ -103,7 +106,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       var sr: ShapeRenderer = new ShapeRenderer()
       sr.setColor(Color.GREEN)
       sr.begin(ShapeType.Filled)
-      sr.box(0f, 400f, 0f, Gdx.graphics.getWidth() * (player.life / player.lifeMax), 4f, 0f)
+      sr.box(0f, height, 0f,width * (player.life / player.lifeMax), 4f, 0f)
       sr.end()
     }
 
