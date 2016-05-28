@@ -30,7 +30,7 @@ class Lilac(name:String,
     scaleY:Float) {
 
   override def init():Unit = {
-    //this.luminance = 0.4f
+    this.luminance = 0.5f
   }
 
   this.life = 100

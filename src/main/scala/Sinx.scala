@@ -48,7 +48,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     */
   }
 
+  var f:Float = 0.2f
   override def render(): Unit = {
+    //f += 0.01f
+    GameLoader.room.handler.setAmbientLight(f, f, f, 0.6f)
     if ("".equalsIgnoreCase(GameLoader.goto) == false) {
       loadLevel(GameLoader.goto, GameLoader.target)
       GameLoader.goto = ""
@@ -104,7 +107,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     {
       def player = GameLoader.player
       var sr: ShapeRenderer = new ShapeRenderer()
-      sr.setColor(Color.GREEN)
+      sr.setColor(Color.GRAY)
       sr.begin(ShapeType.Filled)
       sr.box(0f, height, 0f,width * (player.life / player.lifeMax), 4f, 0f)
       sr.end()
