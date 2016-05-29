@@ -15,19 +15,18 @@ import scala.collection.mutable.ListBuffer
 class Room(name:String) {
   var gameTime:Float = 0
 
-  lazy val batch: SpriteBatch = new SpriteBatch()
-  lazy val camera: OrthographicCamera = new OrthographicCamera()
-  lazy val guiCamera: OrthographicCamera = new OrthographicCamera()
-  lazy val parallalaxCameras:Array[OrthographicCamera] = Array.fill[OrthographicCamera](10)(new OrthographicCamera())
+  val batch: SpriteBatch = new SpriteBatch()
+  val camera: OrthographicCamera = new OrthographicCamera()
+  val guiCamera: OrthographicCamera = new OrthographicCamera()
+  val parallalaxCameras:Array[OrthographicCamera] = Array.fill[OrthographicCamera](10)(new OrthographicCamera())
 
+  val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
 
-  lazy val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
+  val world: World = new World(new Vector2(0, -75f), true)
+  val handler:RayHandler = new RayHandler(world)
 
-  lazy val world: World = new World(new Vector2(0, -75f), true)
-  lazy val handler:RayHandler = new RayHandler(world)
-
-  var levelMap:TiledMap = _
-  var levelMapRenderer:OrthogonalTiledMapRenderer = _
+  var levelMap:TiledMap = new TmxMapLoader().load(name + ".tmx")
+  var levelMapRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
 
 
   var monsterDb:scala.collection.mutable.Map[String,Being] = scala.collection.mutable.Map[String,Being]()
@@ -41,11 +40,19 @@ class Room(name:String) {
   var startX:Float = 0f
   var startY:Float = 0f
 
+  var defaultX:Float = 0f
+  var defaultY:Float = 0f
+
   GameLoader.roomDb += name -> this
 
   def start(target:String): Unit = {
     for (mo: MapObject <- levelMap.getLayers.get("positions").getObjects) {
       if ("target".equalsIgnoreCase(mo.getName)) {
+        if (mo.getProperties.get("default") != null) {
+          def r = mo.asInstanceOf[RectangleMapObject].getRectangle
+          this.defaultX = r.x
+          this.defaultY = r.y
+        }
         if (target.equalsIgnoreCase(mo.getProperties.get("id").toString)) {
           def r = mo.asInstanceOf[RectangleMapObject].getRectangle
           this.startX = r.x
@@ -56,8 +63,7 @@ class Room(name:String) {
   }
 
   def init(target:String):Unit = {
-    this.levelMap = new TmxMapLoader().load(name + ".tmx")
-    this.levelMapRenderer = new OrthogonalTiledMapRenderer(levelMap)
+
 
     this.camera.setToOrtho(false)
     this.parallalaxCameras.map(x => x.setToOrtho(false))
@@ -72,7 +78,7 @@ class Room(name:String) {
     start(target)
     drawLayer("ground")
     drawLadder("ladder")
-    new Lantern(this, startX, startY)
+    new Lantern(this, defaultX, defaultY)
     for (mo: MapObject <- levelMap.getLayers.get("positions").getObjects) {
       if ("target".equalsIgnoreCase(mo.getName)) {
         //new Phoenix("phoenix", this, startX, startY, 1.0f, 1.0f)
@@ -145,10 +151,10 @@ class Room(name:String) {
     position.y = startY
 
     backgroundPallalaxTmp(0).y = position.y
-    backgroundPallalaxTmp(0).x = startX
+    backgroundPallalaxTmp(0).x = defaultX
     var spd = 0.1f
     for (i <- 1 to 9) {
-      backgroundPallalaxTmp(i).x = startX - ((startX - player.sprite.getX) * spd)
+      backgroundPallalaxTmp(i).x = defaultX - ((defaultX - player.sprite.getX) * spd)
       backgroundPallalaxTmp(i).y = position.y
       spd += 0.1f
     }

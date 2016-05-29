@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
+import display.Scene
 
 import scala.collection.JavaConversions._
 
@@ -16,7 +17,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var debug: Boolean = false
   var downButtons: Float = 0
 
+  var scene:Scene = _
   override def create(): Unit = {
+    scene = new Scene("level01")
+    return
+
     Gdx.input.setInputProcessor(this)
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
     mp3Sound.play(0.5f)
@@ -48,9 +53,15 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     */
   }
 
-  var f:Float = 0.2f
+
   override def render(): Unit = {
-    //f += 0.01f
+    scene.render()
+
+
+
+    return
+
+    val f:Float = 0.2f
     GameLoader.room.handler.setAmbientLight(f, f, f, 0.6f)
     if ("".equalsIgnoreCase(GameLoader.goto) == false) {
       loadLevel(GameLoader.goto, GameLoader.target)
