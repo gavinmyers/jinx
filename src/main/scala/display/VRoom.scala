@@ -23,6 +23,7 @@ class VRoom(map:String, room:Room) {
   val tileRenderer:OrthogonalTiledMapRenderer = new OrthogonalTiledMapRenderer(tiles)
 
   val camera:OrthographicCamera = new OrthographicCamera()
+  val parallalaxCameras:Array[OrthographicCamera] = Array.fill[OrthographicCamera](10)(new OrthographicCamera())
 
   val debugRenderer: Box2DDebugRenderer = new Box2DDebugRenderer()
   val world: World = new World(new Vector2(0, -75f), true)
@@ -57,7 +58,9 @@ class VRoom(map:String, room:Room) {
     ret
   }
 
+  var xOffset:Float = 0.01f
   def render():Unit = {
+    xOffset -= 1f
     Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
@@ -65,10 +68,41 @@ class VRoom(map:String, room:Room) {
     camera.setToOrtho(false)
     camera.translate(0, 0, 0)
     camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)
-    camera.position.set(cameraStart)
+    val position: Vector3 = new Vector3(cameraStart.x, cameraStart.y, cameraStart.z)
+    position.x = cameraStart.x - xOffset
+    camera.position.set(position)
     camera.update()
 
+    var spd = 0.1f
+    val backgroundPallalaxTmp: Array[Vector3] = Array.fill[Vector3](10)(new Vector3())
+    for (i <- 0 to 9) {
+      backgroundPallalaxTmp(i).x = cameraStart.x - (xOffset * spd)
+      backgroundPallalaxTmp(i).y = cameraStart.y
+      spd += 0.1f
+    }
+
+
     world.step(Gdx.graphics.getDeltaTime, 6, 2)
+
+    for (i <- 0 to 9) {
+      val cam:OrthographicCamera = parallalaxCameras(i)
+      cam.zoom = 0.5f
+      cam.setToOrtho(false)
+      cam.translate(0,0,0)
+      cam.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)
+      cam.position.set(backgroundPallalaxTmp(i))
+      cam.update()
+
+      batch.setProjectionMatrix(cam.combined)
+      batch.begin()
+      def x: Float = cam.position.x - cam.viewportWidth * cam.zoom
+      def y: Float = cam.position.y - cam.viewportHeight * cam.zoom
+      def width: Float = cam.viewportWidth * cam.zoom * 2
+      def height: Float = cam.viewportHeight * cam.zoom * 4
+      tileRenderer.setView(cam.combined, x, y, width, height)
+      tileRenderer.render(Array(i))
+      batch.end()
+    }
 
     handler.setCombinedMatrix(camera)
     batch.setProjectionMatrix(camera.combined)
@@ -78,8 +112,13 @@ class VRoom(map:String, room:Room) {
       fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.sprite.draw(batch)
     }
-
     batch.end()
+
+    batch.begin()
+    tileRenderer.setView(camera)
+    tileRenderer.render(Array(13, 14, 15, 16, 17, 18, 19, 20, 21, 22))
+    batch.end()
+
 
     handler.updateAndRender()
 

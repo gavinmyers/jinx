@@ -21,8 +21,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var scene:VRoom = _
 
   override def create(): Unit = {
-    val room:generics.Room = Tiled.mapToRoom("level01")
-    scene = new VRoom("level01",room)
+    val level01:generics.Room = Tiled.mapToRoom("level01")
+    val forest01:generics.Room = Tiled.mapToRoom("forest01")
+    scene = new VRoom("level01",level01)
     return
 
     Gdx.input.setInputProcessor(this)

@@ -6,6 +6,7 @@ class Entrance(
             var id: String = java.util.UUID.randomUUID.toString,
             var location: Thing,
             var destroyed: Boolean = false,
+            var default:Boolean = false,
             var posX: Float = 1.0f,
             var posY: Float = 1.0f,
             var height: Float = 100f,

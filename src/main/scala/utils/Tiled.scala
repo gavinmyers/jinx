@@ -10,7 +10,7 @@ import scala.collection.JavaConversions._
 object Tiled {
 
   def mapToRoom(map:String):Room = {
-    val r:Room = new Room()
+    val r:Room = new Room(id=map)
     val tiles:TiledMap = new TmxMapLoader().load(map + ".tmx")
     val w: Int = 24
     val h: Int = 24
@@ -29,10 +29,10 @@ object Tiled {
     for (mo: MapObject <- tiles.getLayers.get("positions").getObjects) {
       def rct = mo.asInstanceOf[RectangleMapObject].getRectangle
       if ("exit".equalsIgnoreCase(mo.getName)) {
-        r.enter(new Exit(location = r, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
+        r.enter(new Exit(location = r, destination=mo.getProperties.get("goto").toString, entrance=mo.getProperties.get("target").toString, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
       }
       if ("target".equalsIgnoreCase(mo.getName)) {
-        r.enter(new Entrance(location = r, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
+        r.enter(new Entrance(id=mo.getProperties.get("id").toString, default=mo.getProperties.containsKey("default"), location = r, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
       }
     }
     return r
