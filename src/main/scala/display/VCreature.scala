@@ -2,24 +2,26 @@ package display
 
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Batch, Sprite}
 import com.badlogic.gdx.physics.box2d._
-import generics.{Entity}
+import generics.{Creature, Thing}
 import _root_.utils.Conversion
 
-class Feature(var entity: Entity, world:World, texture:TextureRegion) {
+import scala.collection.mutable.ListBuffer
 
-  var sprite:Sprite = new Sprite(texture)
-  sprite.setScale(entity.scaleX, entity.scaleY)
+class VCreature(var creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
-  var scaleX:Float = entity.scaleX
-  var scaleY:Float = entity.scaleY
-  var posX:Float = entity.posX
-  var posY:Float = entity.posY
+  var sprite:Sprite = new Sprite(animationSheet.head)
+  sprite.setScale(creature.scaleX, creature.scaleY)
+
+  var scaleX:Float = creature.scaleX
+  var scaleY:Float = creature.scaleY
+  var posX:Float = creature.posX
+  var posY:Float = creature.posY
 
   var body:Body = world.createBody({
     val b: BodyDef = new BodyDef()
     b.`type` = BodyDef.BodyType.StaticBody
     b.fixedRotation = true
-    b.position.set(Conversion.pixelsToMeters(entity.posX), Conversion.pixelsToMeters(entity.posY))
+    b.position.set(Conversion.pixelsToMeters(creature.posX), Conversion.pixelsToMeters(creature.posY))
     b
   })
   body.setUserData(sprite)

@@ -4,7 +4,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
-import display.Scene
+import display.VRoom
+import utils.Tiled
 
 import scala.collection.JavaConversions._
 
@@ -17,9 +18,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var debug: Boolean = false
   var downButtons: Float = 0
 
-  var scene:Scene = _
+  var scene:VRoom = _
+
   override def create(): Unit = {
-    scene = new Scene("level01")
+    val room:generics.Room = Tiled.mapToRoom("level01")
+    scene = new VRoom("level01",room)
     return
 
     Gdx.input.setInputProcessor(this)
