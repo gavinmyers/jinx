@@ -1,17 +1,13 @@
 package display
 
-import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
-import game.Thing
+import game.{Thing, Tool}
 import _root_.utils.Conversion
 
-import scala.collection.mutable.ListBuffer
+class VInteraction(entity: Thing, world:World, textureRegion: TextureRegion) extends VThing {
 
-
-class VTile(entity: Thing, world:World) extends VThing {
-
-  var sprite:Sprite = new Sprite(VThing.sheetTextures(13))
+  var sprite:Sprite = new Sprite(textureRegion)
   sprite.setScale(entity.scaleX, entity.scaleY)
 
   var scaleX:Float = entity.scaleX
@@ -32,11 +28,13 @@ class VTile(entity: Thing, world:World) extends VThing {
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
     f.isSensor = false
+    f.filter.categoryBits = Thing.nothing
+    f.filter.maskBits = Thing.floor
     f.shape = shape
-    f.filter.categoryBits = Thing.floor
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
     f.friction = 5f
     f
   })
   fixture.setUserData(this)
 }
+

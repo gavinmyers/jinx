@@ -1,4 +1,4 @@
-package generics
+package game
 
 import scala.collection.mutable
 
@@ -13,8 +13,8 @@ class Room(
   override def weight: Float = 0f
   override def category: Short = Thing.nothing
   override def description: String = "It's a room"
-  override def posX: Float = 1.0f
-  override def posY: Float = 1.0f
+  override def startX: Float = 1.0f
+  override def startY: Float = 1.0f
   override def height: Float = 100f
   override def width: Float = 100f
   override def location: Thing = null

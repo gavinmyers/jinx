@@ -4,7 +4,7 @@ import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import display.{VTile, VThing}
-import generics.{Entrance, Exit, Tile, Room}
+import game.{Entrance, Exit, Tile, Room}
 import scala.collection.JavaConversions._
 
 object Tiled {
@@ -22,17 +22,19 @@ object Tiled {
           val px: Float = x * w + 12f
           val py: Float = y * h + 12f
           val t: TiledMapTile = c.getTile
-          r.enter(new Tile(posX=px, posY=py))
+          r.enter(new Tile(startX=px, startY=py))
         }
       }
     }
     for (mo: MapObject <- tiles.getLayers.get("positions").getObjects) {
       def rct = mo.asInstanceOf[RectangleMapObject].getRectangle
+      val px:Float = rct.x + 12
+      val py:Float = rct.y + 12
       if ("exit".equalsIgnoreCase(mo.getName)) {
-        r.enter(new Exit(location = r, destination=mo.getProperties.get("goto").toString, entrance=mo.getProperties.get("target").toString, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
+        r.enter(new Exit(location = r, destination=mo.getProperties.get("goto").toString, entrance=mo.getProperties.get("target").toString, startX=px, startY=py, height = rct.height, width = rct.width))
       }
       if ("target".equalsIgnoreCase(mo.getName)) {
-        r.enter(new Entrance(id=mo.getProperties.get("id").toString, default=mo.getProperties.containsKey("default"), location = r, posX=rct.x+12f, posY=rct.y+12f, height = rct.height, width = rct.width))
+        r.enter(new Entrance(id=mo.getProperties.get("id").toString, default=mo.getProperties.containsKey("default"), location = r, startX=px, startY=py, height = rct.height, width = rct.width))
       }
     }
     return r

@@ -1,17 +1,16 @@
-package generics
+package game
 
 import scala.collection.mutable
 
-class Exit(
+class Tile(
             var id: String = java.util.UUID.randomUUID.toString,
-            var location: Thing,
-            var destination:String,
-            var entrance:String,
+            var location: Thing = null,
             var destroyed: Boolean = false,
-            var posX: Float = 1.0f,
-            var posY: Float = 1.0f,
+            var startX: Float = 1.0f,
+            var startY: Float = 1.0f,
             var height: Float = 100f,
-            var width: Float = 100f)
+            var width: Float = 100f,
+            var inventory: mutable.Map[String, Thing] = scala.collection.mutable.Map[String, Thing]())
   extends Thing {
 
   override def scaleX: Float = 1.0f
@@ -20,7 +19,5 @@ class Exit(
   override def weight: Float = 0f
   override def category: Short = Thing.floor
   override def description: String = "It's the floor"
-  override def inventory: mutable.Map[String, Thing] = scala.collection.mutable.Map[String, Thing]()
 
 }
-

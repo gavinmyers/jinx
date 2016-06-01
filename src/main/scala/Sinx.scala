@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.VRoom
+import game.{GenericTool, GenericCreature, Entrance}
 import utils.Tiled
 
 import scala.collection.JavaConversions._
@@ -19,17 +20,26 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var downButtons: Float = 0
 
   var scene:VRoom = _
+  var lilac:GenericCreature = _
 
   override def create(): Unit = {
-    val level01:generics.Room = Tiled.mapToRoom("level01")
-    val forest01:generics.Room = Tiled.mapToRoom("forest01")
-    scene = new VRoom("level01",level01)
-    return
+    val level01:game.Room = Tiled.mapToRoom("level01")
+    for((k,thing) <- level01.inventory) {
+      if(thing.category == game.Thing.entrance && thing.asInstanceOf[Entrance].default) {
+        lilac = new GenericCreature(category = game.Thing.lilac, location=level01, startX=thing.startX, startY=thing.startY + 50)
+        level01.enter(lilac)
+        level01.enter(new GenericTool(category = game.Thing.lantern, location=level01, startX=thing.startX + 50, startY=thing.startY + 25))
+      }
+    }
+//    r.enter(new Lilac(location = r,startX=px, startY=py))
+    //val forest01:game.Room = Tiled.mapToRoom("forest01")
 
+    scene = new VRoom("level01",level01)
     Gdx.input.setInputProcessor(this)
+
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
-    mp3Sound.play(0.5f)
-    loadLevel("level01", "level01_w")
+    //mp3Sound.play(0.5f)
+    //loadLevel("level01", "level01_w")
   }
 
   def loadLevel(level: String, target: String): Unit = {
@@ -59,7 +69,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
 
   override def render(): Unit = {
-    scene.render()
+    println(lilac.lastX + " , " + scene.cameraStart.x)
+    scene.render(lilac.lastX, lilac.lastY)
 
 
 
@@ -135,39 +146,38 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   override def keyDown(keycode: Int): Boolean = {
-    if (GameLoader.player == null) return false
 
-    def player = GameLoader.player
 
     if (Input.Keys.LEFT == keycode)
-      player.moveLeft(GameLoader.gameTime)
+      lilac.moveLeft()
 
     if (Input.Keys.RIGHT == keycode)
-      player.moveRight(GameLoader.gameTime)
+      lilac.moveRight()
 
     if (Input.Keys.UP == keycode)
-      player.moveUp(GameLoader.gameTime)
+      lilac.moveUp()
 
     if (Input.Keys.DOWN == keycode)
-      player.moveDown(GameLoader.gameTime)
+      lilac.moveDown()
 
+    if (Input.Keys.Z == keycode)
+      lilac.jump = true
+/*
     if (Input.Keys.Z == keycode)
       player.jump(GameLoader.gameTime)
 
     if (Input.Keys.X == keycode)
       player.attack(GameLoader.gameTime)
-
+*/
     true
   }
 
   override def keyUp(keycode: Int): Boolean = {
-    if (GameLoader.player == null) return false
-
-    def player = GameLoader.player
 
     if (Input.Keys.LEFT == keycode && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Input.Keys.RIGHT == keycode && !Gdx.input.isKeyPressed(Input.Keys.LEFT))
-      player.stop(GameLoader.gameTime)
+      lilac.stop()
 
+/*
     if (Input.Keys.UP == keycode)
       player.fall(GameLoader.gameTime)
 
@@ -176,7 +186,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.SPACE == keycode)
       player.attack(GameLoader.gameTime)
-
+*/
     true
   }
 

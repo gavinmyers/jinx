@@ -1,17 +1,26 @@
 package display
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{TextureRegion, Sprite}
 import com.badlogic.gdx.physics.box2d._
-import game.Thing
+import game.{Tool, Thing}
 import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
 
+object VTool {
+  def sheet = new Texture("things.png")
+  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(sheet, 24, 24)) {
+    for(tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
+}
 
-class VTile(entity: Thing, world:World) extends VThing {
+class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VThing {
 
-  var sprite:Sprite = new Sprite(VThing.sheetTextures(13))
+  var sprite:Sprite = new Sprite(textureRegion)
   sprite.setScale(entity.scaleX, entity.scaleY)
 
   var scaleX:Float = entity.scaleX
@@ -21,7 +30,7 @@ class VTile(entity: Thing, world:World) extends VThing {
 
   var body:Body = world.createBody({
     val b: BodyDef = new BodyDef()
-    b.`type` = BodyDef.BodyType.StaticBody
+    b.`type` = BodyDef.BodyType.DynamicBody
     b.fixedRotation = true
     b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
     b
@@ -32,8 +41,9 @@ class VTile(entity: Thing, world:World) extends VThing {
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
     f.isSensor = false
+    f.filter.categoryBits = Thing.tool
+    f.filter.maskBits = Thing.floor
     f.shape = shape
-    f.filter.categoryBits = Thing.floor
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
     f.friction = 5f
     f

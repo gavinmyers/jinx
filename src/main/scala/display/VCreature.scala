@@ -1,39 +1,237 @@
 package display
 
-import com.badlogic.gdx.graphics.g2d.{TextureRegion, Batch, Sprite}
+import box2dLight.PointLight
+import com.badlogic.gdx.graphics.{Texture, Color}
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion, Batch, Sprite}
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import generics.{Creature, Thing}
+import game.{Creature, Thing}
 import _root_.utils.Conversion
+import scala.collection.JavaConversions._
 
 import scala.collection.mutable.ListBuffer
 
-class VCreature(var creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
+object VLilac {
+  def sheet = new Texture("jayden.png")
+  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(sheet, 24, 24)) {
+    for(tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
+}
+
+class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
   var sprite:Sprite = new Sprite(animationSheet.head)
   sprite.setScale(creature.scaleX, creature.scaleY)
 
   var scaleX:Float = creature.scaleX
   var scaleY:Float = creature.scaleY
-  var posX:Float = creature.posX
-  var posY:Float = creature.posY
+  var startX:Float = creature.startX
+  var startY:Float = creature.startY
 
-  var body:Body = world.createBody({
-    val b: BodyDef = new BodyDef()
-    b.`type` = BodyDef.BodyType.StaticBody
-    b.fixedRotation = true
-    b.position.set(Conversion.pixelsToMeters(creature.posX), Conversion.pixelsToMeters(creature.posY))
-    b
-  })
-  body.setUserData(sprite)
+  var width:Float = sprite.getWidth * scaleX
+  var height:Float = sprite.getHeight * scaleY
 
-  val fixture: Fixture = body.createFixture({
-    val f: FixtureDef = new FixtureDef()
-    val shape: PolygonShape = new PolygonShape()
-    f.isSensor = false
-    f.shape = shape
-    shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
-    f.friction = 5f
-    f
-  })
+  var walkRightAnimation: Animation = new Animation(0.15f, animationSheet(28), animationSheet(29))
+  var standRightAnimation: Animation = new Animation(0.15f, animationSheet(2))
+
+  var walkLeftAnimation: Animation = new Animation(0.15f, animationSheet(24), animationSheet(25))
+  var standLeftAnimation: Animation = new Animation(0.15f, animationSheet(3))
+
+  var climbAnimation: Animation = new Animation(0.25f, animationSheet(8), animationSheet(9))
+
+  var hurtAnimation: Animation = new Animation(0.25f, animationSheet(48))
+  var deathAnimation: Animation = new Animation(0.25f, animationSheet(72), animationSheet(73), animationSheet(74), animationSheet(75))
+
+  var attackAnimationLeft: Animation = new Animation(0.25f, animationSheet(40), animationSheet(41))
+  var attackAnimationRight: Animation = new Animation(0.25f, animationSheet(44), animationSheet(45))
+
+
+  var body:Body = world
+    .createBody(
+      {
+        val b: BodyDef = new BodyDef()
+        b.`type` = BodyDef.BodyType.DynamicBody
+        b.fixedRotation = true
+        b.position.set(Conversion.pixelsToMeters(startX), Conversion.pixelsToMeters(startY))
+        b
+      })
+
+  val fixture:Fixture = body.createFixture(
+    {
+      val f: FixtureDef = new FixtureDef()
+      var shape: Shape = new CircleShape()
+
+      f.filter.categoryBits = Thing.creature
+      f.filter.maskBits = (Thing.floor | Thing.creature).toShort
+
+      f.shape = shape
+      shape.setRadius(Conversion.pixelsToMeters(height / 2.2f))
+      f.friction = 0f
+      f
+    })
+
+
+  var hitArea:Fixture = body.createFixture(
+    {
+      val f: FixtureDef = new FixtureDef()
+      var shape: Shape = new CircleShape()
+      f.shape = shape
+
+      f.filter.categoryBits = Thing.creature
+      f.filter.maskBits = (Thing.floor | Thing.creature).toShort
+
+      shape.setRadius(Conversion.pixelsToMeters(height / 6.2f))
+      f.friction = 0f
+      f
+    })
+
+  val fixtureBottom:Fixture = body.createFixture(
+    {
+      val f = new FixtureDef
+      f.density = 0f
+      f.isSensor = true
+      f.shape = new PolygonShape()
+      f.shape.asInstanceOf[PolygonShape]
+        .setAsBox(Conversion.pixelsToMeters(width / 3f) / 2,
+          Conversion.pixelsToMeters(height / 4.5f),
+          new Vector2(0f, Conversion.pixelsToMeters(-1 * height / 2.5f)), 0)
+      f
+    })
+
+  var fixtureTop = body.createFixture(
+    {
+      val f = new FixtureDef
+      f.isSensor = true
+      f.density = 0f
+      f.shape = new PolygonShape()
+      f.shape.asInstanceOf[PolygonShape]
+        .setAsBox(Conversion.pixelsToMeters(width / 3f),
+          Conversion.pixelsToMeters(height / 4.5f),
+          new Vector2(0f, Conversion.pixelsToMeters(height / 2.5f)), 0)
+      f
+    })
+  
   fixture.setUserData(this)
+
+  def fall(gameTime: Float): Unit = {
+    creature.jumping = false
+    creature.movV = ""
+    body.setLinearVelocity(body.getLinearVelocity.x, body.getLinearVelocity.y * 0.9f)
+  }
+
+  def stop(gameTime: Float): Unit = {
+    body.setGravityScale(1f)
+    creature.movV = ""
+    body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
+    if (creature.faceH == "R") {
+      sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
+    } else if (creature.faceH == "L") {
+      sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
+    }
+  }
+
+  def canJump(): Boolean = {
+    for (contact: Contact <- world.getContactList) {
+      if (!contact.getFixtureB.isSensor
+        && contact.getFixtureA == fixtureBottom
+        && contact.getFixtureB.getBody != body) {
+        return true
+      }
+      if (!contact.getFixtureA.isSensor
+        && contact.getFixtureB == fixtureBottom
+        && contact.getFixtureA.getBody != body) {
+        return true
+      }
+    }
+    false
+  }
+
+  def canClimb(): Boolean = {
+    false
+  }
+
+  override def update(gameTime:Float):Unit = {
+    lastX = Conversion.metersToPixels(body.getPosition.x)
+    lastY = Conversion.metersToPixels(body.getPosition.y)
+    creature.lastX = lastX
+    creature.lastY = lastY
+
+    if (creature.lastDamage + creature.damageCooldown < gameTime) {
+      creature.takingDamage = false
+    }
+
+    if (canClimb || creature.canFly) {
+      body.setGravityScale(0f)
+    } else {
+      body.setGravityScale(1f)
+    }
+
+    if(creature.jump) {
+      if (canJump()) {
+        creature.jumping = true
+        creature.lastJump = gameTime
+      }
+      creature.jump = false
+    }
+
+    if (creature.dieing) {
+      sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
+
+    } else if (creature.takingDamage) {
+      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
+
+      /*     } else if (weapon.attacking) {
+            if (face_h == "R") {
+              sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
+            } else if (face_h == "L") {
+              sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+            }
+      */
+    } else if (!canClimb && creature.movH == "" && !creature.jumping) {
+      stop(gameTime)
+
+    } else {
+
+      if (creature.jumping) {
+        if (body.getLinearVelocity.y < creature.jumpMaxVelocity && creature.lastJump + creature.jumpMax > gameTime) {
+          var h:Float = 0f
+          if("R".equalsIgnoreCase(creature.movH)) {
+            h = 50f
+          } else if("L".equalsIgnoreCase(creature.movH)) {
+            h = -50f
+          }
+          body.applyForceToCenter(h, 250f, true)
+        } else {
+          fall(gameTime)
+        }
+      } else if (canClimb) {
+        if (creature.movV == "U") {
+          body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
+          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+        } else if (creature.movV == "D") {
+          body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
+          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+        } else {
+          body.setLinearVelocity(body.getLinearVelocity.x * .95f, body.getLinearVelocity.y * 0.7f)
+        }
+
+      }
+
+      if (creature.movH == "R") {
+        if (body.getLinearVelocity.x < creature.runMaxVelocity)
+          body.applyForceToCenter(15f, 0f, true)
+        //if (!weapon.attacking)
+        sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+      }
+      if (creature.movH == "L") {
+        if (body.getLinearVelocity.x > creature.runMaxVelocity * -1)
+          body.applyForceToCenter(-15f, 0f, true)
+        //if (!weapon.attacking)
+        sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+      }
+    }
+  }
 }
