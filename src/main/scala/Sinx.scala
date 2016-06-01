@@ -43,7 +43,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def render(): Unit = {
     if(scene.at(lilac.location.asInstanceOf[game.Room]) == false) {
-      println("new scene")
       scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
     }
     scene.render(lilac.lastX, lilac.lastY)

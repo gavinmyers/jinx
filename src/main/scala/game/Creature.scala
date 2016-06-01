@@ -85,6 +85,10 @@ class GenericCreature(
       this.location.leave(this)
       exit.destination.enter(this)
       this.location = exit.destination
+      this.startX = exit.entrance.startX
+      this.startY = exit.entrance.startY
+      this.lastX = startX
+      this.lastY = startY
     }
   }
 
