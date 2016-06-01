@@ -320,6 +320,7 @@
  <objectgroup name="positions">
   <object id="1" name="target" x="552" y="360" width="24" height="24">
    <properties>
+    <property name="default" value="1"/>
     <property name="id" value="forest01_w"/>
    </properties>
   </object>

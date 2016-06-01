@@ -79,5 +79,13 @@ class GenericCreature(
                        var inventory: mutable.Map[String, Thing] = scala.collection.mutable.Map[String, Thing]())
   extends Creature {
 
+  override def contact(thing:Thing): Unit = {
+    if(thing.isInstanceOf[Exit]) {
+      var exit:Exit = thing.asInstanceOf[Exit]
+      this.location.leave(this)
+      exit.destination.enter(this)
+      this.location = exit.destination
+    }
+  }
 
 }

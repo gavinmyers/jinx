@@ -72,7 +72,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       f.friction = 0f
       f
     })
-
+  fixture.setUserData(creature)
 
   var hitArea:Fixture = body.createFixture(
     {
@@ -87,6 +87,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       f.friction = 0f
       f
     })
+  hitArea.setUserData(creature)
 
   val fixtureBottom:Fixture = body.createFixture(
     {
@@ -100,6 +101,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
           new Vector2(0f, Conversion.pixelsToMeters(-1 * height / 2.5f)), 0)
       f
     })
+  fixtureBottom.setUserData(creature)
 
   var fixtureTop = body.createFixture(
     {
@@ -113,8 +115,9 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
           new Vector2(0f, Conversion.pixelsToMeters(height / 2.5f)), 0)
       f
     })
-  
-  fixture.setUserData(this)
+  fixtureTop.setUserData(creature)
+
+
 
   def fall(gameTime: Float): Unit = {
     creature.jumping = false
@@ -234,4 +237,5 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       }
     }
   }
+
 }

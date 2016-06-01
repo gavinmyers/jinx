@@ -28,13 +28,13 @@ class VInteraction(entity: Thing, world:World, textureRegion: TextureRegion) ext
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
     f.isSensor = false
-    f.filter.categoryBits = Thing.nothing
+    f.filter.categoryBits = Thing.interaction
     f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
     f.friction = 5f
     f
   })
-  fixture.setUserData(this)
+  fixture.setUserData(entity)
 }
 

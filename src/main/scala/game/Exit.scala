@@ -5,8 +5,8 @@ import scala.collection.mutable
 class Exit(
             var id: String = java.util.UUID.randomUUID.toString,
             var location: Thing,
-            var destination:String,
-            var entrance:String,
+            var destination:Thing,
+            var entrance:Thing,
             var destroyed: Boolean = false,
             var startX: Float = 1.0f,
             var startY: Float = 1.0f,

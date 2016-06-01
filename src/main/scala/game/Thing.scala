@@ -25,12 +25,16 @@ trait Thing {
     inventory -= thing.id
   }
 
+  def contact(thing:Thing) : Unit = {
+
+  }
+
 }
 
 object Thing {
   def nothing: Short = 0x00
   def floor: Short = 0x01
-
+  def interaction:Short = 0x02
   def exit:Short = 0x05
   def entrance:Short = 0x06
 

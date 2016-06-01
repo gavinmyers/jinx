@@ -10,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Vector2}
 import com.badlogic.gdx.physics.box2d.{World, Box2DDebugRenderer}
-import game.{Thing, Room, Tile}
+import game.{Creature, Thing, Room, Tile}
 import utils.Conversion
 import scala.collection.JavaConversions._
 
@@ -131,5 +131,25 @@ class VRoom(map:String, room:Room) {
     handler.setCombinedMatrix(debugMatrix)
     debugRenderer.render(world, debugMatrix)
 
+    for (c <- world.getContactList) {
+      var t1:Thing = null
+      var t2:Thing = null
+      if(c.getFixtureA.getUserData != null && c.getFixtureA.getUserData.isInstanceOf[Tile] == false) {
+        t1 = c.getFixtureA.getUserData.asInstanceOf[Thing]
+      }
+      if(c.getFixtureB.getUserData != null && c.getFixtureB.getUserData.isInstanceOf[Tile] == false) {
+        t2 = c.getFixtureB.getUserData.asInstanceOf[Thing]
+      }
+
+      if(t1 != null && t2 != null) {
+        t1.contact(t2)
+        t2.contact(t1)
+      }
+
+    }
+  }
+
+  def at(r2:Room): Boolean = {
+    return room == r2
   }
 }

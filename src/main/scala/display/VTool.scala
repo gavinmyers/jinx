@@ -48,5 +48,5 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
     f.friction = 5f
     f
   })
-  fixture.setUserData(this)
+  fixture.setUserData(entity)
 }

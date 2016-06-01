@@ -38,5 +38,5 @@ class VTile(entity: Thing, world:World) extends VThing {
     f.friction = 5f
     f
   })
-  fixture.setUserData(this)
+  fixture.setUserData(entity)
 }
