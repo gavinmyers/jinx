@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.VRoom
 import game.{GenericTool, GenericCreature, Entrance}
+import old.GameLoader
 import utils.Tiled
 
 import scala.collection.JavaConversions._
@@ -37,9 +38,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     Gdx.input.setInputProcessor(this)
 
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
-    //mp3Sound.play(0.5f)
+    mp3Sound.play(0.5f)
   }
-
 
   override def render(): Unit = {
     if(scene.at(lilac.location.asInstanceOf[game.Room]) == false) {

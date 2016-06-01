@@ -1,0 +1,5 @@
+package old
+
+class Poison {
+
+}
