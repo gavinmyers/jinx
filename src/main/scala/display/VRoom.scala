@@ -1,15 +1,15 @@
 package display
 
-import box2dLight.RayHandler
+import box2dLight.{PositionalLight, PointLight, RayHandler}
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.{GL20, OrthographicCamera}
+import com.badlogic.gdx.graphics.{Color, GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Vector2}
-import com.badlogic.gdx.physics.box2d.{World, Box2DDebugRenderer}
+import com.badlogic.gdx.physics.box2d.{JointEdge, World, Box2DDebugRenderer}
 import game.{Creature, Thing, Room, Tile}
 import utils.Conversion
 import scala.collection.JavaConversions._
@@ -29,7 +29,7 @@ class VRoom(map:String, room:Room) {
   val world: World = new World(new Vector2(0, -75f), true)
 
   val handler:RayHandler = new RayHandler(world)
-  this.handler.setAmbientLight(0.6f, 0.6f, 0.6f, 0.4f)
+  this.handler.setAmbientLight(0.3f, 0.3f, 0.3f, 0.2f)
 
   val batch: SpriteBatch = new SpriteBatch()
 
@@ -57,8 +57,7 @@ class VRoom(map:String, room:Room) {
 
 
   def render(targetX:Float, targetY:Float):Unit = {
-
-    Gdx.gl.glClearColor(0, 0, 0, 1)
+    //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     camera.zoom = 0.5f
@@ -82,6 +81,23 @@ class VRoom(map:String, room:Room) {
 
 
     world.step(Gdx.graphics.getDeltaTime, 6, 2)
+
+
+    for((k,vthing) <- vinventory) {
+      if (room.inventory.containsKey(k) == false) {
+
+        for (je: JointEdge <- vthing.body.getJointList) {
+          world.destroyJoint(je.joint)
+        }
+        world.destroyBody(vthing.body)
+        if(vthing.light != null && vthing.light.isActive()) {
+          vthing.light.setActive(false)
+          vthing.light.dispose()
+        }
+        vinventory -= k
+      }
+
+    }
 
     for (i <- 0 to 9) {
       val cam:OrthographicCamera = parallalaxCameras(i)
@@ -112,6 +128,18 @@ class VRoom(map:String, room:Room) {
         vinventory += thing.id -> VThing.create(thing, world)
       }
       val fet:VThing = vinventory(k)
+
+      if(thing.luminance > 0f && fet.light == null) {
+        val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.luminance), thing.brightness, 0, 0)
+        light.attachToBody(fet.body, 0, 0)
+        light.setIgnoreAttachedBody(true)
+        light.setContactFilter(0, 2, -1)
+        light.setActive(true)
+        fet.light = light
+      }
+      if(fet.light != null) {
+        fet.light.setDistance(thing.brightness)
+      }
       fet.update(VRoom.gameTime)
       fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.sprite.draw(batch)
@@ -125,11 +153,10 @@ class VRoom(map:String, room:Room) {
     batch.end()
 
 
-    handler.updateAndRender()
-
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
     //debugRenderer.render(world, debugMatrix)
+    handler.updateAndRender()
 
     for (c <- world.getContactList) {
       var t1:Thing = null

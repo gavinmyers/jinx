@@ -2,23 +2,22 @@ package game
 
 import scala.collection.mutable
 
-class Room(
-            var id: String = java.util.UUID.randomUUID.toString,
-            var inventory: mutable.Map[String, Thing] = scala.collection.mutable.Map[String, Thing]())
+class Room
   extends Thing {
 
-  override def scaleX: Float = 1.0f
-  override def scaleY: Float = 1.0f
-  override def size: Float = 0f
-  override def weight: Float = 0f
-  override def category: Short = Thing.nothing
-  override def description: String = "It's a room"
-  override def startX: Float = 1.0f
-  override def startY: Float = 1.0f
-  override def height: Float = 100f
-  override def width: Float = 100f
-  override def location: Thing = null
-  override def destroyed: Boolean = false
+  this.scaleX = 1.0f
+  this.scaleY = 1.0f
+  this.size = 0f
+  this.weight = 0f
+  this.category = Thing.nothing
+  this.description = ""
+
+  this.startX = 1.0f
+  this.startY = 1.0f
+  this.height = 100f
+  this.width = 100f
+  this.location = null
+  this.destroyed = false
 
 
 }

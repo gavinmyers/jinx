@@ -18,7 +18,9 @@ object Tiled {
       return rooms(map)
     }
 
-    val r:Room = new Room(id=map)
+    val r:Room = new Room
+    r.id=map
+    println(r.id + " vs "  + map)
     val tiles:TiledMap = new TmxMapLoader().load(map + ".tmx")
     val w: Int = 24
     val h: Int = 24
@@ -30,7 +32,10 @@ object Tiled {
           val px: Float = x * w + 12f
           val py: Float = y * h + 12f
           val t: TiledMapTile = c.getTile
-          r.enter(new Tile(startX=px, startY=py))
+          val tile:Tile = new Tile
+          tile.startX=px
+          tile.startY=py
+          r.enter(tile)
         }
       }
     }
@@ -39,7 +44,15 @@ object Tiled {
       val px:Float = rct.x + 12
       val py:Float = rct.y + 12
       if ("target".equalsIgnoreCase(mo.getName)) {
-        r.enter(new Entrance(id=mo.getProperties.get("id").toString, default=mo.getProperties.containsKey("default"), location = r, startX=px, startY=py, height = rct.height, width = rct.width))
+        var ent:Entrance = new Entrance
+        ent.id=mo.getProperties.get("id").toString
+        ent.default=mo.getProperties.containsKey("default")
+        ent.location = r
+        ent.startX=px
+        ent.startY=py
+        ent.height = rct.height
+        ent.width = rct.width
+        r.enter(ent)
       }
     }
     rooms += r.id -> r
@@ -51,7 +64,15 @@ object Tiled {
       if ("exit".equalsIgnoreCase(mo.getName)) {
         var destination:Room = load(mo.getProperties.get("goto").toString)
         var entrance:Thing = destination.inventory(mo.getProperties.get("target").toString)
-        r.enter(new Exit(location = r, destination=destination, entrance=entrance, startX=px, startY=py, height = rct.height, width = rct.width))
+        var exit:Exit = new Exit
+        exit.location = r
+        exit.destination = destination
+        exit.entrance = entrance
+        exit.startX = px
+        exit.startY = py
+        exit.height = rct.height
+        exit.width = rct.width
+        r.enter(exit)
       }
     }
     return r

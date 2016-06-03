@@ -3,13 +3,13 @@ package game
 import scala.collection.mutable
 
 trait Creature extends Thing {
-  def healthMax: Float
+  var healthMax: Float = 0f
 
-  def healthCurrent: Float
+  var healthCurrent: Float = 0f
 
-  def hungerMax: Float
+  var hungerMax: Float = 0f
 
-  def hungerCurrent: Float
+  var hungerCurrent: Float = 0f
 
   var movH: String = ""
   var faceH: String = ""
@@ -29,10 +29,20 @@ trait Creature extends Thing {
   var deathStart: Float = 0
   var deathEnd: Float = 0.3f
 
+  var pickup:Boolean = false
+
   var canFly: Boolean = false
 
   var jumpMaxVelocity: Float = 15f
   var runMaxVelocity: Float = 2.5f
+
+  var primary:Tool = _
+
+  def use() = {
+    if(primary != null) {
+      primary.use()
+    }
+  }
 
   def moveRight() = {
     movH = "R"
@@ -55,41 +65,35 @@ trait Creature extends Thing {
   def stop() = {
     movH = ""
   }
+
 }
 
 
-class GenericCreature(
-                       var id: String = java.util.UUID.randomUUID.toString,
-                       var location: Thing = null,
-                       var destroyed: Boolean = false,
-                       var startX: Float = 1.0f,
-                       var startY: Float = 1.0f,
-                       var height: Float = 100f,
-                       var width: Float = 100f,
-                       var healthCurrent: Float = 100f,
-                       var healthMax: Float = 100f,
-                       var hungerCurrent: Float = 100f,
-                       var hungerMax: Float = 100f,
-                       var scaleX: Float = 1.0f,
-                       var scaleY: Float = 1.0f,
-                       var size: Float = 10f,
-                       var weight: Float = 1f,
-                       var category: Short = Thing.nothing,
-                       var description: String = "Some scary monster, booo!",
-                       var inventory: mutable.Map[String, Thing] = scala.collection.mutable.Map[String, Thing]())
+class GenericCreature
   extends Creature {
 
   override def contact(thing:Thing): Unit = {
+
     if(thing.isInstanceOf[Exit]) {
-      var exit:Exit = thing.asInstanceOf[Exit]
-      this.location.leave(this)
+      val exit:Exit = thing.asInstanceOf[Exit]
       exit.destination.enter(this)
-      this.location = exit.destination
+
       this.startX = exit.entrance.startX
       this.startY = exit.entrance.startY
       this.lastX = startX
       this.lastY = startY
+
+    } else if(thing.isInstanceOf[Tool] && this.pickup) {
+      val tool:Tool = thing.asInstanceOf[Tool]
+
+      this.enter(tool)
+      this.pickup = false
+      if(this.primary == null) {
+        this.primary = tool
+      }
     }
+
+
   }
 
 }

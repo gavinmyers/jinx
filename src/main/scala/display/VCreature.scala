@@ -1,6 +1,6 @@
 package display
 
-import box2dLight.PointLight
+import box2dLight.{RayHandler, PositionalLight, PointLight}
 import com.badlogic.gdx.graphics.{Texture, Color}
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion, Batch, Sprite}
 import com.badlogic.gdx.math.Vector2
@@ -117,8 +117,6 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     })
   fixtureTop.setUserData(creature)
 
-
-
   def fall(gameTime: Float): Unit = {
     creature.jumping = false
     creature.movV = ""
@@ -161,6 +159,12 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     lastY = Conversion.metersToPixels(body.getPosition.y)
     creature.lastX = lastX
     creature.lastY = lastY
+
+    if(creature.primary != null) {
+      creature.primary.update(VRoom.gameTime)
+    }
+
+
 
     if (creature.lastDamage + creature.damageCooldown < gameTime) {
       creature.takingDamage = false

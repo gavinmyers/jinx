@@ -49,4 +49,8 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
     f
   })
   fixture.setUserData(entity)
+
+  override def update(gameTime:Float):Unit = {
+    entity.update(gameTime)
+  }
 }

@@ -1,24 +1,32 @@
 package game
 
+import scala.collection.mutable
+
 trait Thing {
-  def id:String
-  def description:String
-  def location:Thing
-  def inventory:scala.collection.mutable.Map[String,Thing]
-  def destroyed:Boolean
-  def category:Short
-  def scaleX:Float
-  def scaleY:Float
-  def startX:Float
-  def startY:Float
-  def height:Float
-  def width:Float
-  def size:Float
-  def weight:Float
+  var id:String = java.util.UUID.randomUUID.toString
+  var description:String = ""
+  var location:Thing = _
+  var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
+  var destroyed:Boolean = false
+  var category:Short = Thing.nothing
+  var scaleX:Float = 1.0f
+  var scaleY:Float = 1.0f
+  var startX:Float = 0.0f
+  var startY:Float = 0.0f
+  var height:Float = 12f
+  var width:Float = 12f
+  var size:Float = 1f
+  var luminance:Float = 0f
+  var brightness:Float = 0f
+  var weight:Float = 1f
   var lastX:Float = 0
   var lastY:Float = 0
   def enter(thing:Thing):Unit = {
+    if(thing.location != null) {
+      thing.location.leave(thing)
+    }
     inventory += thing.id -> thing
+    thing.location = this
   }
 
   def leave(thing:Thing):Unit = {
@@ -26,6 +34,10 @@ trait Thing {
   }
 
   def contact(thing:Thing) : Unit = {
+
+  }
+
+  def update(gameTime:Float) : Unit = {
 
   }
 

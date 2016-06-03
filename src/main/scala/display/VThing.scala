@@ -1,5 +1,6 @@
 package display
 
+import box2dLight.PositionalLight
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Batch, Sprite}
 import com.badlogic.gdx.physics.box2d._
@@ -15,10 +16,10 @@ trait VThing {
   def startY:Float
   var lastX:Float = 0
   var lastY:Float = 0
+  var light:PositionalLight = _
   def body:Body
   def fixture: Fixture
   def update(gameTime:Float):Unit = {
-
   }
 }
 
