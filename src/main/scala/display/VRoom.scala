@@ -143,6 +143,12 @@ class VRoom(map:String, room:Room) {
       fet.update(VRoom.gameTime)
       fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.sprite.draw(batch)
+
+      if(thing.transformX > 0 && thing.transformY > 0) {
+        fet.body.setTransform(Conversion.pixelsToMeters(thing.transformX), Conversion.pixelsToMeters(thing.transformY), 0f)
+        thing.transformX = 0
+        thing.transformY = 0
+      }
     }
 
     batch.end()
@@ -155,7 +161,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    //debugRenderer.render(world, debugMatrix)
+    debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     for (c <- world.getContactList) {

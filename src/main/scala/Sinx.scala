@@ -7,7 +7,7 @@ import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.VRoom
 import game.{Tool, GenericCreature, Entrance}
 import old.GameLoader
-import tools.Lantern
+import tools.{IronSword, Lantern}
 import utils.Tiled
 
 import scala.collection.JavaConversions._
@@ -37,11 +37,17 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         level01.enter(lilac)
 
         val lantern:Lantern = new Lantern
-        lantern.category = game.Thing.lantern
         lantern.location=level01
         lantern.startX=thing.startX + 50
         lantern.startY=thing.startY + 25
         level01.enter(lantern)
+
+
+        val ironsword:IronSword = new IronSword
+        ironsword.location=level01
+        ironsword.startX=thing.startX + 70
+        ironsword.startY=thing.startY + 25
+        level01.enter(ironsword)
       }
     }
     scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
@@ -114,7 +120,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       lilac.pickup = true
 
     if (Input.Keys.S == keycode)
-      lilac.use()
+      lilac.use(VRoom.gameTime)
 /*
     if (Input.Keys.Z == keycode)
       player.jump(GameLoader.gameTime)

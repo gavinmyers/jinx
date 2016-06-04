@@ -21,6 +21,8 @@ trait Thing {
   var weight:Float = 1f
   var lastX:Float = 0
   var lastY:Float = 0
+  var transformX:Float = 0
+  var transformY:Float = 0
   def enter(thing:Thing):Unit = {
     if(thing.location != null) {
       thing.location.leave(thing)
@@ -57,6 +59,7 @@ object Thing {
 
   def tool: Short = 0xF00
   def lantern:Short = 0xF01
+  def ironsword:Short = 0xF02
 
 
 }

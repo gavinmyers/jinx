@@ -189,14 +189,12 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
 
     } else if (creature.takingDamage) {
       sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
-
-      /*     } else if (weapon.attacking) {
-            if (face_h == "R") {
-              sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
-            } else if (face_h == "L") {
-              sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
-            }
-      */
+     } else if (creature.attacking) {
+        if (creature.faceH == "R") {
+          sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
+        } else if (creature.faceH == "L") {
+          sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+        }
     } else if (!canClimb && creature.movH == "" && !creature.jumping) {
       stop(gameTime)
 
