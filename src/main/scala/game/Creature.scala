@@ -3,18 +3,10 @@ package game
 import scala.collection.mutable
 
 trait Creature extends Thing {
-  var healthMax: Float = 0f
 
-  var healthCurrent: Float = 0f
 
   var hungerMax: Float = 0f
-
   var hungerCurrent: Float = 0f
-
-  var movH: String = ""
-  var faceH: String = ""
-  var movV: String = ""
-  var faceV: String = ""
 
   var jump: Boolean = false
   var jumping: Boolean = false
@@ -23,13 +15,6 @@ trait Creature extends Thing {
 
   var attacking:Boolean = false
 
-  var takingDamage: Boolean = false
-  var lastDamage: Float = 0
-  var damageCooldown: Float = 0.3f
-
-  var dieing: Boolean = false
-  var deathStart: Float = 0
-  var deathEnd: Float = 0.3f
 
   var pickup:Boolean = false
 

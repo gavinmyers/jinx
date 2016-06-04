@@ -36,6 +36,14 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         lilac.startY=thing.startY + 50
         level01.enter(lilac)
 
+
+        var enemy:GenericCreature = new GenericCreature
+        enemy.category = game.Thing.lilac
+        enemy.location=level01
+        enemy.startX=thing.startX + 200
+        enemy.startY=thing.startY + 50
+        level01.enter(enemy)
+
         val lantern:Lantern = new Lantern
         lantern.location=level01
         lantern.startX=thing.startX + 50

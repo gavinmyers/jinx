@@ -9,6 +9,18 @@ trait Thing {
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
+  var healthMax: Float = 10f
+  var healthCurrent: Float = 10f
+  var movH: String = ""
+  var faceH: String = ""
+  var movV: String = ""
+  var faceV: String = ""
+  var takingDamage: Boolean = false
+  var lastDamage: Float = 0
+  var damageCooldown: Float = 0.3f
+  var dieing: Boolean = false
+  var deathStart: Float = 0
+  var deathEnd: Float = 0.3f
   var scaleX:Float = 1.0f
   var scaleY:Float = 1.0f
   var startX:Float = 0.0f
@@ -43,6 +55,17 @@ trait Thing {
 
   }
 
+  def damage(amount:Float) : Unit = {
+    this.healthCurrent -= amount
+    if(this.healthCurrent < 1) {
+      this.die()
+    }
+  }
+
+  def die():Unit = {
+    this.location.leave(this)
+  }
+
 }
 
 object Thing {
@@ -60,7 +83,6 @@ object Thing {
   def tool: Short = 0xF00
   def lantern:Short = 0xF01
   def ironsword:Short = 0xF02
-
 
 }
 

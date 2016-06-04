@@ -1,6 +1,6 @@
 package tools
 
-import game.{Creature, Bullet, Tool}
+import game.{Thing, Creature, Bullet, Tool}
 
 class IronSword extends Tool  {
   this.category = game.Thing.ironsword
@@ -27,9 +27,11 @@ class IronSword extends Tool  {
     bullet.startY = this.location.lastY
     bullet.created = gameTime
     bullet.bind = this.location
+    bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
       creature.attacking = true
+      bullet.attacker = creature
       bullet.movH = creature.movH
       bullet.faceH = creature.faceH
 
@@ -40,4 +42,5 @@ class IronSword extends Tool  {
 
     return true
   }
+
 }

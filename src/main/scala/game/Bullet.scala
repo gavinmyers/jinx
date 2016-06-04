@@ -1,13 +1,14 @@
 package game
 
+import logic.Combat
+
 class Bullet extends Thing {
   var cooldown:Float = 0.4f
   var created:Float = 0f
+  var weapon:Tool = _
+  var attacker:Creature = _
   var bind:Thing = _
-  var movH: String = ""
-  var faceH: String = ""
-  var movV: String = ""
-  var faceV: String = ""
+
   var speed:Float = 0f
 
   this.category = Thing.bullet
@@ -26,4 +27,12 @@ class Bullet extends Thing {
       }
     }
   }
+
+  override def contact(thing:Thing): Unit = {
+    if(thing != attacker) {
+      Combat.apply(attacker, thing, weapon, this)
+    }
+  }
+
+
 }
