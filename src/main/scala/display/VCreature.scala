@@ -161,7 +161,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     creature.lastY = lastY
 
     if(creature.primary != null) {
-      creature.primary.update(VRoom.gameTime)
+      creature.primary.update(gameTime)
     }
 
 

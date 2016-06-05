@@ -14,9 +14,6 @@ import game.{Creature, Thing, Room, Tile}
 import utils.Conversion
 import scala.collection.JavaConversions._
 
-object VRoom {
-  var gameTime:Float = 0
-}
 
 class VRoom(map:String, room:Room) {
   val tiles:TiledMap = new TmxMapLoader().load(map + ".tmx")
@@ -56,12 +53,13 @@ class VRoom(map:String, room:Room) {
   }
 
 
-  def render(targetX:Float, targetY:Float):Unit = {
+  def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
     camera.zoom = 0.5f
     camera.setToOrtho(false)
+
     camera.translate(0, 0, 0)
     camera.position.set(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2, 0)
     val position: Vector3 = new Vector3(cameraStart.x, cameraStart.y, cameraStart.z)
@@ -96,7 +94,6 @@ class VRoom(map:String, room:Room) {
         }
         vinventory -= k
       }
-
     }
 
     for (i <- 0 to 9) {
@@ -122,7 +119,6 @@ class VRoom(map:String, room:Room) {
     handler.setCombinedMatrix(camera)
     batch.setProjectionMatrix(camera.combined)
     batch.begin()
-    VRoom.gameTime += Gdx.graphics.getDeltaTime
     for((k,thing) <- room.inventory) {
       if(vinventory.contains(k) == false) {
         vinventory += thing.id -> VThing.create(thing, world)
@@ -140,7 +136,7 @@ class VRoom(map:String, room:Room) {
       if(fet.light != null) {
         fet.light.setDistance(thing.brightness)
       }
-      fet.update(VRoom.gameTime)
+      fet.update(gameTime)
       fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.sprite.draw(batch)
 

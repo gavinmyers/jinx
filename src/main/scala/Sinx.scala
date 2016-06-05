@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
-import display.VRoom
+import display.{VInventory, VRoom}
 import game.{Tool, GenericCreature, Entrance}
 import old.GameLoader
 import tools.{IronSword, Lantern}
@@ -12,9 +12,10 @@ import utils.Tiled
 
 import scala.collection.JavaConversions._
 
+
 class Sinx extends ApplicationAdapter with InputProcessor {
   println("Sinx")
-
+  var gameTime:Float = 0
   RayHandler.setGammaCorrection(true)
   RayHandler.useDiffuseLight(true)
 
@@ -22,7 +23,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var downButtons: Float = 0
 
   var scene:VRoom = _
+  var inventory:VInventory = _
   var lilac:GenericCreature = _
+  var showInventory:Boolean = false
 
   override def create(): Unit = {
     Tiled.load("level01")
@@ -44,12 +47,13 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         enemy.startY=thing.startY + 50
         level01.enter(enemy)
 
-        val lantern:Lantern = new Lantern
-        lantern.location=level01
-        lantern.startX=thing.startX + 50
-        lantern.startY=thing.startY + 25
-        level01.enter(lantern)
-
+        for(i <- 0 to 15) {
+          val lantern:Lantern = new Lantern
+          lantern.location=level01
+          lantern.startX=thing.startX + 50
+          lantern.startY=thing.startY + 25
+          level01.enter(lantern)
+        }
 
         val ironsword:IronSword = new IronSword
         ironsword.location=level01
@@ -58,6 +62,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         level01.enter(ironsword)
       }
     }
+    inventory = new VInventory(lilac)
     scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
 
     Gdx.input.setInputProcessor(this)
@@ -67,12 +72,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   override def render(): Unit = {
+    if(showInventory) {
+      inventory.render()
+      return
+    }
+    gameTime += Gdx.graphics.getDeltaTime
+
     if(scene.at(lilac.location.asInstanceOf[game.Room]) == false) {
       //TODO: Cleanup old VROOMs
       scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
     }
-    scene.render(lilac.lastX, lilac.lastY)
+    scene.render(lilac.lastX, lilac.lastY, gameTime)
 
+    /*
     def width:Float = Gdx.graphics.getWidth
     def height:Float = Gdx.graphics.getHeight() * 0.45f
 
@@ -99,6 +111,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       sr.box(0f, height, 0f,width * (lilac.healthCurrent / lilac.healthMax), 4f, 0f)
       sr.end()
     }
+    */
 
   }
 
@@ -107,7 +120,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   }
 
   override def keyDown(keycode: Int): Boolean = {
-
 
     if (Input.Keys.LEFT == keycode)
       lilac.moveLeft()
@@ -128,17 +140,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       lilac.pickup = true
 
     if (Input.Keys.S == keycode)
-      lilac.use(VRoom.gameTime)
+      lilac.use(gameTime)
 
     if (Input.Keys.X == keycode)
-      lilac.attack(VRoom.gameTime)
-/*
-    if (Input.Keys.Z == keycode)
-      player.jump(GameLoader.gameTime)
+      lilac.attack(gameTime)
 
-    if (Input.Keys.X == keycode)
-      player.attack(GameLoader.gameTime)
-*/
     true
   }
 
@@ -149,6 +155,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.D == keycode)
       lilac.pickup = false
+
+    if (Input.Keys.I == keycode)
+      showInventory = showInventory == false
     /*
         if (Input.Keys.UP == keycode)
           player.fall(GameLoader.gameTime)
