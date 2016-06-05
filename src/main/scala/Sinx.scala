@@ -129,6 +129,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.S == keycode)
       lilac.use(VRoom.gameTime)
+
+    if (Input.Keys.X == keycode)
+      lilac.attack(VRoom.gameTime)
 /*
     if (Input.Keys.Z == keycode)
       player.jump(GameLoader.gameTime)

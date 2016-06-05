@@ -13,8 +13,6 @@ trait Creature extends Thing {
   var jumpMax: Float = 0.45f
   var lastJump: Float = 0
 
-  var attacking:Boolean = false
-
 
   var pickup:Boolean = false
 
@@ -28,6 +26,12 @@ trait Creature extends Thing {
   def use(gameTime:Float) = {
     if(primary != null) {
       primary.use(gameTime)
+    }
+  }
+
+  def attack(gameTime:Float) = {
+    if(primary != null) {
+      primary.attack(gameTime)
     }
   }
 

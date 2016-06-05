@@ -7,18 +7,10 @@ class IronSword extends Tool  {
   this.brightness = 0.75f
   this.luminance = 0.25f
 
-  override def update(gameTime:Float): Unit = {
-    if(this.location.isInstanceOf[Creature]) {
-      val creature:Creature = this.location.asInstanceOf[Creature]
-      if(creature.attacking && lastUse + cooldown < gameTime) {
-        creature.attacking = false
-      }
-    }
 
-  }
 
-  override def use(gameTime:Float):Boolean = {
-    if(!super.use(gameTime)) {
+  override def attack(gameTime:Float):Boolean = {
+    if(!super.attack(gameTime)) {
       return false
     }
 
@@ -30,7 +22,6 @@ class IronSword extends Tool  {
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
-      creature.attacking = true
       bullet.attacker = creature
       bullet.movH = creature.movH
       bullet.faceH = creature.faceH
@@ -38,6 +29,13 @@ class IronSword extends Tool  {
     }
     this.location.location.enter(bullet)
 
+    return true
+  }
+
+  override def use(gameTime:Float):Boolean = {
+    if(!super.use(gameTime)) {
+      return false
+    }
 
 
     return true
