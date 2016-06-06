@@ -160,8 +160,8 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     creature.lastX = lastX
     creature.lastY = lastY
 
-    if(creature.primary != null) {
-      creature.primary.update(gameTime)
+    if(creature.holding != null) {
+      creature.holding.update(gameTime)
     }
 
 
@@ -189,7 +189,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
 
     } else if (creature.takingDamage) {
       sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
-     } else if (creature.primary != null && creature.primary.attacking) {
+     } else if (creature.holding != null && creature.holding.attacking) {
         if (creature.faceH == "R") {
           sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
         } else if (creature.faceH == "L") {

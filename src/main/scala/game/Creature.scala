@@ -21,17 +21,17 @@ trait Creature extends Thing {
   var jumpMaxVelocity: Float = 15f
   var runMaxVelocity: Float = 2.5f
 
-  var primary:Tool = _
+  var holding:Tool = _
 
   def use(gameTime:Float) = {
-    if(primary != null) {
-      primary.use(gameTime)
+    if(holding != null) {
+      holding.use(gameTime)
     }
   }
 
   def attack(gameTime:Float) = {
-    if(primary != null) {
-      primary.attack(gameTime)
+    if(holding != null) {
+      holding.attack(gameTime)
     }
   }
 
@@ -79,8 +79,8 @@ class GenericCreature
 
       this.enter(tool)
       this.pickup = false
-      if(this.primary == null) {
-        this.primary = tool
+      if(this.holding == null) {
+        this.holding = tool
       }
     }
 
