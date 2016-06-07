@@ -36,6 +36,9 @@ class VInventory (container:Thing) {
 
   val batch: SpriteBatch = new SpriteBatch()
 
+  var health:VStatus = _
+  var hunger:VStatus = _
+  var weapon:VStatus = _
 
   var vinventory:scala.collection.mutable.Map[String,VThing] = {
     val ret:scala.collection.mutable.Map[String,VThing] = scala.collection.mutable.Map[String,VThing]()
@@ -51,13 +54,17 @@ class VInventory (container:Thing) {
     camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight())
     camera.update()
 
+    if(health == null) {
+      health = new VStatus(Gdx.graphics.getWidth() * camera.zoom / 2f, Gdx.graphics.getHeight() * camera.zoom - 24f, world, VInventory.sheetTextures(9))
+      hunger = new VStatus(Gdx.graphics.getWidth() * camera.zoom / 2f, Gdx.graphics.getHeight() * camera.zoom - 24f, world, VInventory.sheetTextures(10))
+      weapon = new VStatus(Gdx.graphics.getWidth() * camera.zoom / 2f, Gdx.graphics.getHeight() * camera.zoom - 24f, world, VInventory.sheetTextures(11))
+    }
 
     handler.setCombinedMatrix(camera)
     batch.setProjectionMatrix(camera.combined)
     batch.begin()
     var sX:Float = 0
-    var sY:Float = Gdx.graphics.getHeight() * camera.zoom - 24f
-    println(sY + " vs " +  Gdx.graphics.getHeight())
+    var sY:Float = (Gdx.graphics.getHeight() * camera.zoom) - 24f
     var step:Float = 24f
     for((k,thing) <- container.inventory) {
       if(vinventory.contains(k) == false) {
@@ -68,16 +75,42 @@ class VInventory (container:Thing) {
         sX = 0
       }
       val fet:VThing = vinventory(k)
-      fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.body.setTransform(Conversion.pixelsToMeters(thing.transformX + sX + 24f), Conversion.pixelsToMeters(thing.transformY + sY ), 0f)
+      fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
       fet.sprite.draw(batch)
       sX += step
     }
+
+    if(container.isInstanceOf[Creature]) {
+      val creature:Creature = container.asInstanceOf[Creature]
+      sX = (Gdx.graphics.getWidth() * camera.zoom) / 2f
+      sY = (Gdx.graphics.getHeight() * camera.zoom) - 24f
+      health.body.setTransform(Conversion.pixelsToMeters(sX + 24f), Conversion.pixelsToMeters(sY), 0f)
+      health.sprite.setPosition(Conversion.metersToPixels(health.body.getPosition.x) - health.sprite.getWidth/2 , Conversion.metersToPixels(health.body.getPosition.y) - health.sprite.getHeight/2 )
+      health.sprite.draw(batch)
+
+      sY -= 24f
+      hunger.body.setTransform(Conversion.pixelsToMeters(sX + 24f), Conversion.pixelsToMeters(sY), 0f)
+      hunger.sprite.setPosition(Conversion.metersToPixels(hunger.body.getPosition.x) - hunger.sprite.getWidth/2 , Conversion.metersToPixels(hunger.body.getPosition.y) - hunger.sprite.getHeight/2 )
+      hunger.sprite.draw(batch)
+
+      sY -= 24f
+      weapon.body.setTransform(Conversion.pixelsToMeters(sX + 24f), Conversion.pixelsToMeters(sY), 0f)
+      weapon.sprite.setPosition(Conversion.metersToPixels(weapon.body.getPosition.x) - weapon.sprite.getWidth/2 , Conversion.metersToPixels(weapon.body.getPosition.y) - weapon.sprite.getHeight/2 )
+      weapon.sprite.draw(batch)
+      if(creature.holding != null) {
+        val fet:VThing = vinventory(creature.holding.id)
+        fet.body.setTransform(Conversion.pixelsToMeters(sX + 48f), Conversion.pixelsToMeters(sY), 0f)
+        fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
+        fet.sprite.draw(batch)
+      }
+    }
+
     batch.end()
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
   }
 
