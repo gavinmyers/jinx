@@ -124,7 +124,7 @@ class VRoom(map:String, room:Room) {
         vinventory += thing.id -> VThing.create(thing, world)
       }
       val fet:VThing = vinventory(k)
-
+      thing.update(gameTime)
       if(thing.luminance > 0f && fet.light == null) {
         val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.luminance), thing.brightness, 0, 0)
         light.attachToBody(fet.body, 0, 0)
@@ -171,8 +171,8 @@ class VRoom(map:String, room:Room) {
       }
 
       if(t1 != null && t2 != null) {
-        t1.contact(t2)
-        t2.contact(t1)
+        t1.contact(gameTime,t2)
+        t2.contact(gameTime,t1)
       }
 
     }

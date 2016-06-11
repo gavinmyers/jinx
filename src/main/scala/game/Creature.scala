@@ -5,8 +5,10 @@ import scala.collection.mutable
 trait Creature extends Thing {
 
 
-  var hungerMax: Float = 0f
-  var hungerCurrent: Float = 0f
+  var fullnessMax: Float = 600f
+  var fullnessCurrent: Float = 600f
+  var hunger:Float = 1f
+
 
   var jump: Boolean = false
   var jumping: Boolean = false
@@ -25,13 +27,20 @@ trait Creature extends Thing {
 
   def use(gameTime:Float) = {
     if(holding != null) {
-      holding.use(gameTime)
+      holding.use(gameTime, this)
     }
   }
 
   def attack(gameTime:Float) = {
     if(holding != null) {
       holding.attack(gameTime)
+    }
+  }
+
+  override def leave(thing:Thing):Unit = {
+    super.leave(thing)
+    if(this.holding == thing) {
+      this.holding = null
     }
   }
 
@@ -63,7 +72,7 @@ trait Creature extends Thing {
 class GenericCreature
   extends Creature {
 
-  override def contact(thing:Thing): Unit = {
+  override def contact(gameTime:Float, thing:Thing): Unit = {
 
     if(thing.isInstanceOf[Exit]) {
       val exit:Exit = thing.asInstanceOf[Exit]
@@ -84,6 +93,24 @@ class GenericCreature
       }
     }
 
+
+  }
+
+  override def update(gameTime:Float) : Unit = {
+    super.update(gameTime)
+    if(lastUpdate + updateCooldown > gameTime) {
+      return false
+    }
+    lastUpdate = gameTime
+
+    var hungerCurrent = this.hunger
+    if(this.holding != null) {
+      hungerCurrent *= this.holding.hungerMod
+    }
+    this.fullnessCurrent -= hungerCurrent
+    if(this.fullnessCurrent < 1) {
+      this.die()
+    }
 
   }
 

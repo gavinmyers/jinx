@@ -129,7 +129,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
     if (creature.faceH == "R") {
       sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
-    } else if (creature.faceH == "L") {
+    } else {
       sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
     }
   }
@@ -164,12 +164,6 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       creature.holding.update(gameTime)
     }
 
-
-
-    if (creature.lastDamage + creature.damageCooldown < gameTime) {
-      creature.takingDamage = false
-    }
-
     if (canClimb || creature.canFly) {
       body.setGravityScale(0f)
     } else {
@@ -197,7 +191,6 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
         }
     } else if (!canClimb && creature.movH == "" && !creature.jumping) {
       stop(gameTime)
-
     } else {
 
       if (creature.jumping) {

@@ -32,12 +32,10 @@ class IronSword extends Tool  {
     return true
   }
 
-  override def use(gameTime:Float):Boolean = {
-    if(!super.use(gameTime)) {
+  override def use(gameTime:Float, user:Creature):Boolean = {
+    if(!super.use(gameTime, user)) {
       return false
     }
-
-
     return true
   }
 

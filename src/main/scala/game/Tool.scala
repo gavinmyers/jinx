@@ -11,6 +11,11 @@ trait Tool extends Thing {
   var attackCooldown:Float = 0.4f
   var lastAttack:Float = 0f
 
+  var edible:Boolean = false
+  var fullness:Float = 1.0f
+
+  var hungerMod:Float = 1.0f
+
   override def update(gameTime:Float) : Unit = {
     super.update(gameTime)
     if(attackCooldown < 0f) {}
@@ -37,7 +42,15 @@ trait Tool extends Thing {
     return true
   }
 
-  def use(gameTime:Float):Boolean = {
+  def use(gameTime:Float, user:Creature):Boolean = {
+
+    if(this.edible) {
+      user.fullnessCurrent += this.fullness
+      if(user.fullnessCurrent > user.fullnessMax) {
+        user.fullnessCurrent = user.fullnessMax
+      }
+      this.die()
+    }
 
     if(lastUse + useCooldown > gameTime) {
       return false

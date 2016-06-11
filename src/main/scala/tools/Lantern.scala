@@ -34,7 +34,8 @@ class Lantern extends Tool {
     return true
   }
 
-  override def use(gameTime:Float):Boolean = {
+
+  override def use(gameTime:Float, user:Creature):Boolean = {
     this.using = this.using == false
     return true
   }

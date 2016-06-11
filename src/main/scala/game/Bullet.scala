@@ -14,8 +14,7 @@ class Bullet extends Thing {
   this.category = Thing.bullet
   override def update(gameTime:Float): Unit = {
     if(created + cooldown < gameTime) {
-      this.location.inventory -= this.id
-      return
+      this.die()
     }
     if(this.bind != null) {
       if(faceH == "R") {
@@ -28,9 +27,9 @@ class Bullet extends Thing {
     }
   }
 
-  override def contact(thing:Thing): Unit = {
+  override def contact(gameTime:Float, thing:Thing): Unit = {
     if(thing != attacker) {
-      Combat.apply(attacker, thing, weapon, this)
+      Combat.apply(gameTime, attacker, thing, weapon, this)
     }
   }
 

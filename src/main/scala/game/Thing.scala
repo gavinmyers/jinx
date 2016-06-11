@@ -1,10 +1,13 @@
 package game
 
+import ai.AI
+
 import scala.collection.mutable
 
 trait Thing {
   var id:String = java.util.UUID.randomUUID.toString
   var description:String = ""
+  var ai:AI = _
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var destroyed:Boolean = false
@@ -16,8 +19,12 @@ trait Thing {
   var movV: String = ""
   var faceV: String = ""
   var takingDamage: Boolean = false
-  var lastDamage: Float = 0
-  var damageCooldown: Float = 0.3f
+  var lastDamage: Float = -1.0f
+  var damageCooldown: Float = 0.5f
+
+  var lastUpdate:Float = 0
+  var updateCooldown:Float = 1.0f
+
   var dieing: Boolean = false
   var deathStart: Float = 0
   var deathEnd: Float = 0.3f
@@ -47,15 +54,24 @@ trait Thing {
     inventory -= thing.id
   }
 
-  def contact(thing:Thing) : Unit = {
+  def contact(gameTime:Float, thing:Thing) : Unit = {
 
   }
 
   def update(gameTime:Float) : Unit = {
-
+    this.takingDamage = lastDamage + damageCooldown > gameTime
+    if(this.ai != null) {
+      this.ai.think(gameTime, this)
+    }
   }
 
-  def damage(amount:Float) : Unit = {
+  def damage(gameTime:Float, amount:Float) : Unit = {
+    if(takingDamage) {
+      return
+    }
+    println("OUCH " + amount)
+    this.lastDamage = gameTime
+    this.takingDamage = true
     this.healthCurrent -= amount
     if(this.healthCurrent < 1) {
       this.die()

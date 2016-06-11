@@ -1,3 +1,4 @@
+import ai.{GenericAI, PlayerAI, AI}
 import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -38,41 +39,45 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         lilac.startX=thing.startX
         lilac.startY=thing.startY + 50
         level01.enter(lilac)
+        var playerBrain:AI = new PlayerAI
+        lilac.ai = playerBrain
 
 
-        var enemy:GenericCreature = new GenericCreature
+
+        val enemy:GenericCreature = new GenericCreature
         enemy.category = game.Thing.lilac
         enemy.location=level01
         enemy.startX=thing.startX + 200
         enemy.startY=thing.startY + 50
         level01.enter(enemy)
+        var enemyBrain:AI = new GenericAI
+        enemy.ai = enemyBrain
+
+        val enemysword:IronSword = new IronSword
+        enemy.enter(enemysword)
+        //enemy.holding = enemysword
 
         val lantern:Lantern = new Lantern
-        lantern.location=level01
         lantern.startX=thing.startX + 50
         lantern.startY=thing.startY + 25
         level01.enter(lantern)
 
         val p:Pigmask = new Pigmask
-        p.location=level01
         p.startX=thing.startX + 50
         p.startY=thing.startY + 50
         level01.enter(p)
 
         val c:Cupcake = new Cupcake
-        c.location=level01
         c.startX=thing.startX + 75
         c.startY=thing.startY + 75
         level01.enter(c)
 
         val m:MedicineWheel = new MedicineWheel
-        m.location=level01
         m.startX=thing.startX + 125
         m.startY=thing.startY + 125
         level01.enter(m)
 
         val ironsword:IronSword = new IronSword
-        ironsword.location=level01
         ironsword.startX=thing.startX + 70
         ironsword.startY=thing.startY + 25
         level01.enter(ironsword)
