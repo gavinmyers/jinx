@@ -21,7 +21,7 @@ trait Creature extends Thing {
   var canFly: Boolean = false
 
   var jumpMaxVelocity: Float = 15f
-  var runMaxVelocity: Float = 2.5f
+  var runMaxVelocity: Float = 5.5f
 
   var holding:Tool = _
 

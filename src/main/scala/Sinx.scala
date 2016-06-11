@@ -34,6 +34,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     for((k,thing) <- level01.inventory) {
       if(thing.category == game.Thing.entrance && thing.asInstanceOf[Entrance].default) {
         lilac = new GenericCreature
+        lilac.id = "lilac"
         lilac.category = game.Thing.lilac
         lilac.location=level01
         lilac.startX=thing.startX
@@ -49,13 +50,12 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         enemy.location=level01
         enemy.startX=thing.startX + 200
         enemy.startY=thing.startY + 50
-        level01.enter(enemy)
         var enemyBrain:AI = new GenericAI
         enemy.ai = enemyBrain
-
         val enemysword:IronSword = new IronSword
         enemy.enter(enemysword)
-        //enemy.holding = enemysword
+        enemy.holding = enemysword
+        //level01.enter(enemy)
 
         val lantern:Lantern = new Lantern
         lantern.startX=thing.startX + 50

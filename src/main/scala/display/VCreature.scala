@@ -70,6 +70,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       f.shape = shape
       shape.setRadius(Conversion.pixelsToMeters(height / 2.2f))
       f.friction = 0f
+      f.density = 3f
       f
     })
   fixture.setUserData(creature)
@@ -120,13 +121,20 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
   def fall(gameTime: Float): Unit = {
     creature.jumping = false
     creature.movV = ""
+
     body.setLinearVelocity(body.getLinearVelocity.x, body.getLinearVelocity.y * 0.9f)
   }
 
+  def slow(gameTime:Float):Unit = {
+    body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y * 0.9f)
+  }
   def stop(gameTime: Float): Unit = {
     body.setGravityScale(1f)
     creature.movV = ""
-    body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y)
+    var mod:Float = 0.9gf
+    if(creature.id == "lilac") println(body.getLinearVelocity.x)
+
+    body.setLinearVelocity(body.getLinearVelocity.x * mod, body.getLinearVelocity.y)
     if (creature.faceH == "R") {
       sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
     } else {
@@ -162,6 +170,10 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
 
     if(creature.holding != null) {
       creature.holding.update(gameTime)
+    }
+
+    if(canJump && (body.getLinearVelocity.x > creature.runMaxVelocity || body.getLinearVelocity.x < creature.runMaxVelocity * -1)) {
+      slow(gameTime)
     }
 
     if (canClimb || creature.canFly) {
