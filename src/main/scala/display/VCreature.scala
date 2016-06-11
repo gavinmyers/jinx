@@ -131,7 +131,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
   def stop(gameTime: Float): Unit = {
     body.setGravityScale(1f)
     creature.movV = ""
-    var mod:Float = 0.9gf
+    var mod:Float = 0.9f
     if(creature.id == "lilac") println(body.getLinearVelocity.x)
 
     body.setLinearVelocity(body.getLinearVelocity.x * mod, body.getLinearVelocity.y)

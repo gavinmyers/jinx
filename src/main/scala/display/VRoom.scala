@@ -26,7 +26,7 @@ class VRoom(map:String, room:Room) {
   val world: World = new World(new Vector2(0, -75f), true)
 
   val handler:RayHandler = new RayHandler(world)
-  this.handler.setAmbientLight(0.3f, 0.3f, 0.3f, 0.2f)
+
 
   val batch: SpriteBatch = new SpriteBatch()
 
@@ -56,6 +56,7 @@ class VRoom(map:String, room:Room) {
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    handler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f)
 
     camera.zoom = 0.5f
     camera.setToOrtho(false)
@@ -96,6 +97,7 @@ class VRoom(map:String, room:Room) {
       }
     }
 
+
     for (i <- 0 to 9) {
       val cam:OrthographicCamera = parallalaxCameras(i)
       cam.zoom = 0.5f
@@ -115,6 +117,10 @@ class VRoom(map:String, room:Room) {
       tileRenderer.render(Array(i))
       batch.end()
     }
+
+
+    handler.updateAndRender()
+
 
     handler.setCombinedMatrix(camera)
     batch.setProjectionMatrix(camera.combined)
