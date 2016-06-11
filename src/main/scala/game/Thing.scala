@@ -83,6 +83,9 @@ object Thing {
   def tool: Short = 0xF00
   def lantern:Short = 0xF01
   def ironsword:Short = 0xF02
+  def pigmask:Short = 0xF03
+  def cupcake:Short = 0xF04
+  def medicinewheel:Short = 0xF05
 
 }
 

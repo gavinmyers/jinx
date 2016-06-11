@@ -7,7 +7,7 @@ import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.{VInventory, VRoom}
 import game.{Tool, GenericCreature, Entrance}
 import old.GameLoader
-import tools.{IronSword, Lantern}
+import tools._
 import utils.Tiled
 
 import scala.collection.JavaConversions._
@@ -47,13 +47,29 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         enemy.startY=thing.startY + 50
         level01.enter(enemy)
 
-        for(i <- 0 to 15) {
-          val lantern:Lantern = new Lantern
-          lantern.location=level01
-          lantern.startX=thing.startX + 50
-          lantern.startY=thing.startY + 25
-          level01.enter(lantern)
-        }
+        val lantern:Lantern = new Lantern
+        lantern.location=level01
+        lantern.startX=thing.startX + 50
+        lantern.startY=thing.startY + 25
+        level01.enter(lantern)
+
+        val p:Pigmask = new Pigmask
+        p.location=level01
+        p.startX=thing.startX + 50
+        p.startY=thing.startY + 50
+        level01.enter(p)
+
+        val c:Cupcake = new Cupcake
+        c.location=level01
+        c.startX=thing.startX + 75
+        c.startY=thing.startY + 75
+        level01.enter(c)
+
+        val m:MedicineWheel = new MedicineWheel
+        m.location=level01
+        m.startX=thing.startX + 125
+        m.startY=thing.startY + 125
+        level01.enter(m)
 
         val ironsword:IronSword = new IronSword
         ironsword.location=level01
@@ -67,8 +83,8 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     Gdx.input.setInputProcessor(this)
 
-    //def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
-    //mp3Sound.play(0.5f)
+    def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
+    mp3Sound.play(0.5f)
   }
 
   override def render(): Unit = {

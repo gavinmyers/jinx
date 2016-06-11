@@ -41,6 +41,12 @@ object VThing {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(13))
     } else if(thing.category == Thing.ironsword) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(25))
+    } else if(thing.category == Thing.cupcake) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(24))
+    } else if(thing.category == Thing.pigmask) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(18))
+    } else if(thing.category == Thing.medicinewheel) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(16))
     } else if(thing.category == Thing.bullet) {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)
     }
