@@ -101,7 +101,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if(scene.at(lilac.location.asInstanceOf[game.Room]) == false) {
       //TODO: Cleanup old VROOMs
-      scene = new g(lilac.location.id, lilac.location.asInstanceOf[game.Room])
+      scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
     }
     scene.render(lilac.lastX, lilac.lastY, gameTime)
 
