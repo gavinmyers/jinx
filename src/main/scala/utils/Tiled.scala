@@ -43,6 +43,14 @@ object Tiled {
       def rct = mo.asInstanceOf[RectangleMapObject].getRectangle
       val px:Float = rct.x + 12
       val py:Float = rct.y + 12
+      if ("ladder".equalsIgnoreCase(mo.getName)) {
+        val ladder:Ladder = new Ladder
+        ladder.startX = px
+        ladder.startY = py
+        ladder.height = rct.height
+        ladder.width = rct.width
+        r.enter(ladder)
+      }
       if ("target".equalsIgnoreCase(mo.getName)) {
         var ent:Entrance = new Entrance
         ent.id=mo.getProperties.get("id").toString

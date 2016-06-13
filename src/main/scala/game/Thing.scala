@@ -90,8 +90,9 @@ object Thing {
   def interaction:Short = 0x02
   def exit:Short = 0x05
   def entrance:Short = 0x06
+  def ladder:Short = 0x07
 
-  def bullet: Short = 0x04
+  def bullet: Short = 0xB0
 
   def creature:Short = 0xC00
   def lilac: Short = 0xC01

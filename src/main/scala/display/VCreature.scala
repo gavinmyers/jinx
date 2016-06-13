@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.{Texture, Color}
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion, Batch, Sprite}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import game.{Creature, Thing}
+import game.{Ladder, Creature, Thing}
 import _root_.utils.Conversion
 import scala.collection.JavaConversions._
 
@@ -132,7 +132,6 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     body.setGravityScale(1f)
     creature.movV = ""
     var mod:Float = 0.9f
-    if(creature.id == "lilac") println(body.getLinearVelocity.x)
 
     body.setLinearVelocity(body.getLinearVelocity.x * mod, body.getLinearVelocity.y)
     if (creature.faceH == "R") {
@@ -159,7 +158,19 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
   }
 
   def canClimb(): Boolean = {
+
+    for (contact: Contact <- world.getContactList) {
+      if (contact.getFixtureA.getUserData == creature && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
+        println("YOU CAN CLIMB")
+        return true
+      }
+      if (contact.getFixtureB.getUserData == creature && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
+        println("YOU CAN CLIMB")
+        return true
+      }
+    }
     false
+
   }
 
   override def update(gameTime:Float):Unit = {

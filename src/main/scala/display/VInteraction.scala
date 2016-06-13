@@ -31,7 +31,7 @@ class VInteraction(entity: Thing, world:World, textureRegion: TextureRegion) ext
     f.filter.categoryBits = Thing.interaction
     f.filter.maskBits = Thing.floor
     f.shape = shape
-    shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
+    shape.setAsBox(Conversion.pixelsToMeters(entity.width / 2), Conversion.pixelsToMeters(entity.height / 2))
     f.friction = 5f
     f
   })
