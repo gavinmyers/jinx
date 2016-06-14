@@ -5,6 +5,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import display.{VTile, VThing}
 import game._
+import tools.Lantern
 import scala.collection.JavaConversions._
 import scala.collection.mutable
 
@@ -43,6 +44,12 @@ object Tiled {
       def rct = mo.asInstanceOf[RectangleMapObject].getRectangle
       val px:Float = rct.x + 12
       val py:Float = rct.y + 12
+      if ("thing".equalsIgnoreCase(mo.getName)) {
+        val thing:Thing = Thing.create(mo.getProperties.get("type").toString)
+        thing.startX = px
+        thing.startY = py
+        r.enter(thing)
+      }
       if ("ladder".equalsIgnoreCase(mo.getName)) {
         val ladder:Ladder = new Ladder
         ladder.startX = px

@@ -21,6 +21,16 @@ object VLilac {
   }
 }
 
+object VSnake {
+  def sheet = new Texture("snake.png")
+  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(sheet, 24, 24)) {
+    for(tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
+}
+
 class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
   var sprite:Sprite = new Sprite(animationSheet.head)
@@ -161,11 +171,9 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
 
     for (contact: Contact <- world.getContactList) {
       if (contact.getFixtureA.getUserData == creature && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
-        println("YOU CAN CLIMB")
         return true
       }
       if (contact.getFixtureB.getUserData == creature && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
-        println("YOU CAN CLIMB")
         return true
       }
     }

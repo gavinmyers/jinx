@@ -46,12 +46,12 @@ class Lantern extends Tool {
     if(this.location != null) {
       if(this.using) {
         this.location.luminance = 0.4f
-        this.location.brightness = 3f + Math.random().toFloat
+        this.location.brightness = ((this.location.brightness * 2) +  3f + Math.random().toFloat) / 3
       } else {
         this.location.luminance = 0f
         this.location.brightness = 0f
       }
     }
-    this.brightness = 2f + Math.random().toFloat
+    this.brightness = ((this.brightness * 2) +  1f + Math.random().toFloat) / 3
   }
 }

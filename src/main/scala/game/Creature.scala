@@ -74,10 +74,6 @@ class GenericCreature
 
   override def contact(gameTime:Float, thing:Thing): Unit = {
 
-    if(thing.isInstanceOf[Ladder]) {
-      println("YOU HIT A LADDER")
-    }
-
     if(thing.isInstanceOf[Exit]) {
       val exit:Exit = thing.asInstanceOf[Exit]
       exit.destination.enter(this)

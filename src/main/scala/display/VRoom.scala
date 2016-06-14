@@ -56,7 +56,8 @@ class VRoom(map:String, room:Room) {
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    handler.setAmbientLight(0.5f, 0.5f, 0.5f, 0.5f)
+    handler.setAmbientLight(0.3f, 0.3f, 0.3f, 0.25f)
+    handler.setCombinedMatrix(camera)
 
     camera.zoom = 0.5f
     camera.setToOrtho(false)
@@ -119,10 +120,7 @@ class VRoom(map:String, room:Room) {
     }
 
 
-    handler.updateAndRender()
 
-
-    handler.setCombinedMatrix(camera)
     batch.setProjectionMatrix(camera.combined)
     batch.begin()
     for((k,thing) <- room.inventory) {
@@ -135,7 +133,7 @@ class VRoom(map:String, room:Room) {
         val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.luminance), thing.brightness, 0, 0)
         light.attachToBody(fet.body, 0, 0)
         light.setIgnoreAttachedBody(true)
-        light.setContactFilter(0, 2, -1)
+        light.setContactFilter(Thing.floor, Thing.floor, Thing.floor)
         light.setActive(true)
         fet.light = light
       }
@@ -163,7 +161,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     for (c <- world.getContactList) {

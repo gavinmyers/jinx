@@ -7,6 +7,10 @@ trait AI {
   var enemies:Short = AI.nobody
   var alignment:Short = AI.neutral
   var sentient:Boolean = true
+  var lastThought:Float = 0
+  var thoughtCooldown = 2f
+  var lastAttack:Float = 0
+  var attackCooldown:Float = 2f
   def think(gameTime:Float, thinker:Thing): Unit = {
     if(!thinker.isInstanceOf[Creature]) return
 
@@ -14,6 +18,10 @@ trait AI {
 
     if(!thinker.location.isInstanceOf[Room]) return
 
+    if(lastThought + thoughtCooldown > gameTime) return
+
+
+    lastThought = gameTime
     //Find the nearest enemy
     val enemy:Thing = AI.findEnemy(this, thinker.location.asInstanceOf[Room])
 

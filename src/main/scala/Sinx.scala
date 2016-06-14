@@ -57,6 +57,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         enemy.holding = enemysword
         //level01.enter(enemy)
 
+        /*
         val lantern:Lantern = new Lantern
         lantern.startX=thing.startX + 50
         lantern.startY=thing.startY + 25
@@ -81,6 +82,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         ironsword.startX=thing.startX + 70
         ironsword.startY=thing.startY + 25
         level01.enter(ironsword)
+        */
       }
     }
     inventory = new VInventory(lilac)
