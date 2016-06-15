@@ -4,8 +4,8 @@ import game.{Thing, Creature, Bullet, Tool}
 
 class IronSword extends Tool  {
   this.category = game.Thing.ironsword
-  this.brightness = 0.75f
-  this.luminance = 0.25f
+  attributes("brightness") = 0.75f
+  attributes("luminance") = 0.25f
 
 
 
@@ -27,7 +27,7 @@ class IronSword extends Tool  {
       bullet.faceH = creature.faceH
 
     }
-    this.location.location.enter(bullet)
+    this.location.location.add(bullet)
 
     return true
   }

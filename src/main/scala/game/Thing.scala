@@ -11,6 +11,8 @@ trait Thing {
   var ai:AI = _
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
+  var attributes:scala.collection.mutable.Map[String,Float] = scala.collection.mutable.Map[String, Float]()
+
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
   var healthMax: Float = 10f
@@ -36,22 +38,33 @@ trait Thing {
   var height:Float = 12f
   var width:Float = 12f
   var size:Float = 1f
-  var luminance:Float = 0f
-  var brightness:Float = 0f
+
   var weight:Float = 1f
   var lastX:Float = 0
   var lastY:Float = 0
   var transformX:Float = 0
   var transformY:Float = 0
-  def enter(thing:Thing):Unit = {
+
+  attributes += "brightness" -> 0
+  attributes += "luminance" -> 0
+
+  def mod(source:Thing, attribute:String, value:Float):Float = {
+    return value
+  }
+
+  def get(attribute:String):Float = {
+    return this.attributes.get(attribute).get
+  }
+
+  def add(thing:Thing):Unit = {
     if(thing.location != null) {
-      thing.location.leave(thing)
+      thing.location.remove(thing)
     }
     inventory += thing.id -> thing
     thing.location = this
   }
 
-  def leave(thing:Thing):Unit = {
+  def remove(thing:Thing):Unit = {
     inventory -= thing.id
   }
 
@@ -80,7 +93,7 @@ trait Thing {
   }
 
   def die():Unit = {
-    this.location.leave(this)
+    this.location.remove(this)
   }
 
 }
@@ -118,7 +131,7 @@ object Thing {
       gc.healthMax = 10f
       gc.healthCurrent = 10f
       gc.holding = new IronSword
-      gc.enter(gc.holding)
+      gc.add(gc.holding)
       gc.ai = new GenericAI
       return gc
     }

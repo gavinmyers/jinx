@@ -31,17 +31,35 @@ trait Creature extends Thing {
     }
   }
 
+  def drop() = {
+    if(holding != null) {
+      val t:Thing = this.holding
+      this.remove(t)
+      t.startX = this.lastX
+      t.startY = this.lastY
+      t.lastX = this.lastX
+      t.lastY = this.lastY
+      this.location.add(t)
+    }
+  }
+
   def attack(gameTime:Float) = {
     if(holding != null) {
       holding.attack(gameTime)
     }
   }
 
-  override def leave(thing:Thing):Unit = {
-    super.leave(thing)
+  override def remove(thing:Thing):Unit = {
+    super.remove(thing)
     if(this.holding == thing) {
       this.holding = null
     }
+  }
+
+  override def get(attribute:String):Float = {
+    var mod:Float = super.get(attribute)
+    if(this.holding != null) mod = this.holding.mod(this, attribute, mod)
+    return mod
   }
 
   def moveRight() = {
@@ -76,7 +94,7 @@ class GenericCreature
 
     if(thing.isInstanceOf[Exit]) {
       val exit:Exit = thing.asInstanceOf[Exit]
-      exit.destination.enter(this)
+      exit.destination.add(this)
 
       this.startX = exit.entrance.startX
       this.startY = exit.entrance.startY
@@ -86,7 +104,7 @@ class GenericCreature
     } else if(thing.isInstanceOf[Tool] && this.pickup) {
       val tool:Tool = thing.asInstanceOf[Tool]
 
-      this.enter(tool)
+      this.add(tool)
       this.pickup = false
       if(this.holding == null) {
         this.holding = tool

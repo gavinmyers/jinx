@@ -39,50 +39,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         lilac.location=level01
         lilac.startX=thing.startX
         lilac.startY=thing.startY + 50
-        level01.enter(lilac)
+        level01.add(lilac)
         var playerBrain:AI = new PlayerAI
         lilac.ai = playerBrain
 
-
-
-        val enemy:GenericCreature = new GenericCreature
-        enemy.category = game.Thing.lilac
-        enemy.location=level01
-        enemy.startX=thing.startX + 200
-        enemy.startY=thing.startY + 50
-        var enemyBrain:AI = new GenericAI
-        enemy.ai = enemyBrain
-        val enemysword:IronSword = new IronSword
-        enemy.enter(enemysword)
-        enemy.holding = enemysword
-        //level01.enter(enemy)
-
-        /*
-        val lantern:Lantern = new Lantern
-        lantern.startX=thing.startX + 50
-        lantern.startY=thing.startY + 25
-        level01.enter(lantern)
-
-        val p:Pigmask = new Pigmask
-        p.startX=thing.startX + 50
-        p.startY=thing.startY + 50
-        level01.enter(p)
-
-        val c:Cupcake = new Cupcake
-        c.startX=thing.startX + 75
-        c.startY=thing.startY + 75
-        level01.enter(c)
-
-        val m:MedicineWheel = new MedicineWheel
-        m.startX=thing.startX + 125
-        m.startY=thing.startY + 125
-        level01.enter(m)
-
-        val ironsword:IronSword = new IronSword
-        ironsword.startX=thing.startX + 70
-        ironsword.startY=thing.startY + 25
-        level01.enter(ironsword)
-        */
       }
     }
     inventory = new VInventory(lilac)
@@ -91,7 +51,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     Gdx.input.setInputProcessor(this)
 
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
-    mp3Sound.play(0.5f)
+    //mp3Sound.play(0.5f)
   }
 
   override def render(): Unit = {
@@ -155,6 +115,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.DOWN == keycode)
       lilac.moveDown()
+
+    if (Input.Keys.A == keycode)
+      lilac.drop()
 
     if (Input.Keys.Z == keycode)
       lilac.jump = true

@@ -129,8 +129,8 @@ class VRoom(map:String, room:Room) {
       }
       val fet:VThing = vinventory(k)
       thing.update(gameTime)
-      if(thing.luminance > 0f && fet.light == null) {
-        val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.luminance), thing.brightness, 0, 0)
+      if(thing.get("luminance") > 0f && fet.light == null) {
+        val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.get("luminance")), thing.get("brightness"), 0, 0)
         light.attachToBody(fet.body, 0, 0)
         light.setIgnoreAttachedBody(true)
         light.setContactFilter(Thing.floor, Thing.floor, Thing.floor)
@@ -138,7 +138,7 @@ class VRoom(map:String, room:Room) {
         fet.light = light
       }
       if(fet.light != null) {
-        fet.light.setDistance(thing.brightness)
+        fet.light.setDistance(thing.get("brightness"))
       }
       fet.update(gameTime)
       fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )

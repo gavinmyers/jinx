@@ -36,7 +36,7 @@ object Tiled {
           val tile:Tile = new Tile
           tile.startX=px
           tile.startY=py
-          r.enter(tile)
+          r.add(tile)
         }
       }
     }
@@ -48,7 +48,7 @@ object Tiled {
         val thing:Thing = Thing.create(mo.getProperties.get("type").toString)
         thing.startX = px
         thing.startY = py
-        r.enter(thing)
+        r.add(thing)
       }
       if ("ladder".equalsIgnoreCase(mo.getName)) {
         val ladder:Ladder = new Ladder
@@ -56,7 +56,7 @@ object Tiled {
         ladder.startY = py
         ladder.height = rct.height
         ladder.width = rct.width
-        r.enter(ladder)
+        r.add(ladder)
       }
       if ("target".equalsIgnoreCase(mo.getName)) {
         var ent:Entrance = new Entrance
@@ -67,7 +67,7 @@ object Tiled {
         ent.startY=py
         ent.height = rct.height
         ent.width = rct.width
-        r.enter(ent)
+        r.add(ent)
       }
     }
     rooms += r.id -> r
@@ -87,7 +87,7 @@ object Tiled {
         exit.startY = py
         exit.height = rct.height
         exit.width = rct.width
-        r.enter(exit)
+        r.add(exit)
       }
     }
     return r
