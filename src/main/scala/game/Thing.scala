@@ -15,8 +15,10 @@ trait Thing {
 
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
-  var healthMax: Float = 10f
-  var healthCurrent: Float = 10f
+
+  attributes += "health_max" -> 10f
+  attributes += "health_current" -> 10f
+
   var movH: String = ""
   var faceH: String = ""
   var movV: String = ""
@@ -49,7 +51,15 @@ trait Thing {
   attributes += "luminance" -> 0
 
   def mod(source:Thing, attribute:String, value:Float):Float = {
-    return value
+    if(this.attributes.contains("mod_"+attribute)) {
+      return value + this.attributes("mod_"+attribute)
+    } else {
+      return value
+    }
+  }
+
+  def set(attribute:String, value:Float) = {
+    this.attributes(attribute) = value
   }
 
   def get(attribute:String):Float = {
@@ -83,11 +93,12 @@ trait Thing {
     if(takingDamage) {
       return
     }
-    println("OUCH " + amount)
     this.lastDamage = gameTime
     this.takingDamage = true
-    this.healthCurrent -= amount
-    if(this.healthCurrent < 1) {
+    println(this.get("health_current"))
+    this.set("health_current", this.get("health_current") - amount)
+    println(this.get("health_current") + "," + amount + ":" + (this.get("health_current") - amount))
+    if(this.get("health_current") < 1) {
       this.die()
     }
   }
@@ -127,9 +138,9 @@ object Thing {
     } else if("snake".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.snake
-      gc.runMaxVelocity = 1f
-      gc.healthMax = 10f
-      gc.healthCurrent = 10f
+      gc.set("run_max_velocity", 1f)
+      gc.set("health_current",10f)
+      gc.set("health_max", 10f)
       gc.holding = new IronSword
       gc.add(gc.holding)
       gc.ai = new GenericAI

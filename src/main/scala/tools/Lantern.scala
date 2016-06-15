@@ -4,8 +4,8 @@ import game.{Thing, Creature, Bullet, Tool}
 
 
 class Lantern extends Tool {
-  this.attributes("brightness") = 2f
-  this.attributes("luminance") = 1f
+  attributes("brightness") = 2f
+  attributes("luminance") = 1f
   this.useCooldown = -1f
   this.category = game.Thing.lantern
 
@@ -35,9 +35,11 @@ class Lantern extends Tool {
   }
 
   override def mod(source:Thing, attribute:String, value:Float):Float = {
-    if("luminance".equalsIgnoreCase(attribute)) {
+    if(this.using == false) {
+      return super.mod(source, attribute, value)
+    } else if("luminance".equalsIgnoreCase(attribute)) {
       return 4.0f
-    } else if("brightness".equalsIgnoreCase((attribute))) {
+    } else if("brightness".equalsIgnoreCase(attribute)) {
       return 4.0f
     } else {
       return super.mod(source, attribute, value)
@@ -52,17 +54,6 @@ class Lantern extends Tool {
 
   override def update(gameTime:Float): Unit = {
     super.update(gameTime)
-  /*
-    if(this.location != null) {
-      if(this.using) {
-        this.location.attributes("luminance") = 0.4f
-        this.location.attributes("brightness") = (((this.location.attributes("brightness") * 2) +  3f + Math.random().toFloat) / 3)
-      } else {
-        this.location.attributes("luminance") = 0
-        this.location.attributes("brightness") = 0
-      }
-    }
-    */
     if(Math.random() * 10 > 8)
       this.attributes("brightness") = (((this.attributes("brightness") * 2) +  1f + Math.random().toFloat) / 3)
   }

@@ -191,7 +191,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       creature.holding.update(gameTime)
     }
 
-    if(canJump && (body.getLinearVelocity.x > creature.runMaxVelocity || body.getLinearVelocity.x < creature.runMaxVelocity * -1)) {
+    if(canJump && (body.getLinearVelocity.x > creature.get("run_max_velocity") || body.getLinearVelocity.x < creature.get("run_max_velocity") * -1)) {
       slow(gameTime)
     }
 
@@ -225,7 +225,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
     } else {
 
       if (creature.jumping) {
-        if (body.getLinearVelocity.y < creature.jumpMaxVelocity && creature.lastJump + creature.jumpMax > gameTime) {
+        if (body.getLinearVelocity.y < creature.get("jump_max_velocity") && creature.lastJump + creature.get("jump_max") > gameTime) {
           var h:Float = 0f
           if("R".equalsIgnoreCase(creature.movH)) {
             h = 50f
@@ -250,13 +250,13 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       }
 
       if (creature.movH == "R") {
-        if (body.getLinearVelocity.x < creature.runMaxVelocity)
+        if (body.getLinearVelocity.x < creature.get("run_max_velocity"))
           body.applyForceToCenter(15f, 0f, true)
         //if (!weapon.attacking)
         sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
       }
       if (creature.movH == "L") {
-        if (body.getLinearVelocity.x > creature.runMaxVelocity * -1)
+        if (body.getLinearVelocity.x > creature.get("run_max_velocity") * -1)
           body.applyForceToCenter(-15f, 0f, true)
         //if (!weapon.attacking)
         sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))

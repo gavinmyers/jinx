@@ -12,9 +12,6 @@ trait Tool extends Thing {
   var lastAttack:Float = 0f
 
   var edible:Boolean = false
-  var fullness:Float = 1.0f
-
-  var hungerMod:Float = 1.0f
 
   override def update(gameTime:Float) : Unit = {
     super.update(gameTime)
@@ -45,10 +42,7 @@ trait Tool extends Thing {
   def use(gameTime:Float, user:Creature):Boolean = {
 
     if(this.edible) {
-      user.fullnessCurrent += this.fullness
-      if(user.fullnessCurrent > user.fullnessMax) {
-        user.fullnessCurrent = user.fullnessMax
-      }
+      user.set("fullness_current", user.get("fullness_current") + this.get("fullness"))
       this.die()
     }
 

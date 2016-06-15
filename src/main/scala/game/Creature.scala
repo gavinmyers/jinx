@@ -5,23 +5,21 @@ import scala.collection.mutable
 trait Creature extends Thing {
 
 
-  var fullnessMax: Float = 600f
-  var fullnessCurrent: Float = 600f
-  var hunger:Float = 1f
-
+  attributes += "fullness_max" -> 600f
+  attributes += "fullness_current" -> 600f
+  attributes += "hunger" -> 1f
 
   var jump: Boolean = false
   var jumping: Boolean = false
-  var jumpMax: Float = 0.45f
   var lastJump: Float = 0
 
+  attributes += "jump_max" -> 0.45f
+  attributes += "jump_max_velocity" -> 15f
+  attributes += "run_max_velocity" -> 5f
 
   var pickup:Boolean = false
 
   var canFly: Boolean = false
-
-  var jumpMaxVelocity: Float = 15f
-  var runMaxVelocity: Float = 5.5f
 
   var holding:Tool = _
 
@@ -121,12 +119,10 @@ class GenericCreature
     }
     lastUpdate = gameTime
 
-    var hungerCurrent = this.hunger
-    if(this.holding != null) {
-      hungerCurrent *= this.holding.hungerMod
-    }
-    this.fullnessCurrent -= hungerCurrent
-    if(this.fullnessCurrent < 1) {
+    var hungerCurrent = this.get("hunger")
+
+    this.set("fullness_current", this.get("fullness_current") - hungerCurrent)
+    if(this.get("fullness_current") < 1) {
       this.die()
     }
 

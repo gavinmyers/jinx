@@ -6,6 +6,7 @@ class IronSword extends Tool  {
   this.category = game.Thing.ironsword
   attributes("brightness") = 0.75f
   attributes("luminance") = 0.25f
+  attributes("mod_hunger") = 2f
 
 
 
