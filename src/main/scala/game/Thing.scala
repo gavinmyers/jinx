@@ -1,7 +1,7 @@
 package game
 
 import ai.{GenericAI, AI}
-import tools.{IronSword, Lantern}
+import tools.{Firebreath, IronSword, Lantern}
 
 import scala.collection.mutable
 
@@ -122,6 +122,7 @@ object Thing {
   def creature:Short = 0xC00
   def lilac: Short = 0xC01
   def snake: Short = 0xC02
+  def phoenix: Short = 0xC03
 
   def tool: Short = 0xF00
   def lantern:Short = 0xF01
@@ -133,8 +134,24 @@ object Thing {
   def create(t:String):Thing = {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern
+
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
+
+    } else if("phoenix".equalsIgnoreCase(t)) {
+      val gc:GenericCreature = new GenericCreature
+      gc.category = Thing.phoenix
+      gc.set("run_max_velocity", 1f)
+      gc.set("jump_max_velocity", 2f)
+      gc.set("health_current",10f)
+      gc.set("health_max", 10f)
+      gc.canFly = true
+      gc.holding = new Firebreath
+      gc.add(gc.holding)
+      gc.weight = 0.01f
+      gc.ai = new GenericAI
+      return gc
+
     } else if("snake".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.snake

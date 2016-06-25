@@ -359,7 +359,7 @@
   </object>
   <object id="64" name="thing" x="1464" y="360" width="24" height="24">
    <properties>
-    <property name="type" value="snake"/>
+    <property name="type" value="phoenix"/>
    </properties>
   </object>
  </objectgroup>

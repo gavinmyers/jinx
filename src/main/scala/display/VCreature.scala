@@ -29,6 +29,18 @@ object VSnake {
       sheetTextures.append(tx)
     }
   }
+
+}
+
+object VPhoenix {
+  def sheet = new Texture("phoenix.png")
+
+  val sheetTextures: ListBuffer[TextureRegion] = ListBuffer()
+  for (tr <- TextureRegion.split(sheet, 24, 24)) {
+    for (tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
 }
 
 class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
@@ -195,11 +207,7 @@ class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[Textur
       slow(gameTime)
     }
 
-    if (canClimb || creature.canFly) {
-      body.setGravityScale(0f)
-    } else {
-      body.setGravityScale(1f)
-    }
+    body.setGravityScale(creature.weight)
 
     if(creature.jump) {
       if (canJump()) {

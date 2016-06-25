@@ -4,6 +4,10 @@ import logic.Combat
 
 class Bullet extends Thing {
   var cooldown:Float = 0.4f
+
+  var forceX:Float = 0f
+  var forceY:Float = 0f
+
   var created:Float = 0f
   var weapon:Tool = _
   var attacker:Creature = _
@@ -12,6 +16,8 @@ class Bullet extends Thing {
   var speed:Float = 0f
 
   this.category = Thing.bullet
+  var effect:Short = Bullet.explosion
+
   override def update(gameTime:Float): Unit = {
     if(created + cooldown < gameTime) {
       this.die()
@@ -33,5 +39,14 @@ class Bullet extends Thing {
     }
   }
 
+
+}
+
+object Bullet {
+  def slash: Short = 0x00
+
+  def explosion: Short = 0x01
+
+  def fire: Short = 0x02
 
 }

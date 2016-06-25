@@ -42,6 +42,9 @@ object VThing {
     } else if(thing.category == Thing.snake) {
       return new VCreature(thing.asInstanceOf[Creature], world, VSnake.sheetTextures)
 
+    } else if(thing.category == Thing.phoenix) {
+      return new VCreature(thing.asInstanceOf[Creature], world, VPhoenix.sheetTextures)
+
     } else if(thing.category == Thing.lantern) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(13))
 

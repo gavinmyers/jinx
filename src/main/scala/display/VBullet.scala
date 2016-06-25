@@ -16,13 +16,39 @@ object VBullet {
       sheetTextures.append(tx)
     }
   }
+
+  object explosion {
+    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
+    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
+  }
+
+  object fire {
+    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
+    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
+  }
+
+  object slash {
+    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(0),sheetTextures(1),sheetTextures(2))
+    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(8),sheetTextures(9),sheetTextures(10))
+  }
 }
+
 
 class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
 
-  var attackAnimationRight:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
-  var attackAnimationLeft:Animation = new Animation(0.15f, animationSheet(16),animationSheet(17),animationSheet(18),animationSheet(19),animationSheet(20),animationSheet(21),animationSheet(22),animationSheet(23))
+  var attackAnimationRight:Animation = VBullet.explosion.attackAnimationRight
+  var attackAnimationLeft:Animation = VBullet.explosion.attackAnimationLeft
+
+  if(entity.effect == Bullet.fire) {
+    attackAnimationRight = VBullet.fire.attackAnimationRight
+    attackAnimationLeft = VBullet.fire.attackAnimationLeft
+  }
+
+  if(entity.effect == Bullet.slash) {
+    attackAnimationRight = VBullet.slash.attackAnimationRight
+    attackAnimationLeft = VBullet.slash.attackAnimationLeft
+  }
 
   var sprite:Sprite = new Sprite(animationSheet.head)
   sprite.setScale(entity.scaleX, entity.scaleY)
@@ -31,6 +57,9 @@ class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegi
   var scaleY:Float = entity.scaleY
   var startX:Float = entity.startX
   var startY:Float = entity.startY
+  var forceX:Float = entity.forceX
+  var forceY:Float = entity.forceY
+  var force:Boolean = false
 
   var body:Body = world.createBody({
     val b: BodyDef = new BodyDef()
@@ -40,6 +69,7 @@ class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegi
     b
   })
   body.setUserData(sprite)
+  body.setGravityScale(entity.weight)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
@@ -60,6 +90,10 @@ class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegi
       this.sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
     } else {
       this.sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
+    }
+    if((forceX > 0 || forceY > 0) && force == false) {
+      force = true
+      body.applyForceToCenter(forceX, forceY, true)
     }
   }
 }

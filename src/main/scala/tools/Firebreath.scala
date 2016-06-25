@@ -1,28 +1,32 @@
 package tools
 
-import game.{Thing, Creature, Bullet, Tool}
+import game.{Tool, Creature, Bullet}
 
-class IronSword extends Tool  {
+class Firebreath extends Tool {
   this.category = game.Thing.ironsword
-  attributes += "brightness" -> 0.75f
-  attributes += "luminance" -> 1.0f
-  attributes += "mod_hunger" -> 2.0f
-
 
   override def attack(gameTime:Float):Boolean = {
     if(!super.attack(gameTime)) {
       return false
     }
-
     val bullet:Bullet = new Bullet
-    bullet.effect = Bullet.slash
     bullet.startX = this.location.lastX
     bullet.startY = this.location.lastY
     bullet.created = gameTime
-    bullet.bind = this.location
+    bullet.cooldown = 3f
+    bullet.weight = 0.02f
+    bullet.forceY = 150f + (Math.random() * 50).toFloat
+
+    bullet.attributes("brightness") = 2f
+    bullet.attributes("luminance") = 1f
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
+      if(creature.faceH.equalsIgnoreCase("R")) {
+        bullet.forceX = 350f + (Math.random() * 50).toFloat
+      } else {
+        bullet.forceX = (350f + (Math.random() * 50).toFloat) * -1
+      }
       bullet.attacker = creature
       bullet.movH = creature.movH
       bullet.faceH = creature.faceH
@@ -39,5 +43,4 @@ class IronSword extends Tool  {
     }
     return true
   }
-
 }

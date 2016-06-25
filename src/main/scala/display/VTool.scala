@@ -36,6 +36,7 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
     b
   })
   body.setUserData(sprite)
+  body.setGravityScale(entity.weight)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()

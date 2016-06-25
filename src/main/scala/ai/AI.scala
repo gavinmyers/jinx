@@ -34,6 +34,14 @@ trait AI {
       thinker.asInstanceOf[Creature].moveLeft()
     }
 
+    if(enemy.lastY > thinker.lastY) {
+      thinker.asInstanceOf[Creature].moveUp()
+      thinker.asInstanceOf[Creature].jump = true
+
+    } else {
+      thinker.asInstanceOf[Creature].moveDown()
+    }
+
     //ATTACK!
     def cx:Float = enemy.lastX - thinker.lastX
     def cy:Float = enemy.lastY - thinker.lastY
@@ -41,7 +49,7 @@ trait AI {
       thinker.asInstanceOf[Creature].attack(gameTime)
     }
 
-
+    thinker.asInstanceOf[Creature].attack(gameTime)
   }
 }
 

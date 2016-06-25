@@ -4,8 +4,10 @@ import game.{Thing, Creature, Bullet, Tool}
 
 
 class Lantern extends Tool {
-  attributes("brightness") = 2f
-  attributes("luminance") = 1f
+  attributes += "brightness" -> 2.0f
+  attributes += "luminance" -> 1.0f
+
+  this.weight = 0.1f
   this.useCooldown = -1f
   this.category = game.Thing.lantern
 
@@ -15,15 +17,24 @@ class Lantern extends Tool {
     }
 
     val bullet:Bullet = new Bullet
+    bullet.effect = Bullet.fire
     bullet.startX = this.location.lastX
     bullet.startY = this.location.lastY
     bullet.created = gameTime
-    bullet.bind = this.location
+    bullet.cooldown = 3f
+    bullet.weight = 0.1f
+    bullet.forceY = 150f + (Math.random() * 50).toFloat
+
     bullet.attributes("brightness") = 2f
     bullet.attributes("luminance") = 1f
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
+      if(creature.faceH.equalsIgnoreCase("R")) {
+        bullet.forceX = 150f + (Math.random() * 50).toFloat
+      } else {
+        bullet.forceX = (150f + (Math.random() * 50).toFloat) * -1
+      }
       bullet.attacker = creature
       bullet.movH = creature.movH
       bullet.faceH = creature.faceH
