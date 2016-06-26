@@ -1,7 +1,7 @@
 package game
 
 import ai.{GenericAI, AI}
-import tools.{Firebreath, IronSword, Lantern}
+import tools.{Chest, Firebreath, IronSword, Lantern}
 
 import scala.collection.mutable
 
@@ -117,7 +117,7 @@ object Thing {
   def entrance:Short = 0x06
   def ladder:Short = 0x07
 
-  def bullet: Short = 0xB0
+  def bullet: Short = 0xB00
 
   def creature:Short = 0xC00
   def lilac: Short = 0xC01
@@ -131,12 +131,17 @@ object Thing {
   def cupcake:Short = 0xF04
   def medicinewheel:Short = 0xF05
 
+  def chest:Short = 0xD00
+
   def create(t:String):Thing = {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern
 
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
+
+    } else if("chest".equalsIgnoreCase(t)) {
+      return new Chest
 
     } else if("phoenix".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
@@ -162,6 +167,9 @@ object Thing {
       gc.add(gc.holding)
       gc.ai = new GenericAI
       return gc
+
+    } else if("chest".equalsIgnoreCase(t)) {
+
     }
 
     return null

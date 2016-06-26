@@ -16,6 +16,14 @@ object VTool {
       sheetTextures.append(tx)
     }
   }
+
+  def lantern =  VTool.sheetTextures(13)
+  def ironsword = VTool.sheetTextures(25)
+  def cupcake = VTool.sheetTextures(24)
+  def pigmask = VTool.sheetTextures(18)
+  def medicinewheel = VTool.sheetTextures(16)
+  def chest = VTool.sheetTextures(26)
+
 }
 
 class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VThing {

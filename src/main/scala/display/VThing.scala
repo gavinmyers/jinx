@@ -37,28 +37,31 @@ object VThing {
       return new VTile(thing, world)
 
     } else if(thing.category == Thing.lilac) {
-      return new VCreature(thing.asInstanceOf[Creature], world, VLilac.sheetTextures)
+      return new VCreature(thing.asInstanceOf[Creature], world, VCreature.lilac.sheetTextures)
 
     } else if(thing.category == Thing.snake) {
-      return new VCreature(thing.asInstanceOf[Creature], world, VSnake.sheetTextures)
+      return new VCreature(thing.asInstanceOf[Creature], world, VCreature.snake.sheetTextures)
 
     } else if(thing.category == Thing.phoenix) {
-      return new VCreature(thing.asInstanceOf[Creature], world, VPhoenix.sheetTextures)
+      return new VCreature(thing.asInstanceOf[Creature], world, VCreature.phoenix.sheetTextures)
 
     } else if(thing.category == Thing.lantern) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(13))
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.lantern)
 
     } else if(thing.category == Thing.ironsword) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(25))
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.ironsword)
 
     } else if(thing.category == Thing.cupcake) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(24))
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.cupcake)
 
     } else if(thing.category == Thing.pigmask) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(18))
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.pigmask)
 
     } else if(thing.category == Thing.medicinewheel) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.sheetTextures(16))
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.medicinewheel)
+
+    } else if(thing.category == Thing.chest) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.chest)
 
     } else if(thing.category == Thing.bullet) {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)

@@ -11,37 +11,45 @@ import scala.collection.JavaConversions._
 
 import scala.collection.mutable.ListBuffer
 
-object VLilac {
-  def sheet = new Texture("jayden.png")
-  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
-  for(tr <- TextureRegion.split(sheet, 24, 24)) {
-    for(tx <- tr) {
-      sheetTextures.append(tx)
+object VCreature {
+  object lilac {
+    def sheet = new Texture("jayden.png")
+    val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+    for(tr <- TextureRegion.split(sheet, 24, 24)) {
+      for(tx <- tr) {
+        sheetTextures.append(tx)
+      }
+    }
+  }
+
+  object snake {
+    def sheet = new Texture("snake.png")
+    val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+    for(tr <- TextureRegion.split(sheet, 24, 24)) {
+      for(tx <- tr) {
+        sheetTextures.append(tx)
+      }
+    }
+
+  }
+
+  object phoenix {
+    def sheet = new Texture("phoenix.png")
+
+    val sheetTextures: ListBuffer[TextureRegion] = ListBuffer()
+    for (tr <- TextureRegion.split(sheet, 24, 24)) {
+      for (tx <- tr) {
+        sheetTextures.append(tx)
+      }
     }
   }
 }
 
-object VSnake {
-  def sheet = new Texture("snake.png")
-  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
-  for(tr <- TextureRegion.split(sheet, 24, 24)) {
-    for(tx <- tr) {
-      sheetTextures.append(tx)
-    }
-  }
 
-}
 
-object VPhoenix {
-  def sheet = new Texture("phoenix.png")
 
-  val sheetTextures: ListBuffer[TextureRegion] = ListBuffer()
-  for (tr <- TextureRegion.split(sheet, 24, 24)) {
-    for (tx <- tr) {
-      sheetTextures.append(tx)
-    }
-  }
-}
+
+
 
 class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
