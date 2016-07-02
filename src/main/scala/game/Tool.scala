@@ -29,6 +29,10 @@ trait Tool extends Thing {
     }
   }
 
+  override def die():Unit = {
+    this.destroyed = true
+  }
+
   def attack(gameTime:Float):Boolean = {
 
     if(lastAttack + attackCooldown > gameTime) {

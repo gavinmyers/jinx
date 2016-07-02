@@ -10,7 +10,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
 import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
 import com.badlogic.gdx.math.{Matrix4, Vector3, Vector2}
 import com.badlogic.gdx.physics.box2d.{JointEdge, World, Box2DDebugRenderer}
-import game.{Creature, Thing, Room, Tile}
+import game._
 import utils.Conversion
 import scala.collection.JavaConversions._
 
@@ -161,7 +161,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    //debugRenderer.render(world, debugMatrix)
+    debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     for (c <- world.getContactList) {
@@ -175,6 +175,9 @@ class VRoom(map:String, room:Room) {
       }
 
       if(t1 != null && t2 != null) {
+        if(t1.isInstanceOf[Bullet] || t2.isInstanceOf[Bullet]) {
+          println(t1 + " vs " + t2)
+        }
         t1.contact(gameTime,t2)
         t2.contact(gameTime,t1)
       }

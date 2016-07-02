@@ -2,6 +2,7 @@ package display
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Sprite}
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import game.{Tool, Thing}
 import _root_.utils.Conversion
@@ -39,7 +40,7 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
   var body:Body = world.createBody({
     val b: BodyDef = new BodyDef()
     b.`type` = BodyDef.BodyType.DynamicBody
-    b.fixedRotation = true
+    b.fixedRotation = false
     b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
     b
   })
@@ -59,7 +60,24 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
   })
   fixture.setUserData(entity)
 
+  val fixtureBottom:Fixture = body.createFixture(
+    {
+      val f = new FixtureDef
+      f.density = 0f
+      f.isSensor = true
+      f.shape = new PolygonShape()
+      f.shape.asInstanceOf[PolygonShape]
+        .setAsBox(Conversion.pixelsToMeters(sprite.getWidth / 3f) / 2,
+          Conversion.pixelsToMeters(sprite.getHeight / 4.5f),
+          new Vector2(0f, Conversion.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
+      f
+    })
+  fixtureBottom.setUserData(entity)
+
   override def update(gameTime:Float):Unit = {
+    if(entity.destroyed) {
+      this.sprite.setAlpha(0.25f)
+    }
     entity.update(gameTime)
   }
 }

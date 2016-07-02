@@ -75,7 +75,7 @@ class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegi
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
     f.isSensor = false
-    f.filter.categoryBits = Thing.tool
+    f.filter.categoryBits = Thing.bullet
     f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))

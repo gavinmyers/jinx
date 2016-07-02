@@ -95,9 +95,7 @@ trait Thing {
     }
     this.lastDamage = gameTime
     this.takingDamage = true
-    println(this.get("health_current"))
     this.set("health_current", this.get("health_current") - amount)
-    println(this.get("health_current") + "," + amount + ":" + (this.get("health_current") - amount))
     if(this.get("health_current") < 1) {
       this.die()
     }
