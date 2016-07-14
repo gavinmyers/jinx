@@ -11,7 +11,7 @@ import scala.collection.JavaConversions._
 
 import scala.collection.mutable.ListBuffer
 
-object VCreature {
+protected object VCreature {
   object lilac {
     def sheet = new Texture("jayden.png")
     val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
@@ -51,7 +51,7 @@ object VCreature {
 
 
 
-class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
+protected class VCreature(creature:Creature, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
   var sprite:Sprite = new Sprite(animationSheet.head)
   sprite.setScale(creature.scaleX, creature.scaleY)

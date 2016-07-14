@@ -12,6 +12,8 @@ trait Tool extends Thing {
   var lastAttack:Float = 0f
 
   var edible:Boolean = false
+  var locked:Boolean = false
+  var container:Boolean = false
 
   override def update(gameTime:Float) : Unit = {
     super.update(gameTime)

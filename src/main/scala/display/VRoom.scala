@@ -175,9 +175,6 @@ class VRoom(map:String, room:Room) {
       }
 
       if(t1 != null && t2 != null) {
-        if(t1.isInstanceOf[Bullet] || t2.isInstanceOf[Bullet]) {
-          println(t1 + " vs " + t2)
-        }
         t1.contact(gameTime,t2)
         t2.contact(gameTime,t1)
       }

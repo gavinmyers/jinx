@@ -18,6 +18,7 @@ trait Creature extends Thing {
   attributes += "run_max_velocity" -> 5f
 
   var pickup:Boolean = false
+  var open:Boolean = false
 
   var canFly: Boolean = false
 
@@ -106,6 +107,15 @@ class GenericCreature
       this.pickup = false
       if(this.holding == null) {
         this.holding = tool
+      }
+    } else if(thing.isInstanceOf[Tool] && this.open) {
+      this.open = false
+      val t:Tool = thing.asInstanceOf[Tool]
+      println("You want to open this?" + t)
+      if(t.container == false) {
+        t.add( new Notification("?"))
+      } else if (t.locked == true) {
+        t.add(new Notification("L"))
       }
     }
 

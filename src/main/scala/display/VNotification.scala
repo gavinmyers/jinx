@@ -1,23 +1,27 @@
 package display
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Sprite, Animation, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
-import game.Thing
+import game.{Thing, Notification, Bullet}
 import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
 
 
-protected class VTile(entity: Thing, world:World) extends VThing {
+protected object VNotification {
+  def sheet = new Texture("effects.png")
+  val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
+  for(tr <- TextureRegion.split(sheet, 12, 12)) {
+    for(tx <- tr) {
+      sheetTextures.append(tx)
+    }
+  }
+}
 
-  var sprite:Sprite = new Sprite(VThing.sheetTextures(13))
-  sprite.setScale(entity.scaleX, entity.scaleY)
+protected class VNotification(entity: Notification, world:World) {
+  var sprite:Sprite = new Sprite(VNotification.sheetTextures.head)
 
-  var scaleX:Float = entity.scaleX
-  var scaleY:Float = entity.scaleY
-  var startX:Float = entity.startX
-  var startY:Float = entity.startY
 
   var body:Body = world.createBody({
     val b: BodyDef = new BodyDef()
@@ -27,13 +31,15 @@ protected class VTile(entity: Thing, world:World) extends VThing {
     b
   })
   body.setUserData(sprite)
+  body.setGravityScale(entity.weight)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
-    f.isSensor = false
+    f.isSensor = true
+    f.filter.categoryBits = Thing.bullet
+    f.filter.maskBits = Thing.floor
     f.shape = shape
-    f.filter.categoryBits = Thing.floor
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
     f.friction = 5f
     f

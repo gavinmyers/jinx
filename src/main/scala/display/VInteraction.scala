@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d._
 import game.{Thing, Tool}
 import _root_.utils.Conversion
 
-class VInteraction(entity: Thing, world:World, textureRegion: TextureRegion) extends VThing {
+protected class VInteraction(entity: Thing, world:World, textureRegion: TextureRegion) extends VThing {
 
   var sprite:Sprite = new Sprite(textureRegion)
   sprite.setScale(entity.scaleX, entity.scaleY)

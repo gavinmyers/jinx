@@ -125,6 +125,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.D == keycode)
       lilac.pickup = true
 
+    if (Input.Keys.O == keycode)
+      lilac.open = true
+
     if (Input.Keys.S == keycode)
       lilac.use(gameTime)
 

@@ -12,6 +12,7 @@ trait Thing {
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var attributes:scala.collection.mutable.Map[String,Float] = scala.collection.mutable.Map[String, Float]()
+  var notifications:scala.collection.mutable.Map[String,Notification] = scala.collection.mutable.Map[String, Notification]()
 
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
@@ -70,7 +71,13 @@ trait Thing {
     if(thing.location != null) {
       thing.location.remove(thing)
     }
-    inventory += thing.id -> thing
+    if(thing.isInstanceOf[Notification]) {
+      println("Add notification of type " + thing.id)
+      notifications += thing.id -> thing.asInstanceOf[Notification]
+    } else {
+      inventory += thing.id -> thing
+    }
+
     thing.location = this
   }
 
@@ -139,7 +146,9 @@ object Thing {
       return new IronSword
 
     } else if("chest".equalsIgnoreCase(t)) {
-      return new Chest
+      val t:Tool = new Chest
+      t.locked = true
+      return t
 
     } else if("phoenix".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
@@ -165,9 +174,6 @@ object Thing {
       gc.add(gc.holding)
       gc.ai = new GenericAI
       return gc
-
-    } else if("chest".equalsIgnoreCase(t)) {
-
     }
 
     return null

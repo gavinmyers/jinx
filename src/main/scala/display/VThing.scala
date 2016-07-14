@@ -8,7 +8,7 @@ import game.{Bullet, Tool, Creature, Thing}
 
 import scala.collection.mutable.ListBuffer
 
-trait VThing {
+protected trait VThing {
   def sprite:Sprite
   def scaleX:Float
   def scaleY:Float
@@ -23,7 +23,7 @@ trait VThing {
   }
 }
 
-object VThing {
+protected object VThing {
   def sheet = new Texture("levels.png")
   val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
   for(tr <- TextureRegion.split(sheet, 24, 24)) {
@@ -46,22 +46,22 @@ object VThing {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.phoenix.sheetTextures)
 
     } else if(thing.category == Thing.lantern) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.lantern)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("lantern"))
 
     } else if(thing.category == Thing.ironsword) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.ironsword)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("ironsword"))
 
     } else if(thing.category == Thing.cupcake) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.cupcake)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("cupcake"))
 
     } else if(thing.category == Thing.pigmask) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.pigmask)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("pigmask"))
 
     } else if(thing.category == Thing.medicinewheel) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.medicinewheel)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("medicinewheel"))
 
     } else if(thing.category == Thing.chest) {
-      return new VTool(thing.asInstanceOf[Tool], world, VTool.chest)
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("chest"))
 
     } else if(thing.category == Thing.bullet) {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)

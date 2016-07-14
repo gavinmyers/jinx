@@ -9,7 +9,7 @@ import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
 
-object VTool {
+protected object VTool {
   def sheet = new Texture("things.png")
   val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
   for(tr <- TextureRegion.split(sheet, 24, 24)) {
@@ -18,18 +18,24 @@ object VTool {
     }
   }
 
-  def lantern =  VTool.sheetTextures(13)
-  def ironsword = VTool.sheetTextures(25)
-  def cupcake = VTool.sheetTextures(24)
-  def pigmask = VTool.sheetTextures(18)
-  def medicinewheel = VTool.sheetTextures(16)
-  def chest = VTool.sheetTextures(26)
+  var tools:scala.collection.mutable.Map[String,scala.collection.mutable.Map[String,TextureRegion]] = scala.collection.mutable.Map[String, scala.collection.mutable.Map[String,TextureRegion]]()
+  tools("lantern") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("lantern")("default") = VTool.sheetTextures(100)
+
+  tools("ironsword") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("ironsword")("default") = VTool.sheetTextures(24)
+
+  tools("chest") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("chest")("default") = VTool.sheetTextures(104)
+  tools("chest")("broken") = VTool.sheetTextures(105)
+
+
 
 }
 
-class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VThing {
+protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutable.Map[String,TextureRegion]) extends VThing {
 
-  var sprite:Sprite = new Sprite(textureRegion)
+  var sprite:Sprite = new Sprite(sprites("default"))
   sprite.setScale(entity.scaleX, entity.scaleY)
 
   var scaleX:Float = entity.scaleX
@@ -75,8 +81,8 @@ class VTool(entity: Tool, world:World, textureRegion: TextureRegion) extends VTh
   fixtureBottom.setUserData(entity)
 
   override def update(gameTime:Float):Unit = {
-    if(entity.destroyed) {
-      this.sprite.setAlpha(0.25f)
+    if(entity.destroyed && sprites.contains("broken")) {
+      this.sprite.setRegion(sprites("broken"))
     }
     entity.update(gameTime)
   }

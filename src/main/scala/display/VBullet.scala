@@ -8,7 +8,7 @@ import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
 
-object VBullet {
+protected object VBullet {
   def sheet = new Texture("bullet1.png")
   val sheetTextures:ListBuffer[TextureRegion] = ListBuffer()
   for(tr <- TextureRegion.split(sheet, 24, 24)) {
@@ -34,7 +34,7 @@ object VBullet {
 }
 
 
-class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
+protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
 
   var attackAnimationRight:Animation = VBullet.explosion.attackAnimationRight

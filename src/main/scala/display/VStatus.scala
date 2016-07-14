@@ -6,7 +6,7 @@ import game.{Thing, Tool}
 import _root_.utils.Conversion
 
 
-class VStatus(var startX:Float, var startY:Float,  world:World, textureRegion: TextureRegion) extends VThing {
+protected class VStatus(var startX:Float, var startY:Float,  world:World, textureRegion: TextureRegion) extends VThing {
 
   var sprite:Sprite = new Sprite(textureRegion)
 
