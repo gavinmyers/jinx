@@ -53,6 +53,16 @@ class VRoom(map:String, room:Room) {
   }
 
 
+  var vnotifications:scala.collection.mutable.Map[String,VNotification] = {
+    val ret:scala.collection.mutable.Map[String,VNotification] = scala.collection.mutable.Map[String,VNotification]()
+    for((k,thing) <- room.inventory) {
+      for((k2,notification) <- thing.notifications) {
+        ret += thing.id -> (VThing.create(notification, world).asInstanceOf[VNotification])
+      }
+    }
+    ret
+  }
+
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
@@ -127,6 +137,7 @@ class VRoom(map:String, room:Room) {
       if(vinventory.contains(k) == false) {
         vinventory += thing.id -> VThing.create(thing, world)
       }
+
       val fet:VThing = vinventory(k)
       thing.update(gameTime)
       if(thing.get("luminance") > 0f && fet.light == null) {
@@ -148,6 +159,17 @@ class VRoom(map:String, room:Room) {
         fet.body.setTransform(Conversion.pixelsToMeters(thing.transformX), Conversion.pixelsToMeters(thing.transformY), 0f)
         thing.transformX = 0
         thing.transformY = 0
+      }
+
+      for((k2,notification) <- thing.notifications) {
+        if(vnotifications.contains(k) == false) {
+          vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
+        }
+        notification.update(gameTime)
+        val fet:VThing = vnotifications(k2)
+        fet.update(gameTime)
+        fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
+        fet.sprite.draw(batch)
       }
     }
 

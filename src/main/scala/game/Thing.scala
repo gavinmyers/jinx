@@ -138,6 +138,8 @@ object Thing {
 
   def chest:Short = 0xD00
 
+  def notification:Short = 0xAAA
+
   def create(t:String):Thing = {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern

@@ -2,6 +2,7 @@ package display
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Sprite, Animation, TextureRegion}
+import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
 import game.{Thing, Notification, Bullet}
 import _root_.utils.Conversion
@@ -19,15 +20,25 @@ protected object VNotification {
   }
 }
 
-protected class VNotification(entity: Notification, world:World) {
-  var sprite:Sprite = new Sprite(VNotification.sheetTextures.head)
+protected class VNotification(entity: Notification, world:World) extends VThing {
+
+  var sprite:Sprite = new Sprite(VNotification.sheetTextures(35))
+  //var sprite:Sprite = new Sprite(VTool.tools("chest")("default"))
+  sprite.setScale(entity.scaleX, entity.scaleY)
+
+  var scaleX: Float = entity.scaleX
+  var scaleY: Float = entity.scaleY
+  var startY: Float = entity.startY
+  var startX: Float = entity.startX
+
 
 
   var body:Body = world.createBody({
+
     val b: BodyDef = new BodyDef()
     b.`type` = BodyDef.BodyType.StaticBody
     b.fixedRotation = true
-    b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
+    b.position.set(Conversion.pixelsToMeters(startX), Conversion.pixelsToMeters(startY))
     b
   })
   body.setUserData(sprite)
@@ -45,4 +56,5 @@ protected class VNotification(entity: Notification, world:World) {
     f
   })
   fixture.setUserData(entity)
+
 }

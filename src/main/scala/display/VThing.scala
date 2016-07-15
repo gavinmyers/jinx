@@ -4,7 +4,7 @@ import box2dLight.PositionalLight
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{TextureRegion, Batch, Sprite}
 import com.badlogic.gdx.physics.box2d._
-import game.{Bullet, Tool, Creature, Thing}
+import game._
 
 import scala.collection.mutable.ListBuffer
 
@@ -33,6 +33,7 @@ protected object VThing {
   }
 
   def create(thing:Thing, world:World):VThing = {
+
     if(thing.category == Thing.floor) {
       return new VTile(thing, world)
 
@@ -65,6 +66,9 @@ protected object VThing {
 
     } else if(thing.category == Thing.bullet) {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)
+
+    } else if(thing.category == Thing.notification) {
+      return new VNotification(thing.asInstanceOf[Notification], world)
     }
 
     return new VInteraction(thing, world, VThing.sheetTextures(13))

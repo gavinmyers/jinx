@@ -113,9 +113,17 @@ class GenericCreature
       val t:Tool = thing.asInstanceOf[Tool]
       println("You want to open this?" + t)
       if(t.container == false) {
-        t.add( new Notification("?"))
+        t.add({val n:Notification = new Notification("?")
+          n.startX = t.startX
+          n.startY = t.startY
+          n.created = gameTime
+          n})
       } else if (t.locked == true) {
-        t.add(new Notification("L"))
+        t.add({val n:Notification = new Notification("L")
+          n.startX = t.startX
+          n.startY = t.startY
+          n.created = gameTime
+          n})
       }
     }
 
