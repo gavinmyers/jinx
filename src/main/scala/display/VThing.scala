@@ -14,6 +14,7 @@ protected trait VThing {
   def scaleY:Float
   def startX:Float
   def startY:Float
+  var destroyed:Boolean = false
   var lastX:Float = 0
   var lastY:Float = 0
   var light:PositionalLight = _

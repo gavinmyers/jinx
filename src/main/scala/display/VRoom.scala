@@ -91,7 +91,22 @@ class VRoom(map:String, room:Room) {
 
 
     world.step(Gdx.graphics.getDeltaTime, 6, 2)
-
+    for((k,vthing) <- vnotifications) {
+      if(vthing.destroyed == true) {
+        println("it's dead!")
+      }
+      if(vthing.destroyed) {
+        for (je: JointEdge <- vthing.body.getJointList) {
+          world.destroyJoint(je.joint)
+        }
+        world.destroyBody(vthing.body)
+        if(vthing.light != null && vthing.light.isActive()) {
+          vthing.light.setActive(false)
+          vthing.light.dispose()
+        }
+        vnotifications -= k
+      }
+    }
 
     for((k,vthing) <- vinventory) {
       if (room.inventory.containsKey(k) == false) {
@@ -162,11 +177,13 @@ class VRoom(map:String, room:Room) {
       }
 
       for((k2,notification) <- thing.notifications) {
+
         if(vnotifications.contains(k) == false) {
           vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
         }
         notification.update(gameTime)
         val fet:VThing = vnotifications(k2)
+        fet.destroyed = notification.destroyed
         fet.update(gameTime)
         fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
         fet.sprite.draw(batch)
@@ -183,7 +200,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     for (c <- world.getContactList) {

@@ -72,7 +72,6 @@ trait Thing {
       thing.location.remove(thing)
     }
     if(thing.isInstanceOf[Notification]) {
-      println("Add notification of type " + thing.id)
       notifications += thing.id -> thing.asInstanceOf[Notification]
     } else {
       inventory += thing.id -> thing
@@ -82,7 +81,11 @@ trait Thing {
   }
 
   def remove(thing:Thing):Unit = {
-    inventory -= thing.id
+    if(thing.isInstanceOf[Notification]) {
+      notifications -= thing.id
+    } else {
+      inventory -= thing.id
+    }
   }
 
   def contact(gameTime:Float, thing:Thing) : Unit = {
@@ -109,6 +112,7 @@ trait Thing {
   }
 
   def die():Unit = {
+    this.destroyed = true
     this.location.remove(this)
   }
 
@@ -150,6 +154,7 @@ object Thing {
     } else if("chest".equalsIgnoreCase(t)) {
       val t:Tool = new Chest
       t.locked = true
+      t.container = true
       return t
 
     } else if("phoenix".equalsIgnoreCase(t)) {

@@ -22,8 +22,14 @@ protected object VNotification {
 
 protected class VNotification(entity: Notification, world:World) extends VThing {
 
-  var sprite:Sprite = new Sprite(VNotification.sheetTextures(35))
-  //var sprite:Sprite = new Sprite(VTool.tools("chest")("default"))
+
+  var sprite:Sprite = new Sprite(entity.message match {
+    case "?" => VNotification.sheetTextures(37)
+    case "L" => VNotification.sheetTextures(32)
+    case "X" => VNotification.sheetTextures(38)
+    case _ => VNotification.sheetTextures(38)
+  })
+
   sprite.setScale(entity.scaleX, entity.scaleY)
 
   var scaleX: Float = entity.scaleX
