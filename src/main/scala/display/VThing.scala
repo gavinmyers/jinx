@@ -62,6 +62,9 @@ protected object VThing {
     } else if(thing.category == Thing.medicinewheel) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("medicinewheel"))
 
+    } else if(thing.category == Thing.key) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("key"))
+
     } else if(thing.category == Thing.chest) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("chest"))
 

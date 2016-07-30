@@ -30,6 +30,8 @@ protected object VTool {
   tools("chest")("broken") = VTool.sheetTextures(105)
 
 
+  tools("key") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("key")("default") = VTool.sheetTextures(128)
 
 }
 
@@ -60,7 +62,7 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     f.filter.categoryBits = Thing.tool
     f.filter.maskBits = Thing.floor
     f.shape = shape
-    shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
+    shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
     f.friction = 5f
     f
   })
@@ -73,9 +75,9 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
       f.isSensor = true
       f.shape = new PolygonShape()
       f.shape.asInstanceOf[PolygonShape]
-        .setAsBox(Conversion.pixelsToMeters(sprite.getWidth / 3f) / 2,
-          Conversion.pixelsToMeters(sprite.getHeight / 4.5f),
-          new Vector2(0f, Conversion.pixelsToMeters(-1 * sprite.getHeight / 2.5f)), 0)
+        .setAsBox(Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 3f) / 2,
+          Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 4.5f),
+          new Vector2(0f, Conversion.pixelsToMeters(-1 * (sprite.getHeight * scaleY) / 2.5f)), 0)
       f
     })
   fixtureBottom.setUserData(entity)

@@ -1,7 +1,7 @@
 package game
 
 import ai.{GenericAI, AI}
-import tools.{Chest, Firebreath, IronSword, Lantern}
+import tools._
 
 import scala.collection.mutable
 
@@ -11,6 +11,7 @@ trait Thing {
   var ai:AI = _
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
+  var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()
   var attributes:scala.collection.mutable.Map[String,Float] = scala.collection.mutable.Map[String, Float]()
   var notifications:scala.collection.mutable.Map[String,Notification] = scala.collection.mutable.Map[String, Notification]()
 
@@ -89,7 +90,21 @@ trait Thing {
   }
 
   def contact(gameTime:Float, thing:Thing) : Unit = {
+    if(thing.category == Thing.floor || this.category == Thing.floor) {
+      return
+    }
+    near += (thing.id,gameTime) -> thing
+  }
 
+  def cleanup(gameTime:Float): Unit = {
+    if(this.category == Thing.floor) {
+      return
+    }
+    for(((k,t), thing) <- near) {
+      if(t != gameTime) {
+        near.remove((k,t))
+      }
+    }
   }
 
   def update(gameTime:Float) : Unit = {
@@ -139,6 +154,7 @@ object Thing {
   def pigmask:Short = 0xF03
   def cupcake:Short = 0xF04
   def medicinewheel:Short = 0xF05
+  def key:Short = 0xF06
 
   def chest:Short = 0xD00
 
@@ -150,6 +166,10 @@ object Thing {
 
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
+
+
+    } else if("key".equalsIgnoreCase(t)) {
+      return new Key
 
     } else if("chest".equalsIgnoreCase(t)) {
       val t:Tool = new Chest

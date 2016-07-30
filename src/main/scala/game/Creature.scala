@@ -17,8 +17,42 @@ trait Creature extends Thing {
   attributes += "jump_max_velocity" -> 15f
   attributes += "run_max_velocity" -> 5f
 
-  var pickup:Boolean = false
-  var open:Boolean = false
+  def pickup(gameTime:Float) = {
+    for((k,thing) <- this.near) {
+      if(thing.isInstanceOf[Tool]) {
+        val tool:Tool = thing.asInstanceOf[Tool]
+        this.add(tool)
+        if(this.holding == null) {
+          this.holding = tool
+        }
+      }
+    }
+  }
+  def open(gameTime:Float) = {
+    for ((k, thing) <- this.near) {
+      if (thing.isInstanceOf[Tool]) {
+        val t: Tool = thing.asInstanceOf[Tool]
+        println("You want to open this?" + t)
+        if (t.container == false) {
+          t.add({
+            val n: Notification = new Notification
+            n.message = "X"
+            n.startX = t.startX
+            n.startY = t.startY + t.height
+            n.created = gameTime
+            n
+          })
+        } else if (t.locked == true) {
+          t.add({val n:Notification = new Notification
+            n.message = "L"
+            n.startX = t.startX
+            n.startY = t.startY + t.height
+            n.created = gameTime
+            n})
+        }
+      }
+    }
+  }
 
   var canFly: Boolean = false
 
@@ -90,6 +124,7 @@ class GenericCreature
   extends Creature {
 
   override def contact(gameTime:Float, thing:Thing): Unit = {
+    super.contact(gameTime, thing)
 
     if(thing.isInstanceOf[Exit]) {
       val exit:Exit = thing.asInstanceOf[Exit]
@@ -100,9 +135,10 @@ class GenericCreature
       this.lastX = startX
       this.lastY = startY
 
-    } else if(thing.isInstanceOf[Tool] && this.pickup) {
-      val tool:Tool = thing.asInstanceOf[Tool]
+    }
 
+    /* else if(thing.isInstanceOf[Tool] && this.pickup) {
+      val tool:Tool = thing.asInstanceOf[Tool]
       this.add(tool)
       this.pickup = false
       if(this.holding == null) {
@@ -127,9 +163,10 @@ class GenericCreature
           n.created = gameTime
           n})
       }
+
     }
 
-
+  */
   }
 
   override def update(gameTime:Float) : Unit = {

@@ -200,7 +200,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    //debugRenderer.render(world, debugMatrix)
+    debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     for (c <- world.getContactList) {
@@ -218,6 +218,10 @@ class VRoom(map:String, room:Room) {
         t2.contact(gameTime,t1)
       }
 
+    }
+
+    for((k,thing) <- room.inventory) {
+      thing.cleanup(gameTime)
     }
   }
 
