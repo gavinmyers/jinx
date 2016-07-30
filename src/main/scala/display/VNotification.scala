@@ -26,7 +26,8 @@ protected class VNotification(entity: Notification, world:World) extends VThing 
   var sprite:Sprite = new Sprite(entity.message match {
     case "?" => VNotification.sheetTextures(37)
     case "L" => VNotification.sheetTextures(32)
-    case "X" => VNotification.sheetTextures(38)
+    case "N" => VNotification.sheetTextures(38)
+    case "Y" => VNotification.sheetTextures(39)
     case _ => VNotification.sheetTextures(38)
   })
 

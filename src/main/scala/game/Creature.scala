@@ -36,7 +36,7 @@ trait Creature extends Thing {
         if (t.container == false) {
           t.add({
             val n: Notification = new Notification
-            n.message = "X"
+            n.message = "N"
             n.startX = t.startX
             n.startY = t.startY + t.height
             n.created = gameTime
@@ -45,6 +45,13 @@ trait Creature extends Thing {
         } else if (t.locked == true) {
           t.add({val n:Notification = new Notification
             n.message = "L"
+            n.startX = t.startX
+            n.startY = t.startY + t.height
+            n.created = gameTime
+            n})
+        } else if (t.locked == false) {
+          t.add({val n:Notification = new Notification
+            n.message = "Y"
             n.startX = t.startX
             n.startY = t.startY + t.height
             n.created = gameTime
@@ -137,36 +144,6 @@ class GenericCreature
 
     }
 
-    /* else if(thing.isInstanceOf[Tool] && this.pickup) {
-      val tool:Tool = thing.asInstanceOf[Tool]
-      this.add(tool)
-      this.pickup = false
-      if(this.holding == null) {
-        this.holding = tool
-      }
-    } else if(thing.isInstanceOf[Tool] && this.open) {
-      this.open = false
-      val t:Tool = thing.asInstanceOf[Tool]
-      println("You want to open this?" + t)
-      if(t.container == false) {
-        t.add({val n:Notification = new Notification
-          n.message = "X"
-          n.startX = t.startX
-          n.startY = t.startY + t.height
-          n.created = gameTime
-          n})
-      } else if (t.locked == true) {
-        t.add({val n:Notification = new Notification
-          n.message = "L"
-          n.startX = t.startX
-          n.startY = t.startY + t.height
-          n.created = gameTime
-          n})
-      }
-
-    }
-
-  */
   }
 
   override def update(gameTime:Float) : Unit = {

@@ -32,6 +32,7 @@ trait Thing {
   var lastUpdate:Float = 0
   var updateCooldown:Float = 1.0f
 
+  var vanishOnDeath:Boolean = true
   var dieing: Boolean = false
   var deathStart: Float = 0
   var deathEnd: Float = 0.3f
@@ -128,7 +129,9 @@ trait Thing {
 
   def die():Unit = {
     this.destroyed = true
-    this.location.remove(this)
+    if(vanishOnDeath == true) {
+      this.location.remove(this)
+    }
   }
 
 }
