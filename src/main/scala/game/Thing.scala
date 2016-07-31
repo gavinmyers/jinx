@@ -18,8 +18,8 @@ trait Thing {
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
 
-  attributes += "health_max" -> 10f
-  attributes += "health_current" -> 10f
+  attributes += "health_max" -> 34f
+  attributes += "health_current" -> 34f
 
   var movH: String = ""
   var faceH: String = ""
@@ -119,12 +119,22 @@ trait Thing {
     if(takingDamage) {
       return
     }
+
     this.lastDamage = gameTime
     this.takingDamage = true
     this.set("health_current", this.get("health_current") - amount)
     if(this.get("health_current") < 1) {
       this.die()
     }
+
+    add({
+      val n: Notification = new Notification
+      n.message = "H" + (1 + ((this.get("health_current") / this.get("health_max")) * 10).toInt)
+      n.startX = startX
+      n.startY = startY + height
+      n.created = gameTime
+      n
+    })
   }
 
   def die():Unit = {
