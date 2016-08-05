@@ -17,6 +17,7 @@ class Key extends Tool {
           tool.locked = false
           thing.add({
             val n: Notification = new Notification
+            n.target = this
             n.message = "Y"
             n.startX = thing.startX
             n.startY = thing.startY + thing.height
@@ -28,6 +29,7 @@ class Key extends Tool {
         } else {
           thing.add({
             val n: Notification = new Notification
+            n.target = this
             n.message = "N"
             n.startX = thing.startX
             n.startY = thing.startY + thing.height

@@ -129,6 +129,7 @@ trait Thing {
 
     add({
       val n: Notification = new Notification
+      n.target = this
       n.message = "H" + (1 + ((this.get("health_current") / this.get("health_max")) * 10).toInt)
       n.startX = startX
       n.startY = startY + height

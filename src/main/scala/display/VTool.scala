@@ -86,6 +86,10 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     if(entity.destroyed && sprites.contains("broken")) {
       this.sprite.setRegion(sprites("broken"))
     }
+    lastX = Conversion.metersToPixels(body.getPosition.x)
+    lastY = Conversion.metersToPixels(body.getPosition.y)
+    entity.lastX = lastX
+    entity.lastY = lastY
     entity.update(gameTime)
   }
 }

@@ -37,6 +37,7 @@ trait Creature extends Thing {
           t.add({
             val n: Notification = new Notification
             n.message = "N"
+            n.target = this
             n.startX = t.startX
             n.startY = t.startY + t.height
             n.created = gameTime
@@ -44,6 +45,7 @@ trait Creature extends Thing {
           })
         } else if (t.locked == true) {
           t.add({val n:Notification = new Notification
+            n.target = this
             n.message = "L"
             n.startX = t.startX
             n.startY = t.startY + t.height
@@ -51,6 +53,7 @@ trait Creature extends Thing {
             n})
         } else if (t.locked == false) {
           t.add({val n:Notification = new Notification
+            n.target = this
             n.message = "Y"
             n.startX = t.startX
             n.startY = t.startY + t.height
