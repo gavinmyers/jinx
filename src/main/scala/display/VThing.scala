@@ -68,6 +68,9 @@ protected object VThing {
     } else if(thing.category == Thing.chest) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("chest"))
 
+    } else if(thing.category == Thing.corpse) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("corpse"))
+
     } else if(thing.category == Thing.bullet) {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)
 

@@ -33,6 +33,9 @@ protected object VTool {
   tools("key") = scala.collection.mutable.Map[String,TextureRegion]()
   tools("key")("default") = VTool.sheetTextures(128)
 
+  tools("corpse") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("corpse")("default") = VTool.sheetTextures(132)
+
 }
 
 protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutable.Map[String,TextureRegion]) extends VThing {

@@ -1,5 +1,7 @@
 package game
 
+import tools.Corpse
+
 import scala.collection.mutable
 
 trait Creature extends Thing {
@@ -147,6 +149,14 @@ class GenericCreature
 
     }
 
+  }
+
+  override def die():Unit = {
+    this.location.add({val n:Corpse = new Corpse
+      n.startX = this.lastX
+      n.startY = this.lastY
+      n})
+    super.die()
   }
 
   override def update(gameTime:Float) : Unit = {
