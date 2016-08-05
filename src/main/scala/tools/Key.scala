@@ -1,6 +1,7 @@
 package tools
 
 import game.{Notification, Creature, Tool}
+import logic.Messaging
 
 class Key extends Tool {
 
@@ -15,27 +16,11 @@ class Key extends Tool {
         val tool:Tool = thing.asInstanceOf[Tool]
         if(tool.locked && tool.container) {
           tool.locked = false
-          thing.add({
-            val n: Notification = new Notification
-            n.target = this
-            n.message = "Y"
-            n.startX = thing.startX
-            n.startY = thing.startY + thing.height
-            n.created = gameTime
-            n
-          })
+          Messaging.send(this, thing, "Y", gameTime)
           this.die()
           return true
         } else {
-          thing.add({
-            val n: Notification = new Notification
-            n.target = this
-            n.message = "N"
-            n.startX = thing.startX
-            n.startY = thing.startY + thing.height
-            n.created = gameTime
-            n
-          })
+          Messaging.send(this, thing, "N", gameTime)
         }
       }
     }

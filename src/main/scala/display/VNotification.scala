@@ -20,7 +20,7 @@ protected object VNotification {
   }
 }
 
-protected class VNotification(entity: Notification, target:Thing, world:World) extends VThing {
+protected class VNotification(entity: Notification, world:World) extends VThing {
 
 
   var sprite:Sprite = new Sprite(entity.message match {
@@ -76,7 +76,7 @@ protected class VNotification(entity: Notification, target:Thing, world:World) e
   fixture.setUserData(entity)
 
   override def update(gameTime:Float):Unit = {
-    body.setTransform(Conversion.pixelsToMeters(target.lastX),Conversion.pixelsToMeters(target.lastY + target.height),0)
+    body.setTransform(Conversion.pixelsToMeters(entity.location.lastX),Conversion.pixelsToMeters(entity.location.lastY + entity.location.height),0)
   }
 
 }

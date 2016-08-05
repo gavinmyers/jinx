@@ -1,6 +1,7 @@
 package game
 
 import ai.{GenericAI, AI}
+import logic.Messaging
 import tools._
 
 import scala.collection.mutable
@@ -127,15 +128,7 @@ trait Thing {
       this.die()
     }
 
-    add({
-      val n: Notification = new Notification
-      n.target = this
-      n.message = "H" + (1 + ((this.get("health_current") / this.get("health_max")) * 10).toInt)
-      n.startX = startX
-      n.startY = startY + height
-      n.created = gameTime
-      n
-    })
+    Messaging.send(this, this, "H" + (1 + ((this.get("health_current") / this.get("health_max")) * 10).toInt), gameTime)
   }
 
   def die():Unit = {

@@ -75,7 +75,7 @@ protected object VThing {
       return new VBullet(thing.asInstanceOf[Bullet], world, VBullet.sheetTextures)
 
     } else if(thing.category == Thing.notification) {
-      return new VNotification(thing.asInstanceOf[Notification], thing.asInstanceOf[Notification].target ,world)
+      return new VNotification(thing.asInstanceOf[Notification] ,world)
     }
 
     return new VInteraction(thing, world, VThing.sheetTextures(13))

@@ -1,5 +1,6 @@
 package game
 
+import logic.Messaging
 import tools.Corpse
 
 import scala.collection.mutable
@@ -34,33 +35,15 @@ trait Creature extends Thing {
     for ((k, thing) <- this.near) {
       if (thing.isInstanceOf[Tool]) {
         val t: Tool = thing.asInstanceOf[Tool]
-        println("You want to open this?" + t)
         if (t.container == false) {
-          t.add({
-            val n: Notification = new Notification
-            n.message = "N"
-            n.target = this
-            n.startX = t.startX
-            n.startY = t.startY + t.height
-            n.created = gameTime
-            n
-          })
+          Messaging.send(this, t, "N", gameTime)
+
         } else if (t.locked == true) {
-          t.add({val n:Notification = new Notification
-            n.target = this
-            n.message = "L"
-            n.startX = t.startX
-            n.startY = t.startY + t.height
-            n.created = gameTime
-            n})
+          Messaging.send(this, t, "L", gameTime)
+
         } else if (t.locked == false) {
-          t.add({val n:Notification = new Notification
-            n.target = this
-            n.message = "Y"
-            n.startX = t.startX
-            n.startY = t.startY + t.height
-            n.created = gameTime
-            n})
+          Messaging.send(this, t, "Y", gameTime)
+
         }
       }
     }
