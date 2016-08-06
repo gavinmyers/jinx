@@ -31,7 +31,7 @@ trait Creature extends Thing {
       }
     }
   }
-  def open(gameTime:Float) = {
+  def open(gameTime:Float):Thing = {
     for ((k, thing) <- this.near) {
       if (thing.isInstanceOf[Tool]) {
         val t: Tool = thing.asInstanceOf[Tool]
@@ -43,10 +43,11 @@ trait Creature extends Thing {
 
         } else if (t.locked == false) {
           Messaging.send(this, t, "Y", gameTime)
-
+          return t
         }
       }
     }
+    return null
   }
 
   var canFly: Boolean = false

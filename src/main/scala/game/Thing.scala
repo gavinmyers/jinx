@@ -184,6 +184,10 @@ object Thing {
       val t:Tool = new Chest
       t.locked = true
       t.container = true
+      t.add(Thing.create("lantern"))
+      t.add(Thing.create("lantern"))
+      t.add(Thing.create("lantern"))
+
       return t
 
     } else if("phoenix".equalsIgnoreCase(t)) {

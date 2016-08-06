@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.{VInventory, VRoom}
-import game.{Tool, GenericCreature, Entrance}
+import game.{Thing, Tool, GenericCreature, Entrance}
 import old.GameLoader
 import tools._
 import utils.Tiled
@@ -125,8 +125,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.P == keycode)
       lilac.pickup (gameTime)
 
-    if (Input.Keys.O == keycode)
-      lilac.open (gameTime)
+
 
     if (Input.Keys.C == keycode)
       lilac.use(gameTime)
@@ -142,8 +141,19 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.LEFT == keycode && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Input.Keys.RIGHT == keycode && !Gdx.input.isKeyPressed(Input.Keys.LEFT))
       lilac.stop()
 
-    if (Input.Keys.I == keycode)
+    if (Input.Keys.O == keycode) {
+      val t:Thing = lilac.open (gameTime)
+      if(t != null) {
+        inventory = new VInventory(t)
+        showInventory = showInventory == false
+      } else {
+        showInventory = false
+      }
+    }
+    if (Input.Keys.I == keycode) {
+      inventory = new VInventory(lilac)
       showInventory = showInventory == false
+    }
     /*
         if (Input.Keys.UP == keycode)
           player.fall(GameLoader.gameTime)
