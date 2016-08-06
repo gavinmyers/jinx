@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.{VInventory, VRoom}
 import game.{Thing, Tool, GenericCreature, Entrance}
-import old.GameLoader
 import tools._
 import utils.Tiled
 
