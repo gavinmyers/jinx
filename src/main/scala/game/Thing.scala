@@ -169,6 +169,7 @@ object Thing {
   def medicinewheel:Short = 0xF05
   def key:Short = 0xF06
   def corpse: Short = 0xF07
+  def catchem:Short = 0xF08
 
   def chest:Short = 0xD00
 
@@ -181,6 +182,9 @@ object Thing {
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
 
+
+    } else if("catchem".equalsIgnoreCase(t)) {
+      return new Catchem
 
     } else if("key".equalsIgnoreCase(t)) {
       return new Key

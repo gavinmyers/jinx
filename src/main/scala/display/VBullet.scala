@@ -31,6 +31,11 @@ protected object VBullet {
     var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(0),sheetTextures(1),sheetTextures(2))
     var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(8),sheetTextures(9),sheetTextures(10))
   }
+
+  object catchem {
+    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
+    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
+  }
 }
 
 
@@ -39,6 +44,11 @@ protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[T
 
   var attackAnimationRight:Animation = VBullet.explosion.attackAnimationRight
   var attackAnimationLeft:Animation = VBullet.explosion.attackAnimationLeft
+
+  if(entity.effect == Bullet.catchem) {
+    attackAnimationRight = VBullet.catchem.attackAnimationRight
+    attackAnimationLeft = VBullet.catchem.attackAnimationLeft
+  }
 
   if(entity.effect == Bullet.fire) {
     attackAnimationRight = VBullet.fire.attackAnimationRight

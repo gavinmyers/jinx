@@ -49,4 +49,6 @@ object Bullet {
 
   def fire: Short = 0x02
 
+  def catchem:Short = 0x03
+
 }

@@ -56,6 +56,10 @@ protected object VThing {
     } else if(thing.category == Thing.cupcake) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("cupcake"))
 
+    } else if(thing.category == Thing.catchem) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("catchem"))
+
+
     } else if(thing.category == Thing.pigmask) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("pigmask"))
 
