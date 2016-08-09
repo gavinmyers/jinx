@@ -114,9 +114,14 @@ trait Thing {
     if(this.ai != null) {
       this.ai.think(gameTime, this)
     }
+    for((k,t) <- this.inventory) {
+      t.update(gameTime)
+    }
   }
 
   def damage(gameTime:Float, amount:Float) : Unit = {
+    this.takingDamage = lastDamage + damageCooldown > gameTime
+
     if(takingDamage) {
       return
     }

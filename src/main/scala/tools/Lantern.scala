@@ -16,6 +16,7 @@ class Lantern extends Tool {
       return false
     }
 
+    this.damage(gameTime, (this.get("health_max") * 0.2).toInt)
     val bullet:Bullet = new Bullet
     bullet.effect = Bullet.fire
     bullet.startX = this.location.lastX
@@ -49,9 +50,9 @@ class Lantern extends Tool {
     if(this.using == false) {
       return super.mod(source, attribute, value)
     } else if("luminance".equalsIgnoreCase(attribute)) {
-      return 4.0f
+      return 4.0f * (this.get("health_current") / this.get("health_max"))
     } else if("brightness".equalsIgnoreCase(attribute)) {
-      return 4.0f
+      return 4.0f * (this.get("health_current") / this.get("health_max"))
     } else {
       return super.mod(source, attribute, value)
     }
@@ -65,7 +66,7 @@ class Lantern extends Tool {
 
   override def update(gameTime:Float): Unit = {
     super.update(gameTime)
-    if(Math.random() * 10 > 8)
+    if(Math.random() * 10 > 4)
       this.attributes("brightness") = (((this.attributes("brightness") * 2) +  1f + Math.random().toFloat) / 3)
   }
 }
