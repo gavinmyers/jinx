@@ -95,6 +95,10 @@ protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[T
   fixture.setUserData(entity)
 
   override def update(gameTime:Float):Unit = {
+    lastX = Conversion.metersToPixels(body.getPosition.x)
+    lastY = Conversion.metersToPixels(body.getPosition.y)
+    entity.lastX = lastX
+    entity.lastY = lastY
     entity.update(gameTime)
     if(entity.movH.equalsIgnoreCase("R")) {
       this.sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
