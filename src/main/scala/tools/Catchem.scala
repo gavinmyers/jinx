@@ -17,6 +17,9 @@ class Catchem extends Tool {
       val creature:Creature = inventory.head._2.asInstanceOf[Creature]
       creature.startX = this.location.lastX
       creature.startY = this.location.lastY
+      creature.ai.alignment = this.location.asInstanceOf[Creature].ai.alignment
+      creature.ai.friends = this.location.asInstanceOf[Creature].ai.friends
+      creature.ai.enemies = this.location.asInstanceOf[Creature].ai.enemies
       this.location.location.add(creature)
       this.die()
     } else {

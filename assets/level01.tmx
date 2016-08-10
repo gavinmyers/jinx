@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="70">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="71">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="168" columns="8">
   <image source="levels.png" width="192" height="504"/>
  </tileset>
@@ -375,6 +375,11 @@
   <object id="69" name="thing" x="1128" y="360" width="24" height="24">
    <properties>
     <property name="type" value="catchem"/>
+   </properties>
+  </object>
+  <object id="70" name="thing" x="1704" y="264" width="24" height="24">
+   <properties>
+    <property name="type" value="phoenix"/>
    </properties>
   </object>
  </objectgroup>
