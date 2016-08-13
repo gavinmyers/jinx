@@ -41,6 +41,9 @@ protected object VThing {
     } else if(thing.category == Thing.lilac) {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.lilac.sheetTextures)
 
+    } else if(thing.category == Thing.spider) {
+      return new VCreature(thing.asInstanceOf[Creature], world, VCreature.spider.sheetTextures)
+
     } else if(thing.category == Thing.snake) {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.snake.sheetTextures)
 

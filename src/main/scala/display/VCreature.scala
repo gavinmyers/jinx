@@ -43,6 +43,17 @@ protected object VCreature {
       }
     }
   }
+
+  object spider {
+    def sheet = new Texture("spider.png")
+
+    val sheetTextures: ListBuffer[TextureRegion] = ListBuffer()
+    for (tr <- TextureRegion.split(sheet, 24, 24)) {
+      for (tx <- tr) {
+        sheetTextures.append(tx)
+      }
+    }
+  }
 }
 
 

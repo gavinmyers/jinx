@@ -159,6 +159,7 @@ object Thing {
   def lilac: Short = 0xC01
   def snake: Short = 0xC02
   def phoenix: Short = 0xC03
+  def spider: Short = 0xC04
 
   def tool: Short = 0xF00
 
@@ -216,6 +217,17 @@ object Thing {
     } else if("snake".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.snake
+      gc.set("run_max_velocity", 1f)
+      gc.set("health_current",10f)
+      gc.set("health_max", 10f)
+      gc.holding = new IronSword
+      gc.add(gc.holding)
+      gc.ai = new GenericAI
+      return gc
+
+    } else if("spider".equalsIgnoreCase(t)) {
+      val gc:GenericCreature = new GenericCreature
+      gc.category = Thing.spider
       gc.set("run_max_velocity", 1f)
       gc.set("health_current",10f)
       gc.set("health_max", 10f)
