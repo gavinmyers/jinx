@@ -377,39 +377,9 @@
     <property name="type" value="catchem"/>
    </properties>
   </object>
-  <object id="70" name="thing" x="1704" y="264" width="24" height="24">
-   <properties>
-    <property name="type" value="phoenix"/>
-   </properties>
-  </object>
-  <object id="71" name="thing" x="1728" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="snake"/>
-   </properties>
-  </object>
-  <object id="72" name="thing" x="1656" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="snake"/>
-   </properties>
-  </object>
   <object id="73" name="thing" x="1848" y="360" width="24" height="24">
    <properties>
-    <property name="type" value="snake"/>
-   </properties>
-  </object>
-  <object id="74" name="thing" x="1896" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="spider"/>
-   </properties>
-  </object>
-  <object id="75" name="thing" x="1920" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="spider"/>
-   </properties>
-  </object>
-  <object id="76" name="thing" x="1944" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="spider"/>
+    <property name="type" value="skeletonwarrior"/>
    </properties>
   </object>
  </objectgroup>

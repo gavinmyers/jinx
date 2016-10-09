@@ -54,6 +54,17 @@ protected object VCreature {
       }
     }
   }
+
+  object skeletonwarrior {
+    def sheet = new Texture("skeleton_warrior.png")
+
+    val sheetTextures: ListBuffer[TextureRegion] = ListBuffer()
+    for (tr <- TextureRegion.split(sheet, 24, 24)) {
+      for (tx <- tr) {
+        sheetTextures.append(tx)
+      }
+    }
+  }
 }
 
 

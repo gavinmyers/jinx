@@ -160,6 +160,8 @@ object Thing {
   def snake: Short = 0xC02
   def phoenix: Short = 0xC03
   def spider: Short = 0xC04
+  def skeletonwarrior: Short = 0xC05
+
 
   def tool: Short = 0xF00
 
@@ -211,6 +213,17 @@ object Thing {
       gc.holding = new Firebreath
       gc.add(gc.holding)
       gc.weight = 0.01f
+      gc.ai = new GenericAI
+      return gc
+
+    } else if("skeletonwarrior".equalsIgnoreCase(t)) {
+      val gc:GenericCreature = new GenericCreature
+      gc.category = Thing.skeletonwarrior
+      gc.set("run_max_velocity", 1f)
+      gc.set("health_current",10f)
+      gc.set("health_max", 10f)
+      gc.holding = new IronSword
+      gc.add(gc.holding)
       gc.ai = new GenericAI
       return gc
 

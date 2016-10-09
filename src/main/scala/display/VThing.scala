@@ -50,6 +50,9 @@ protected object VThing {
     } else if(thing.category == Thing.phoenix) {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.phoenix.sheetTextures)
 
+    } else if(thing.category == Thing.skeletonwarrior) {
+      return new VCreature(thing.asInstanceOf[Creature], world, VCreature.skeletonwarrior.sheetTextures)
+
     } else if(thing.category == Thing.lantern) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("lantern"))
 

@@ -66,7 +66,7 @@ class VRoom(map:String, room:Room) {
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    handler.setAmbientLight(0.3f, 0.3f, 0.3f, 0.25f)
+    handler.setAmbientLight(1f, 1f, 1f, 1f)
     handler.setCombinedMatrix(camera)
 
     camera.zoom = 0.5f
