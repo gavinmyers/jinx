@@ -6,7 +6,7 @@ object Main {
 
     val config:LwjglApplicationConfiguration = new LwjglApplicationConfiguration()
     config.width = 24 * 48
-    config.height = 16 * 48
+    config.height = 12 * 48
 
     config.fullscreen = false
     //println(config.fullscreen)

@@ -30,7 +30,8 @@ allprojects {
 dependencies{
     compile "org.slf4j:slf4j-api:+"
     compile "org.scala-lang:scala-library:$scalaVersion"
-
+    compile "com.badlogicgames.gdx:gdx-freetype-platform:+:natives-desktop"
+    compile "com.badlogicgames.gdx:gdx-freetype:+"
     compile "com.badlogicgames.gdx:gdx-backend-lwjgl:+"
     compile "com.badlogicgames.gdx:gdx-platform:+:natives-desktop"
     compile "com.badlogicgames.gdx:gdx-box2d-platform:+:natives-desktop"

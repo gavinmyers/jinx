@@ -1,17 +1,21 @@
 package display
 
-import box2dLight.{PositionalLight, PointLight, RayHandler}
+import box2dLight.{PointLight, PositionalLight, RayHandler}
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import com.badlogic.gdx.graphics.{Color, GL20, OrthographicCamera}
 import com.badlogic.gdx.maps.MapObject
 import com.badlogic.gdx.maps.objects.RectangleMapObject
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer
-import com.badlogic.gdx.maps.tiled.{TiledMapTile, TiledMapTileLayer, TmxMapLoader, TiledMap}
-import com.badlogic.gdx.math.{Matrix4, Vector3, Vector2}
-import com.badlogic.gdx.physics.box2d.{JointEdge, World, Box2DDebugRenderer}
+import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTile, TiledMapTileLayer, TmxMapLoader}
+import com.badlogic.gdx.math.{Matrix4, Vector2, Vector3}
+import com.badlogic.gdx.physics.box2d.{Box2DDebugRenderer, JointEdge, World}
+import com.badlogic.gdx.utils.Align
 import game._
 import utils.Conversion
+
 import scala.collection.JavaConversions._
 
 
@@ -43,6 +47,24 @@ class VRoom(map:String, room:Room) {
     }
     res
   }
+
+
+  val descriptionFont:BitmapFont = {
+    val generator:FreeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"))
+    val parameter:FreeTypeFontParameter = new FreeTypeFontParameter()
+    parameter.size = 22
+    parameter.color = Color.CYAN
+    generator.generateFont(parameter)
+  };
+
+  val menuFont:BitmapFont = {
+    val generator:FreeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"))
+    val parameter:FreeTypeFontParameter = new FreeTypeFontParameter()
+    parameter.size = 22
+    parameter.color = Color.WHITE
+    generator.generateFont(parameter)
+  };
+
 
   var vinventory:scala.collection.mutable.Map[String,VThing] = {
     val ret:scala.collection.mutable.Map[String,VThing] = scala.collection.mutable.Map[String,VThing]()
@@ -202,6 +224,14 @@ class VRoom(map:String, room:Room) {
     handler.setCombinedMatrix(debugMatrix)
     //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
+
+    batch.begin()
+    def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
+    batch.setProjectionMatrix(normalProjection)
+    descriptionFont.draw(batch,"This is the song that never ends, yes it goes on and on my friends, some people started singing it not knowing what it was and they'll continue singing it forever just becaaaaaussssee....",30,170,350,Align.topLeft,true)
+
+    menuFont.draw(batch,"This is the song that never ends, yes it goes on and on my friends, some people started singing it not knowing what it was and they'll continue singing it forever just becaaaaaussssee....",400,170,750,Align.topLeft,true)
+    batch.end()
 
     for (c <- world.getContactList) {
       var t1:Thing = null
