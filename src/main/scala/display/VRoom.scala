@@ -53,9 +53,9 @@ class VRoom(map:String, room:Room) {
     val generator:FreeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"))
     val parameter:FreeTypeFontParameter = new FreeTypeFontParameter()
     parameter.size = 22
-    parameter.color = Color.CYAN
+    parameter.color = Color.LIGHT_GRAY
     generator.generateFont(parameter)
-  };
+  }
 
   val menuFont:BitmapFont = {
     val generator:FreeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"))
@@ -63,8 +63,15 @@ class VRoom(map:String, room:Room) {
     parameter.size = 22
     parameter.color = Color.WHITE
     generator.generateFont(parameter)
-  };
+  }
 
+  val statsFont:BitmapFont = {
+    val generator:FreeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("VT323-Regular.ttf"))
+    val parameter:FreeTypeFontParameter = new FreeTypeFontParameter()
+    parameter.size = 22
+    parameter.color = Color.CYAN
+    generator.generateFont(parameter)
+  }
 
   var vinventory:scala.collection.mutable.Map[String,VThing] = {
     val ret:scala.collection.mutable.Map[String,VThing] = scala.collection.mutable.Map[String,VThing]()
@@ -228,9 +235,11 @@ class VRoom(map:String, room:Room) {
     batch.begin()
     def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
     batch.setProjectionMatrix(normalProjection)
-    descriptionFont.draw(batch,"This is the song that never ends, yes it goes on and on my friends, some people started singing it not knowing what it was and they'll continue singing it forever just becaaaaaussssee....",30,170,350,Align.topLeft,true)
+    statsFont.draw(batch,room.title,30,170,9999,Align.topLeft,true)
 
-    menuFont.draw(batch,"This is the song that never ends, yes it goes on and on my friends, some people started singing it not knowing what it was and they'll continue singing it forever just becaaaaaussssee....",400,170,750,Align.topLeft,true)
+    descriptionFont.draw(batch,room.history,30,140,350,Align.topLeft,true)
+
+    menuFont.draw(batch,room.menu,400,140,750,Align.topLeft,true)
     batch.end()
 
     for (c <- world.getContactList) {
