@@ -26,19 +26,20 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   var inventory:VInventory = _
   var lilac:GenericCreature = _
   var showInventory:Boolean = false
+  var currentRoom:game.Room = _
 
   override def create(): Unit = {
     Tiled.load("level01")
-    val level01:game.Room = Tiled.rooms("level01")
-    for((k,thing) <- level01.inventory) {
+    currentRoom = Tiled.rooms("level01")
+    for((k,thing) <- currentRoom.inventory) {
       if(thing.category == game.Thing.entrance && thing.asInstanceOf[Entrance].default) {
         lilac = new GenericCreature
         lilac.id = "lilac"
         lilac.category = game.Thing.lilac
-        lilac.location=level01
+        lilac.location=currentRoom
         lilac.startX=thing.startX
         lilac.startY=thing.startY + 50
-        level01.add(lilac)
+        currentRoom.add(lilac)
         var playerBrain:AI = new PlayerAI
         lilac.ai = playerBrain
 
@@ -63,8 +64,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if(scene.at(lilac.location.asInstanceOf[game.Room]) == false) {
       //TODO: Cleanup old VROOMs
       scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
+      currentRoom = lilac.location.asInstanceOf[game.Room]
     }
 
+    currentRoom.title = "JINX: HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
     scene.render(lilac.lastX, lilac.lastY, gameTime)
 
     /*
