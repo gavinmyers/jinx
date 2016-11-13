@@ -111,6 +111,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
   override def keyDown(keycode: Int): Boolean = {
 
+
     if (Input.Keys.LEFT == keycode)
       lilac.moveLeft()
 
@@ -132,8 +133,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.P == keycode)
       lilac.pickup (gameTime)
 
-
-
     if (Input.Keys.C == keycode)
       lilac.use(gameTime)
 
@@ -142,6 +141,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.SPACE == keycode)
       currentRoom.alert = ""
+
+    if (Input.Keys.ESCAPE == keycode)
+      currentRoom.alert = "paused"
 
     true
   }
