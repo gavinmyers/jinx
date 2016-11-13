@@ -92,7 +92,22 @@ class VRoom(map:String, room:Room) {
     ret
   }
 
+  def renderAlert():Unit = {
+    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+    handler.setAmbientLight(1f, 1f, 1f, 1f)
+    batch.begin()
+    def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
+    batch.setProjectionMatrix(normalProjection)
+    statsFont.draw(batch,room.alert,30,430,1000,Align.center,true)
+    statsFont.draw(batch,"press [spacebar] to continue",30,30,1000,Align.center,true)
+
+    batch.end()
+  }
+
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
+    if(room.alert.length > 0) {
+      return renderAlert()
+    }
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
     handler.setAmbientLight(1f, 1f, 1f, 1f)

@@ -31,6 +31,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
   override def create(): Unit = {
     Tiled.load("level01")
     currentRoom = Tiled.rooms("level01")
+    currentRoom.alert = "Welcome to JINX, we're still testing basic game functionality so there isn't much to do right now. This is a long message, I hope word wrapping works the way it says it should otherwise this will be hard to read."
     for((k,thing) <- currentRoom.inventory) {
       if(thing.category == game.Thing.entrance && thing.asInstanceOf[Entrance].default) {
         lilac = new GenericCreature
@@ -67,7 +68,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       currentRoom = lilac.location.asInstanceOf[game.Room]
     }
 
-    currentRoom.title = "JINX: HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
+    currentRoom.title = "JINX "
+    currentRoom.title += "HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
+    currentRoom.title += "| HUNGER " + lilac.attributes("fullness_current") + "[" + lilac.attributes("fullness_max") + "]"
+
     scene.render(lilac.lastX, lilac.lastY, gameTime)
 
     /*
@@ -135,6 +139,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.X == keycode)
       lilac.attack(gameTime)
+
+    if (Input.Keys.SPACE == keycode)
+      currentRoom.alert = ""
 
     true
   }

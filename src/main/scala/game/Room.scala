@@ -8,6 +8,7 @@ class Room
   var title:String = "JINX: HP 0[0] | MP 0[0] | LVL 1 | EXP 0"
   var history:String = "> Something happened \n> Something else happened and it was a long event \n> Wow, things really keep happening\n> Something happened \n> Something else happened and it was a long event \n> Wow, things really keep happening\n"
   var menu:String = "[I] Inventory [Z] Jump [X] Attack"
+  var alert:String = ""
 
   this.scaleX = 1.0f
   this.scaleY = 1.0f
