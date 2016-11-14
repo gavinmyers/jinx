@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="80">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="83">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="168" columns="8">
   <image source="levels.png" width="192" height="504"/>
  </tileset>
@@ -388,6 +388,11 @@
     <property name="description" value="this is Jinx's house"/>
     <property name="goto" value="jinx_house"/>
     <property name="target" value="jinx_house_w"/>
+   </properties>
+  </object>
+  <object id="80" name="config" x="25" y="25" width="100" height="100">
+   <properties>
+    <property name="ambient_light" value="0.3"/>
    </properties>
   </object>
  </objectgroup>

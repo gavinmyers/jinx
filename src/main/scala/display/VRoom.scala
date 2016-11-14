@@ -110,7 +110,9 @@ class VRoom(map:String, room:Room) {
     }
     //Gdx.gl.glClearColor(0, 0, 0, 1)
     Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-    handler.setAmbientLight(1f, 1f, 1f, 1f)
+    //handler.setAmbientLight(1f, 1f, 1f, 1f)
+    val al:Float = room.ambientLight
+    handler.setAmbientLight(al, al, al, al)
     handler.setCombinedMatrix(camera)
 
     camera.zoom = 0.5f

@@ -76,7 +76,11 @@ object Tiled {
       def rct = mo.asInstanceOf[RectangleMapObject].getRectangle
       val px:Float = rct.x + 12
       val py:Float = rct.y + 12
-      if ("exit".equalsIgnoreCase(mo.getName)) {
+      if("config".equalsIgnoreCase(mo.getName)) {
+        if(mo.getProperties.get("ambient_light") != null) {
+          r.ambientLight = mo.getProperties.get("ambient_light").toString.toFloat
+        }
+      } else if ("exit".equalsIgnoreCase(mo.getName)) {
         var destination:Room = load(mo.getProperties.get("goto").toString)
         var entrance:Thing = destination.inventory(mo.getProperties.get("target").toString)
         var exit:Exit = new Exit
