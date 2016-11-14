@@ -7,7 +7,7 @@ class Room
 
   var title:String = "JINX: HP 0[0] | MP 0[0] | LVL 1 | EXP 0"
   var history:String = ""
-  var menu:String = "[I] Inventory | [Z] Jump | [X] Attack | [P] Pickup Item | [D] Drop Item | [C] Use Item | [ESC] Pause"
+  var menu:String = "[I] Inventory | [Z] Jump | [X] Attack | [P] Pickup Item | [D] Drop Item | [C] Use Item | [ESC] Pause | [E] Exit"
   var alert:String = ""
 
   this.scaleX = 1.0f

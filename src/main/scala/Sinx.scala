@@ -72,10 +72,11 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     currentRoom.title += "HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
     currentRoom.title += "| HUNGER " + lilac.attributes("fullness_current") + "[" + lilac.attributes("fullness_max") + "]"
 
+    currentRoom.history = ""
     for((k,thing) <- lilac.near) {
       if(thing.isInstanceOf[Exit]) {
         val exit:Exit = thing.asInstanceOf[Exit]
-        currentRoom.history = "> "+exit.description+" \n"g
+        currentRoom.history = "> "+exit.description+" \n"
       }
     }
 
