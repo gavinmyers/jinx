@@ -10,6 +10,7 @@ class Lantern extends Tool {
   this.weight = 0.1f
   this.useCooldown = -1f
   this.category = game.Thing.lantern
+  this.description = "a lantern"
 
   override def attack(gameTime:Float): Boolean = {
     if(!super.attack(gameTime)) {

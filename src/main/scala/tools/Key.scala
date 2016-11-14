@@ -8,6 +8,7 @@ class Key extends Tool {
   this.category = game.Thing.key
   this.scaleX = 0.5f
   this.scaleY = 0.5f
+  this.description = "A small silver key"
 
   override def use(gameTime:Float, user:Creature):Boolean = {
 

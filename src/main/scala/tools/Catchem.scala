@@ -7,6 +7,7 @@ class Catchem extends Tool {
   this.category = game.Thing.catchem
   this.scaleX = 0.8f
   this.scaleY = 0.8f
+  this.description = "A small round ball"
 
   override def attack(gameTime:Float): Boolean = {
     if(!super.attack(gameTime)) {
