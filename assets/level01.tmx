@@ -337,6 +337,7 @@
   </object>
   <object id="53" name="exit" x="528" y="360" width="24" height="24">
    <properties>
+    <property name="description" value="this leads into the forest, it's very dark in there"/>
     <property name="goto" value="forest02"/>
     <property name="target" value="forest02_w"/>
    </properties>

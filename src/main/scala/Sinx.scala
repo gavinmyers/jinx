@@ -1,4 +1,4 @@
-import ai.{GenericAI, PlayerAI, AI}
+import ai.{AI, GenericAI, PlayerAI}
 import box2dLight.{PointLight, RayHandler}
 import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType
 import com.badlogic.gdx.graphics.{Color, GL20}
 import com.badlogic.gdx.{ApplicationAdapter, Gdx, Input, InputProcessor}
 import display.{VInventory, VRoom}
-import game.{Thing, Tool, GenericCreature, Entrance}
+import game._
 import tools._
 import utils.Tiled
 
@@ -71,6 +71,13 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     currentRoom.title = "JINX "
     currentRoom.title += "HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
     currentRoom.title += "| HUNGER " + lilac.attributes("fullness_current") + "[" + lilac.attributes("fullness_max") + "]"
+
+    for((k,thing) <- lilac.near) {
+      if(thing.isInstanceOf[Exit]) {
+        val exit:Exit = thing.asInstanceOf[Exit]
+        currentRoom.history = "> "+exit.description+" \n"g
+      }
+    }
 
     scene.render(lilac.lastX, lilac.lastY, gameTime)
 
@@ -144,6 +151,9 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.ESCAPE == keycode)
       currentRoom.alert = "paused"
+
+    if (Input.Keys.E == keycode)
+        lilac.exit(gameTime)
 
     true
   }

@@ -6,7 +6,7 @@ class Room
   extends Thing {
 
   var title:String = "JINX: HP 0[0] | MP 0[0] | LVL 1 | EXP 0"
-  var history:String = "> Something happened \n> Something else happened and it was a long event \n> Wow, things really keep happening\n> Something happened \n> Something else happened and it was a long event \n> Wow, things really keep happening\n"
+  var history:String = ""
   var menu:String = "[I] Inventory | [Z] Jump | [X] Attack | [P] Pickup Item | [D] Drop Item | [C] Use Item | [ESC] Pause"
   var alert:String = ""
 

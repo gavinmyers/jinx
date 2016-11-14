@@ -82,6 +82,11 @@ object Tiled {
         var exit:Exit = new Exit
         exit.location = r
         exit.destination = destination
+        if(mo.getProperties.get("description") != null) {
+          exit.description = mo.getProperties.get("description").toString
+        } else {
+          exit.description = "an exit is here"
+        }
         exit.entrance = entrance
         exit.startX = px
         exit.startY = py

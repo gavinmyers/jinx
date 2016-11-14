@@ -20,6 +20,19 @@ trait Creature extends Thing {
   attributes += "jump_max_velocity" -> 15f
   attributes += "run_max_velocity" -> 5f
 
+  def exit(gameTime:Float) = {
+    for((k,thing) <- this.near) {
+      if(thing.isInstanceOf[Exit]) {
+        val exit:Exit = thing.asInstanceOf[Exit]
+        exit.destination.add(this)
+        this.startX = exit.entrance.startX
+        this.startY = exit.entrance.startY
+        this.lastX = startX
+        this.lastY = startY
+      }
+    }
+  }
+
   def pickup(gameTime:Float) = {
     for((k,thing) <- this.near) {
       if(thing.isInstanceOf[Tool]) {
@@ -121,18 +134,6 @@ class GenericCreature
 
   override def contact(gameTime:Float, thing:Thing): Unit = {
     super.contact(gameTime, thing)
-
-    if(thing.isInstanceOf[Exit]) {
-      val exit:Exit = thing.asInstanceOf[Exit]
-      exit.destination.add(this)
-
-      this.startX = exit.entrance.startX
-      this.startY = exit.entrance.startY
-      this.lastX = startX
-      this.lastY = startY
-
-    }
-
   }
 
   override def die():Unit = {
