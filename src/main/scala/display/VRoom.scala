@@ -98,8 +98,8 @@ class VRoom(map:String, room:Room) {
     batch.begin()
     def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
     batch.setProjectionMatrix(normalProjection)
-    statsFont.draw(batch,room.alert,30,430,1000,Align.center,true)
-    statsFont.draw(batch,"press [spacebar] to continue",30,30,1000,Align.center,true)
+    statsFont.draw(batch,room.alert,30,Gdx.graphics.getHeight() / 2,Gdx.graphics.getWidth() - 60,Align.center,true)
+    statsFont.draw(batch,"press [spacebar] to continue",30,30,Gdx.graphics.getWidth(),Align.center,true)
 
     batch.end()
   }
@@ -252,9 +252,9 @@ class VRoom(map:String, room:Room) {
     batch.begin()
     def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
     batch.setProjectionMatrix(normalProjection)
-    statsFont.draw(batch,room.title,30,170,9999,Align.topLeft,true)
+    statsFont.draw(batch,room.title,400,170,750,Align.topLeft,true)
 
-    descriptionFont.draw(batch,room.history,30,140,350,Align.topLeft,true)
+    descriptionFont.draw(batch,room.history,30,170,375,Align.topLeft,true)
 
     menuFont.draw(batch,room.menu,400,140,750,Align.topLeft,true)
     batch.end()
