@@ -18,23 +18,23 @@ protected object VBullet {
   }
 
   object explosion {
-    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
-    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
+    var attackAnimationRight:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
+    var attackAnimationLeft:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(16),sheetTextures(17),sheetTextures(18),sheetTextures(19),sheetTextures(20),sheetTextures(21),sheetTextures(22),sheetTextures(23))
   }
 
   object fire {
-    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
-    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
+    var attackAnimationRight:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
+    var attackAnimationLeft:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(32),sheetTextures(33),sheetTextures(34),sheetTextures(35))
   }
 
   object slash {
-    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(0),sheetTextures(1),sheetTextures(2))
-    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(8),sheetTextures(9),sheetTextures(10))
+    var attackAnimationRight:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(0),sheetTextures(1),sheetTextures(2))
+    var attackAnimationLeft:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(8),sheetTextures(9),sheetTextures(10))
   }
 
   object catchem {
-    var attackAnimationRight:Animation = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
-    var attackAnimationLeft:Animation = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
+    var attackAnimationRight:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
+    var attackAnimationLeft:Animation[TextureRegion] = new Animation(0.15f, sheetTextures(40),sheetTextures(41),sheetTextures(42),sheetTextures(43))
   }
 }
 
@@ -42,8 +42,8 @@ protected object VBullet {
 protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[TextureRegion]) extends VThing {
 
 
-  var attackAnimationRight:Animation = VBullet.explosion.attackAnimationRight
-  var attackAnimationLeft:Animation = VBullet.explosion.attackAnimationLeft
+  var attackAnimationRight:Animation[TextureRegion] = VBullet.explosion.attackAnimationRight
+  var attackAnimationLeft:Animation[TextureRegion] = VBullet.explosion.attackAnimationLeft
 
   if(entity.effect == Bullet.catchem) {
     attackAnimationRight = VBullet.catchem.attackAnimationRight

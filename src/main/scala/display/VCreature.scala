@@ -86,19 +86,19 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
   var width:Float = sprite.getWidth * scaleX
   var height:Float = sprite.getHeight * scaleY
 
-  var walkRightAnimation: Animation = new Animation(0.15f, animationSheet(28), animationSheet(29))
-  var standRightAnimation: Animation = new Animation(0.15f, animationSheet(2))
+  var walkRightAnimation:Animation[TextureRegion]  = new Animation(0.15f, animationSheet(28), animationSheet(29))
+  var standRightAnimation:Animation[TextureRegion]  = new Animation(0.15f, animationSheet(2))
 
-  var walkLeftAnimation: Animation = new Animation(0.15f, animationSheet(24), animationSheet(25))
-  var standLeftAnimation: Animation = new Animation(0.15f, animationSheet(3))
+  var walkLeftAnimation:Animation[TextureRegion] = new Animation(0.15f, animationSheet(24), animationSheet(25))
+  var standLeftAnimation:Animation[TextureRegion]  = new Animation(0.15f, animationSheet(3))
 
-  var climbAnimation: Animation = new Animation(0.25f, animationSheet(8), animationSheet(9))
+  var climbAnimation:Animation[TextureRegion]  = new Animation(0.25f, animationSheet(8), animationSheet(9))
 
-  var hurtAnimation: Animation = new Animation(0.25f, animationSheet(48))
-  var deathAnimation: Animation = new Animation(0.25f, animationSheet(72), animationSheet(73), animationSheet(74), animationSheet(75))
+  var hurtAnimation:Animation[TextureRegion]  = new Animation(0.25f, animationSheet(48))
+  var deathAnimation: Animation[TextureRegion] = new Animation(0.25f, animationSheet(72), animationSheet(73), animationSheet(74), animationSheet(75))
 
-  var attackAnimationLeft: Animation = new Animation(0.25f, animationSheet(40), animationSheet(41))
-  var attackAnimationRight: Animation = new Animation(0.25f, animationSheet(44), animationSheet(45))
+  var attackAnimationLeft: Animation[TextureRegion] = new Animation(0.25f, animationSheet(40), animationSheet(41))
+  var attackAnimationRight: Animation[TextureRegion] = new Animation(0.25f, animationSheet(44), animationSheet(45))
 
 
   var body:Body = world
