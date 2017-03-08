@@ -10,6 +10,7 @@ trait Tool extends Thing {
   var attacking:Boolean = false
   var attackCooldown:Float = 0.4f
   var lastAttack:Float = 0f
+  var wall = false
 
   var edible:Boolean = false
   var locked:Boolean = false

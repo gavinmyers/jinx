@@ -39,6 +39,10 @@ protected object VTool {
   tools("catchem") = scala.collection.mutable.Map[String,TextureRegion]()
   tools("catchem")("default") = VTool.sheetTextures(140)
 
+  tools("woodblock") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("woodblock")("default") = VTool.sheetTextures(144)
+  tools("woodblock")("broken") = VTool.sheetTextures(145)
+
 }
 
 protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutable.Map[String,TextureRegion]) extends VThing {
@@ -66,7 +70,8 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     val shape: PolygonShape = new PolygonShape()
     f.isSensor = false
     f.filter.categoryBits = Thing.tool
-    f.filter.maskBits = Thing.floor
+    if(!entity.wall)
+      f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
     f.friction = 5f

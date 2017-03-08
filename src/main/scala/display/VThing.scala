@@ -38,6 +38,10 @@ protected object VThing {
     if(thing.category == Thing.floor) {
       return new VTile(thing, world)
 
+    } else if(thing.category == Thing.woodblock) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("woodblock"))
+
+
     } else if(thing.category == Thing.lilac) {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.lilac.sheetTextures)
 

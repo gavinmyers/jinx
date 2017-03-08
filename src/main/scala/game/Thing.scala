@@ -1,8 +1,8 @@
 package game
 
-import ai.{GenericAI, AI}
+import ai.{AI, GenericAI}
 import logic.Messaging
-import tools._
+import tools.{Woodblock, _}
 
 import scala.collection.mutable
 
@@ -162,6 +162,7 @@ object Thing {
   def spider: Short = 0xC04
   def skeletonwarrior: Short = 0xC05
 
+  def woodblock:Short = 0xD00
 
   def tool: Short = 0xF00
 
@@ -176,11 +177,16 @@ object Thing {
 
   def chest:Short = 0xD00
 
+
+
   def notification:Short = 0xAAA
 
   def create(t:String):Thing = {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern
+
+    } else if("woodblock".equalsIgnoreCase(t)) {
+      return new Woodblock
 
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
