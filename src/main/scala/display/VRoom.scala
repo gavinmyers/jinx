@@ -253,7 +253,7 @@ class VRoom(map:String, room:Room) {
     def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
     batch.setProjectionMatrix(normalProjection)
     statsFont.draw(batch,room.title,400,170,750,Align.topLeft,true)
-
+ 
     descriptionFont.draw(batch,room.history,30,170,375,Align.topLeft,true)
 
     menuFont.draw(batch,room.menu,400,140,750,Align.topLeft,true)
