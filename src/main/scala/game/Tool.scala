@@ -3,6 +3,7 @@ package game
 import scala.collection.mutable
 
 trait Tool extends Thing {
+
   var using:Boolean = false
   var useCooldown:Float = 0.4f
   var lastUse:Float = 0f

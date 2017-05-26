@@ -34,6 +34,9 @@ class Bullet extends Thing {
   }
 
   override def contact(gameTime:Float, thing:Thing): Unit = {
+    if(this.effect == Bullet.fire && !thing.destroyed && thing.attributes.contains("flammable")) {
+      this.created = gameTime
+    }
     if(thing != attacker) {
       Combat.apply(gameTime, attacker, thing, weapon, this)
     }

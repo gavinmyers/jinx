@@ -8,5 +8,6 @@ import game.Tool
 class Woodblock  extends Tool {
   this.category = game.Thing.woodblock
   this.description = "a block of wood"
+  this.attributes += "flammable" -> 1f
   this.wall = true
 }
