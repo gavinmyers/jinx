@@ -163,6 +163,7 @@ object Thing {
   def skeletonwarrior: Short = 0xC05
 
   def woodblock:Short = 0xD00
+  def woodcolumn:Short = 0xD01
 
   def tool: Short = 0xF00
 
@@ -187,6 +188,9 @@ object Thing {
 
     } else if("woodblock".equalsIgnoreCase(t)) {
       return new Woodblock
+
+    } else if("woodcolumn".equalsIgnoreCase(t)) {
+      return new WoodColumn
 
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword

@@ -10,6 +10,7 @@ class Firebreath extends Tool {
       return false
     }
     val bullet:Bullet = new Bullet
+    bullet.effect  = Bullet.fire
     bullet.startX = this.location.lastX
     bullet.startY = this.location.lastY
     bullet.created = gameTime

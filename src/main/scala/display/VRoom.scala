@@ -244,12 +244,11 @@ class VRoom(map:String, room:Room) {
     batch.end()
 
 
-    /*
+
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
-    */
 
     batch.begin()
     def normalProjection:Matrix4 = new Matrix4().setToOrtho2D(0, 0, Gdx.graphics.getWidth(),  Gdx.graphics.getHeight())
