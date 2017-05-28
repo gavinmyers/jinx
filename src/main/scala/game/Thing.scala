@@ -46,6 +46,14 @@ trait Thing {
   var size:Float = 1f
 
   var weight:Float = 1f
+  def absweight:Float = {
+    var w = this.weight
+    for((i,thing) <- this.inventory) {
+      w += thing.absweight
+    }
+    return w
+  }
+
   var lastX:Float = 0
   var lastY:Float = 0
   var transformX:Float = 0

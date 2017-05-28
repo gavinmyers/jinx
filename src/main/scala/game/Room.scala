@@ -9,7 +9,7 @@ class Room
   var history:String = ""
   var menu:String = "[I] Inventory | [Z] Jump | [X] Attack | [P] Pickup Item | [D] Drop Item | [C] Use Item | [ESC] Pause | [E] Exit"
   var alert:String = ""
-  var ambientLight:Float = 0.2f
+  var ambientLight:Float = 0.0f
 
   this.scaleX = 1.0f
   this.scaleY = 1.0f

@@ -10,4 +10,5 @@ class Woodblock  extends Tool {
   this.description = "a block of wood"
   this.attributes += "flammable" -> 1f
   this.wall = true
+  this.weight = 250f
 }

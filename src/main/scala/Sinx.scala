@@ -71,6 +71,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     currentRoom.title = "JINX "
     currentRoom.title += "HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
     currentRoom.title += "| HUNGER " + lilac.attributes("fullness_current") + "[" + lilac.attributes("fullness_max") + "]"
+    currentRoom.title += " WEIGHT " + lilac.encumbrance._1 + " [" + lilac.encumbrance._2 + "]"
 
     currentRoom.history = ""
     for((k,thing) <- lilac.near) {

@@ -12,6 +12,8 @@ trait Creature extends Thing {
   attributes += "fullness_current" -> 600f
   attributes += "hunger" -> 1f
 
+  attributes += "STR" -> 12f
+
   var jump: Boolean = false
   var jumping: Boolean = false
   var lastJump: Float = 0
@@ -20,7 +22,14 @@ trait Creature extends Thing {
   attributes += "jump_max_velocity" -> 15f
   attributes += "run_max_velocity" -> 5f
 
+
+  def encumbrance = {
+    var max:Float = get("STR") * 10
+    (max, absweight)
+  }
+
   def exit(gameTime:Float) = {
+
     for((k,thing) <- this.near) {
       if(thing.isInstanceOf[Exit]) {
         val exit:Exit = thing.asInstanceOf[Exit]
