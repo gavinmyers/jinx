@@ -51,10 +51,13 @@ trait Creature extends Thing {
         val tool:Tool = thing.asInstanceOf[Tool]
         if(tool.absweight < this.encumbrance.remaining) {
           this.add(tool)
+          if(this.holding == null) {
+            this.holding = tool
+          }
+        } else {
+          Messaging.send(this, thing,"W",gameTime)
         }
-        if(this.holding == null) {
-          this.holding = tool
-        }
+
       }
     }
   }
