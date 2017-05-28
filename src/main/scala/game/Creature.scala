@@ -23,9 +23,12 @@ trait Creature extends Thing {
   attributes += "run_max_velocity" -> 5f
 
 
+  case class Encumbrance( maximum : Float , current : Float,  remaining : Float)
+
   def encumbrance = {
     var max:Float = get("STR") * 10
-    (max, absweight)
+    Encumbrance( max,absweight, max - absweight)
+
   }
 
   def exit(gameTime:Float) = {
@@ -46,7 +49,9 @@ trait Creature extends Thing {
     for((k,thing) <- this.near) {
       if(thing.isInstanceOf[Tool]) {
         val tool:Tool = thing.asInstanceOf[Tool]
-        this.add(tool)
+        if(tool.absweight < this.encumbrance.remaining) {
+          this.add(tool)
+        }
         if(this.holding == null) {
           this.holding = tool
         }
