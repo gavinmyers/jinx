@@ -1,6 +1,25 @@
 package game
 
+import logic.Messaging
+
 import scala.collection.mutable
+
+
+trait NoAttack extends Tool {
+  override def attack(gameTime:Float):Boolean = {
+    Messaging.send(this.location, this.location, "N", gameTime)
+    return false
+  }
+}
+
+trait NoUse extends Tool {
+  override def use(gameTime:Float, user:Creature):Boolean = {
+    Messaging.send(this.location, this.location, "N", gameTime)
+    return false
+  }
+}
+
+
 
 trait Tool extends Thing {
 
@@ -51,6 +70,7 @@ trait Tool extends Thing {
     }
 
     if(lastUse + useCooldown > gameTime) {
+      Messaging.send(user, this, "N", gameTime)
       return false
     }
 
