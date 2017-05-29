@@ -153,6 +153,19 @@ trait Thing {
 
 }
 
+trait NoDamage extends Thing {
+  override def damage(gameTime:Float, amount:Float) : Unit = {
+    return 0;
+  }
+}
+
+trait NoDie extends Thing {
+  override def die() : Unit = {
+    return 0;
+  }
+}
+
+
 object Thing {
   def nothing: Short = 0x00
   def floor: Short = 0x01
