@@ -12,4 +12,5 @@ class Woodblock  extends Tool {
   this.wall = true
   this.weight = 500f
   this.density = this.weight * 10
+  this.friction = 100f
 }

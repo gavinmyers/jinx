@@ -63,6 +63,8 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     val b: BodyDef = new BodyDef()
     b.`type` = BodyDef.BodyType.DynamicBody
     b.fixedRotation = false
+    if(entity.wall)
+      b.fixedRotation = true
     b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
     b
   })
