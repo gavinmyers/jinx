@@ -172,12 +172,6 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     })
   fixtureTop.setUserData(creature)
 
-  def fall(gameTime: Float): Unit = {
-    creature.jumping = false
-    creature.movV = ""
-
-    //body.setLinearVelocity(body.getLinearVelocity.x, body.getLinearVelocity.y * 0.9f)
-  }
 
   def slow(gameTime:Float):Unit = {
     body.setLinearVelocity(body.getLinearVelocity.x * 0.9f, body.getLinearVelocity.y * 0.9f)
@@ -195,7 +189,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     }
   }
 
-  def canJump(): Boolean = {
+  def canJump: Boolean = {
     for (contact: Contact <- world.getContactList) {
       if (!contact.getFixtureB.isSensor
         && contact.getFixtureA == fixtureBottom
@@ -211,7 +205,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     false
   }
 
-  def canClimb(): Boolean = {
+  def canClimb: Boolean = {
 
     for (contact: Contact <- world.getContactList) {
       if (contact.getFixtureA.getUserData == creature && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
@@ -226,6 +220,14 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
   }
 
   override def update(gameTime:Float):Unit = {
+    this.fixture.setDensity(creature.density)
+    this.fixture.setFriction(creature.friction)
+    this.fixture.setRestitution(creature.restitution)
+    this.body.setGravityScale(creature.gravityScale)
+
+    creature.set("run_current_velocity",body.getLinearVelocity.x)
+    creature.set("jump_current_velocity",body.getLinearVelocity.y)
+
     lastX = Conversion.metersToPixels(body.getPosition.x)
     lastY = Conversion.metersToPixels(body.getPosition.y)
     creature.lastX = lastX
@@ -241,13 +243,6 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
     body.setGravityScale(creature.gravityScale)
 
-    if(creature.jump) {
-      if (canJump()) {
-        creature.jumping = true
-        creature.lastJump = gameTime
-      }
-      creature.jump = false
-    }
 
     if (creature.dieing) {
       sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
@@ -260,22 +255,23 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         } else if (creature.faceH == "L") {
           sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
         }
-    } else if (!canClimb && creature.movH == "" && !creature.jumping) {
+    } else if (!canClimb && creature.movH == "" && !creature.jump) {
       stop(gameTime)
     } else {
 
-      if (creature.jumping) {
+      if (creature.jump && canJump) {
         //if (body.getLinearVelocity.y < creature.get("jump_max_velocity") && creature.lastJump + creature.get("jump_max") > gameTime) {
           var h:Float = 0f
           if("R".equalsIgnoreCase(creature.movH)) {
-            h = 15f
+            h = creature.get("run_max_velocity")
           } else if("L".equalsIgnoreCase(creature.movH)) {
-            h = -15f
+            h = creature.get("run_max_velocity") * -1
           }
           //body.applyForceToCenter(h, 250f, true)
-          body.applyLinearImpulse(h, 25f, 0f, 0f, true)
+          body.applyLinearImpulse(h, creature.get("jump_max_velocity"), 0f, 0f, true)
         //} else {
-          fall(gameTime)
+          creature.jump = false
+          creature.movV = ""
         //}
       } else if (canClimb) {
         if (creature.movV == "U") {
@@ -288,13 +284,14 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
           body.setLinearVelocity(body.getLinearVelocity.x * .95f, body.getLinearVelocity.y * 0.7f)
         }
 
-      } else if (creature.movH == "R" && canJump()) {
+      } else if (creature.movH == "R" && canJump) {
         if (body.getLinearVelocity.x < creature.get("run_max_velocity"))
           body.applyForceToCenter(100f, 0f, true)
+
           //body.applyLinearImpulse(15f, 0f, 0f, 0f, true)
         //if (!weapon.attacking)
         sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
-      } else if (creature.movH == "L" && canJump()) {
+      } else if (creature.movH == "L" && canJump) {
         if (body.getLinearVelocity.x > creature.get("run_max_velocity") * -1)
           body.applyForceToCenter(-100f, 0f, true)
           //body.applyLinearImpulse(-15f, 0f, 0f, 0f, true)

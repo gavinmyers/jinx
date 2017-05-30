@@ -18,12 +18,16 @@ trait Creature extends Thing {
   attributes += "STR" -> 12f
 
   var jump: Boolean = false
-  var jumping: Boolean = false
   var lastJump: Float = 0
 
+  attributes += "jump_current" -> 0.0f
   attributes += "jump_max" -> 0.45f
   attributes += "jump_max_velocity" -> 15f
+  attributes += "jump_current_velocity" -> 0f
+
+
   attributes += "run_max_velocity" -> 5f
+  attributes += "run_current_velocity" -> 0f
 
 
   case class Encumbrance( maximum : Float , current : Float,  remaining : Float)
