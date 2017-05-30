@@ -111,6 +111,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         b
       })
 
+
   val fixture:Fixture = body.createFixture(
     {
       val f: FixtureDef = new FixtureDef()
@@ -121,8 +122,9 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
       f.shape = shape
       shape.setRadius(Conversion.pixelsToMeters(height / 2.2f))
-      f.friction = 0f
-      f.density = 3f
+      f.friction = creature.friction
+      f.density = creature.density
+      f.restitution = creature.restitution
       f
     })
   fixture.setUserData(creature)
@@ -137,7 +139,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
       f.filter.maskBits = (Thing.floor | Thing.creature).toShort
 
       shape.setRadius(Conversion.pixelsToMeters(height / 6.2f))
-      f.friction = 0f
+
       f
     })
   hitArea.setUserData(creature)
@@ -237,7 +239,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
       slow(gameTime)
     }
 
-    body.setGravityScale(creature.weight)
+    body.setGravityScale(creature.gravityScale)
 
     if(creature.jump) {
       if (canJump()) {
@@ -288,13 +290,13 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
       } else if (creature.movH == "R" && canJump()) {
         if (body.getLinearVelocity.x < creature.get("run_max_velocity"))
-          body.applyForceToCenter(15f, 0f, true)
+          body.applyForceToCenter(100f, 0f, true)
           //body.applyLinearImpulse(15f, 0f, 0f, 0f, true)
         //if (!weapon.attacking)
         sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
       } else if (creature.movH == "L" && canJump()) {
         if (body.getLinearVelocity.x > creature.get("run_max_velocity") * -1)
-          body.applyForceToCenter(-15f, 0f, true)
+          body.applyForceToCenter(-100f, 0f, true)
           //body.applyLinearImpulse(-15f, 0f, 0f, 0f, true)
         //if (!weapon.attacking)
         sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))

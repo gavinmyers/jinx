@@ -13,6 +13,12 @@ class Bullet extends Thing {
   var attacker:Creature = _
   var bind:Thing = _
 
+  this.weight = 0.01f
+  this.density = 0.01f
+  this.friction = 0f
+  this.gravityScale = 0.1f
+
+
   var speed:Float = 0f
 
   this.category = Thing.bullet

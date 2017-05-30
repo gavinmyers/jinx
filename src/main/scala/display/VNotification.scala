@@ -61,7 +61,7 @@ protected class VNotification(entity: Notification, world:World) extends VThing 
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.weight)
+  body.setGravityScale(entity.gravityScale)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()

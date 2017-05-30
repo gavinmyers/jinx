@@ -36,6 +36,8 @@ protected class VTile(entity: Thing, world:World) extends VThing {
     f.filter.categoryBits = Thing.floor
     shape.setAsBox(Conversion.pixelsToMeters(sprite.getHeight / 2), Conversion.pixelsToMeters(sprite.getWidth / 2))
     f.friction = 5f
+    f.restitution = 0f
+    f.density = 5f
     f
   })
   fixture.setUserData(entity)

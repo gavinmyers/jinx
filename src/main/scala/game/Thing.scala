@@ -10,6 +10,11 @@ trait Thing {
   var id:String = java.util.UUID.randomUUID.toString
   var description:String = ""
   var ai:AI = _
+  var friction:Float = 5f
+  var density:Float = 4.0f
+  var restitution:Float = 0f
+  var gravityScale = 1f
+
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()

@@ -8,6 +8,9 @@ import scala.collection.mutable
 trait Creature extends Thing {
 
 
+  this.friction = 0.05f
+  this.density  = 3.5f
+
   attributes += "fullness_max" -> 600f
   attributes += "fullness_current" -> 600f
   attributes += "hunger" -> 1f
