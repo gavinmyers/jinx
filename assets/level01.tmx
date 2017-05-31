@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="97">
+<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="101">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="200" columns="8">
   <image source="levels.png" width="192" height="600"/>
  </tileset>
@@ -372,17 +372,12 @@
     <property name="id" value="level01_e"/>
    </properties>
   </object>
-  <object id="89" name="thing" x="888" y="310" width="24" height="24">
+  <object id="89" name="thing" x="984" y="336" width="24" height="24">
    <properties>
     <property name="type" value="woodcolumn"/>
    </properties>
   </object>
-  <object id="91" name="thing" x="888" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="woodcolumn"/>
-   </properties>
-  </object>
-  <object id="92" name="thing" x="888" y="335" width="24" height="24">
+  <object id="92" name="thing" x="984" y="312" width="24" height="24">
    <properties>
     <property name="type" value="woodcolumn"/>
    </properties>
@@ -392,7 +387,7 @@
     <property name="type" value="woodcolumn"/>
    </properties>
   </object>
-  <object id="95" name="thing" x="864" y="335" width="24" height="24">
+  <object id="95" name="thing" x="984" y="360" width="24" height="24">
    <properties>
     <property name="type" value="woodcolumn"/>
    </properties>
@@ -400,6 +395,26 @@
   <object id="96" name="thing" x="1128" y="504" width="24" height="24">
    <properties>
     <property name="type" value="phoenix"/>
+   </properties>
+  </object>
+  <object id="97" name="thing" x="888" y="360" width="24" height="24">
+   <properties>
+    <property name="type" value="fire"/>
+   </properties>
+  </object>
+  <object id="98" name="thing" x="912" y="360" width="24" height="24">
+   <properties>
+    <property name="type" value="fire"/>
+   </properties>
+  </object>
+  <object id="99" name="thing" x="960" y="360" width="24" height="24">
+   <properties>
+    <property name="type" value="fire"/>
+   </properties>
+  </object>
+  <object id="100" name="thing" x="936" y="360" width="24" height="24">
+   <properties>
+    <property name="type" value="fire"/>
    </properties>
   </object>
  </objectgroup>

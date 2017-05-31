@@ -221,6 +221,14 @@ object Thing {
     } else if("ironsword".equalsIgnoreCase(t)) {
       return new IronSword
 
+    } else if("fire".equalsIgnoreCase(t)) {
+      val bullet:Bullet = new Bullet
+      bullet.effect = Bullet.fire
+      bullet.cooldown = Float.MaxValue
+      bullet.attributes("brightness") = 2f
+      bullet.attributes("luminance") = 1f
+      return bullet
+
 
     } else if("catchem".equalsIgnoreCase(t)) {
       return new Catchem
