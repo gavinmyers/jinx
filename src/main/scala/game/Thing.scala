@@ -6,7 +6,10 @@ import tools.{Woodblock, _}
 
 import scala.collection.mutable
 
+
+
 trait Thing {
+
   var id:String = java.util.UUID.randomUUID.toString
   var description:String = ""
   var ai:AI = _
@@ -18,14 +21,13 @@ trait Thing {
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()
-  var attributes:scala.collection.mutable.Map[String,Float] = scala.collection.mutable.Map[String, Float]()
+  var attributes:scala.collection.mutable.Map[String,MinMaxCurrent] = scala.collection.mutable.Map[String, MinMaxCurrent]()
   var notifications:scala.collection.mutable.Map[String,Notification] = scala.collection.mutable.Map[String, Notification]()
 
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
 
-  attributes += "health_max" -> 34f
-  attributes += "health_current" -> 34f
+  attributes += "health" -> new MinMaxCurrent(34f,34f,0f)
 
   var movH: String = ""
   var faceH: String = ""
@@ -64,22 +66,32 @@ trait Thing {
   var transformX:Float = 0
   var transformY:Float = 0
 
-  attributes += "brightness" -> 0
-  attributes += "luminance" -> 0
+  attributes += "brightness" -> new MinMaxCurrent(0)
+  attributes += "luminance" -> new MinMaxCurrent(0)
 
   def mod(source:Thing, attribute:String, value:Float):Float = {
     if(this.attributes.contains("mod_"+attribute)) {
-      return value + this.attributes("mod_"+attribute)
+      return value + this.attributes("mod_"+attribute).current
     } else {
       return value
     }
   }
 
-  def set(attribute:String, value:Float) = {
-    this.attributes(attribute) = value
+  def set(attribute:String, value:MinMaxCurrent) = {
+    this.attributes.put(attribute, value)
   }
 
-  def get(attribute:String):Float = {
+  def set(attribute:String, value:Float) = {
+    if(!this.attributes.contains(attribute)) {
+      this.attributes.put(attribute, new MinMaxCurrent(0f))
+    }
+    this.attributes(attribute).current = value
+  }
+
+  def get(attribute:String):MinMaxCurrent = {
+    if(!this.attributes.contains(attribute))
+      println(attribute + " not found")
+
     return this.attributes.get(attribute).get
   }
 
@@ -94,9 +106,11 @@ trait Thing {
     }
 
     thing.location = this
+
   }
 
   def remove(thing:Thing):Unit = {
+    if(!inventory.contains(thing.id) && !notifications.contains(thing.id)) return
     if(thing.isInstanceOf[Notification]) {
       notifications -= thing.id
     } else {
@@ -141,12 +155,12 @@ trait Thing {
 
     this.lastDamage = gameTime
     this.takingDamage = true
-    this.set("health_current", this.get("health_current") - amount)
-    if(this.get("health_current") < 1) {
+    this.set("health", this.get("health").current - amount)
+    if(this.get("health").current < 1) {
       this.die()
     }
 
-    Messaging.send(this, this, "H" + (1 + ((this.get("health_current") / this.get("health_max")) * 10).toInt), gameTime)
+    Messaging.send(this, this, "H" + (1 + ((this.get("health").current / this.get("health").maximum) * 10).toInt), gameTime)
   }
 
   def die():Unit = {
@@ -160,13 +174,13 @@ trait Thing {
 
 trait NoDamage extends Thing {
   override def damage(gameTime:Float, amount:Float) : Unit = {
-    return 0;
+    return 0
   }
 }
 
 trait NoDie extends Thing {
   override def die() : Unit = {
-    return 0;
+    return 0
   }
 }
 
@@ -225,8 +239,8 @@ object Thing {
       val bullet:Bullet = new Bullet
       bullet.effect = Bullet.fire
       bullet.cooldown = Float.MaxValue
-      bullet.attributes("brightness") = 2f
-      bullet.attributes("luminance") = 1f
+      bullet.attributes("brightness") = new MinMaxCurrent(2f)
+      bullet.attributes("luminance") = new MinMaxCurrent(1f)
       return bullet
 
 

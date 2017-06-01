@@ -71,14 +71,16 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
 
     currentRoom.title = "JINX "
-    //currentRoom.title += "HP " + lilac.attributes("health_current") + "[" + lilac.attributes("health_max") + "]"
-    //currentRoom.title += "| HUNGER " + lilac.attributes("fullness_current") + "[" + lilac.attributes("fullness_max") + "]"
-    //currentRoom.title += "| WEIGHT " + lilac.encumbrance.maximum + " [" + lilac.encumbrance.current + "]"
+    currentRoom.title += "HP " + lilac.get("health").current + "[" + lilac.get("health").maximum + "]"
+    currentRoom.title += "| HUNGER " + lilac.get("fullness").current + "[" + lilac.get("fullness").maximum + "]"
+    currentRoom.title += "| WEIGHT " + lilac.get("encumbrance").current + " [" + lilac.get("encumbrance").maximum + "]"
+    /*
     currentRoom.title += "| JUMP " + lilac.jump + " " + lilac.lastJump
-    currentRoom.title += " JM " + lilac.get("jump_max")
-    currentRoom.title += " JMV " + lilac.get("jump_max_velocity")
-    currentRoom.title += " JC " + lilac.get("jump_current_velocity")
+    currentRoom.title += " JM " + lilac.get("jump").maximum
+    currentRoom.title += " JMV " + lilac.get("jump_velocity").maximum
+    currentRoom.title += " JC " + lilac.get("jump_velocity").current
     currentRoom.title += " DENSITY " + lilac.density
+    */
     currentRoom.history = ""
     for((k,thing) <- lilac.near) {
       if(thing.description.length > 0) {

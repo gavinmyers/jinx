@@ -65,7 +65,7 @@ trait Tool extends Thing {
   def use(gameTime:Float, user:Creature):Boolean = {
 
     if(this.edible) {
-      user.set("fullness_current", user.get("fullness_current") + this.get("fullness"))
+      user.set("fullness", user.get("fullness").current + this.get("fullness").current)
       this.die()
     }
 

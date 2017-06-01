@@ -11,32 +11,16 @@ trait Creature extends Thing {
   this.friction = 0.05f
   this.density  = 3.5f
 
-  attributes += "fullness_max" -> 600f
-  attributes += "fullness_current" -> 600f
-  attributes += "hunger" -> 1f
-
-  attributes += "STR" -> 12f
+  set("fullness", 600f)
+  set("hunger", 1f)
+  set("strength", 12f)
+  set("encumbrance", new MinMaxCurrent( get("strength").current * 10, 0f, 0f))
+  set("jump", new MinMaxCurrent(0.45f, 0f, 0f))
+  set("jump_velocity", new MinMaxCurrent(15f, 0f, 0f))
+  set("run_velocity", new MinMaxCurrent(5f, 0f, 0f))
 
   var jump: Boolean = false
   var lastJump: Float = 0
-
-  attributes += "jump_current" -> 0.0f
-  attributes += "jump_max" -> 0.45f
-  attributes += "jump_max_velocity" -> 15f
-  attributes += "jump_current_velocity" -> 0f
-
-
-  attributes += "run_max_velocity" -> 5f
-  attributes += "run_current_velocity" -> 0f
-
-
-  case class Encumbrance( maximum : Float , current : Float,  remaining : Float)
-
-  def encumbrance = {
-    var max:Float = get("STR") * 10
-    Encumbrance( max,absweight, max - absweight)
-
-  }
 
   def exit(gameTime:Float) = {
 
@@ -56,8 +40,9 @@ trait Creature extends Thing {
     for((k,thing) <- this.near) {
       if(thing.isInstanceOf[Tool]) {
         val tool:Tool = thing.asInstanceOf[Tool]
-        if(tool.absweight < this.encumbrance.remaining) {
+        if(tool.absweight < get("encumbrance").remaining) {
           this.add(tool)
+
           if(this.holding == null) {
             this.holding = tool
           }
@@ -100,6 +85,7 @@ trait Creature extends Thing {
   def drop() = {
     if(holding != null) {
       val t:Thing = this.holding
+
       this.remove(t)
       t.startX = this.lastX
       t.startY = this.lastY
@@ -115,17 +101,30 @@ trait Creature extends Thing {
     }
   }
 
+  override def add(thing:Thing):Unit = {
+    super.add(thing)
+    println("adding " + thing)
+    set("encumbrance", get("encumbrance").current + thing.absweight)
+  }
+
   override def remove(thing:Thing):Unit = {
+    if(!inventory.contains(thing.id) && !notifications.contains(thing.id)) return
     super.remove(thing)
     if(this.holding == thing) {
       this.holding = null
     }
+    println("removing " + thing)
+    set("encumbrance", get("encumbrance").current - thing.absweight)
   }
 
-  override def get(attribute:String):Float = {
-    var mod:Float = super.get(attribute)
+  override def get(attribute:String):MinMaxCurrent = {
+    var mmc:MinMaxCurrent = super.get(attribute)
+    if(mmc == null)
+      println(attribute + " not found")
+
+    var mod:Float = mmc.current
     if(this.holding != null) mod = this.holding.mod(this, attribute, mod)
-    return mod
+    return new MinMaxCurrent(mmc.maximum, mod, mmc.minimum)
   }
 
   def moveRight() = {
@@ -175,10 +174,12 @@ class GenericCreature
     }
     lastUpdate = gameTime
 
-    var hungerCurrent = this.get("hunger")
+    var hungerCurrent:Float = this.get("hunger").current
+    var mmc:MinMaxCurrent = this.get("fullness")
 
-    this.set("fullness_current", this.get("fullness_current") - hungerCurrent)
-    if(this.get("fullness_current") < 1) {
+    this.set("fullness", mmc.current - hungerCurrent)
+
+    if(this.get("fullness").current < 1) {
       this.die()
     }
 

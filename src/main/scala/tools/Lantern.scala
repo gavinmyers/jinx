@@ -4,8 +4,8 @@ import game.{Thing, Creature, Bullet, Tool}
 
 
 class Lantern extends Tool {
-  attributes += "brightness" -> 2.0f
-  attributes += "luminance" -> 1.0f
+  set("brightness",2.0f)
+  set("luminance", 1.0f)
 
   this.weight = 0.1f
   this.useCooldown = -1f
@@ -17,7 +17,8 @@ class Lantern extends Tool {
       return false
     }
 
-    this.damage(gameTime, (this.get("health_max") * 0.2).toInt)
+
+    this.damage(gameTime, (this.get("health").current * 0.2).toInt)
     val bullet:Bullet = new Bullet
     bullet.effect = Bullet.fire
     bullet.startX = this.location.lastX
@@ -27,8 +28,8 @@ class Lantern extends Tool {
     bullet.weight = 0.1f
     bullet.forceY = 150f + (Math.random() * 50).toFloat
 
-    bullet.attributes("brightness") = 2f
-    bullet.attributes("luminance") = 1f
+    bullet.set("brightness", 2f)
+    bullet.set("luminance", 1f)
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
@@ -51,9 +52,9 @@ class Lantern extends Tool {
     if(this.using == false) {
       return super.mod(source, attribute, value)
     } else if("luminance".equalsIgnoreCase(attribute)) {
-      return 4.0f * (this.get("health_current") / this.get("health_max"))
+      return 4.0f * (this.get("health").current / this.get("health").maximum)
     } else if("brightness".equalsIgnoreCase(attribute)) {
-      return 4.0f * (this.get("health_current") / this.get("health_max"))
+      return 4.0f * (this.get("health").current / this.get("health").maximum)
     } else {
       return super.mod(source, attribute, value)
     }
@@ -68,6 +69,6 @@ class Lantern extends Tool {
   override def update(gameTime:Float): Unit = {
     super.update(gameTime)
     if(Math.random() * 10 > 4)
-      this.attributes("brightness") = (((this.attributes("brightness") * 2) +  1f + Math.random().toFloat) / 3)
+      set("brightness",(((get("brightness").current * 2f) +  1f + Math.random().toFloat) / 3))
   }
 }

@@ -5,7 +5,7 @@ import game.{Thing, Creature, Bullet, Tool}
 class IronSword extends Tool  {
   this.category = game.Thing.ironsword
   this.description = "a sword"
-  attributes += "mod_hunger" -> 2.0f
+  set("mod_hunger", 2.0f)
 
 
   override def attack(gameTime:Float):Boolean = {

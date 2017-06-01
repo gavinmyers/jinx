@@ -34,8 +34,8 @@ class Catchem extends Tool {
       bullet.weight = 0.1f
       bullet.forceY = 250f + (Math.random() * 50).toFloat
 
-      bullet.attributes("brightness") = 2f
-      bullet.attributes("luminance") = 1f
+      bullet.set("brightness", 2f)
+      bullet.set("luminance", 1f)
       bullet.weapon = this
 
       if(this.location.isInstanceOf[Creature]) {

@@ -18,8 +18,8 @@ class Firebreath extends Tool {
     bullet.weight = 0.02f
     bullet.forceY = 150f + (Math.random() * 50).toFloat
 
-    bullet.attributes("brightness") = 2f
-    bullet.attributes("luminance") = 1f
+    bullet.set("brightness",2f)
+    bullet.set("luminance",1f)
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
