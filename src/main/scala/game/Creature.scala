@@ -8,8 +8,8 @@ import scala.collection.mutable
 trait Creature extends Thing {
 
 
-  this.friction = 0.05f
-  this.density  = 3.5f
+  set("friction",0.05f)
+  set("density",3.5f)
 
   set("fullness", 600f)
   set("hunger", 1f)
@@ -177,7 +177,7 @@ class GenericCreature
     var hungerCurrent:Float = this.get("hunger").current
     var mmc:MinMaxCurrent = this.get("fullness")
 
-    this.set("fullness", mmc.current - hungerCurrent)
+    set("fullness", mmc.current - hungerCurrent)
 
     if(this.get("fullness").current < 1) {
       this.die()

@@ -14,10 +14,10 @@ class Bullet extends Thing {
   var bind:Thing = _
 
   this.weight = 0.01f
-  this.density = 0.01f
-  this.friction = 0f
-  this.gravityScale = 0.1f
-
+  set("friction",new MinMaxCurrent(0f,0f,0f))
+  set("density",new MinMaxCurrent(0.1f,0.1f,0f))
+  set("restitution",new MinMaxCurrent(0f,0f,0f))
+  set("gravityScale",new MinMaxCurrent(0.1f,0.1f,0f))
 
   var speed:Float = 0f
 

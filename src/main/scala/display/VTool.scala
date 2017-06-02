@@ -69,7 +69,7 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.gravityScale)
+  body.setGravityScale(entity.get("gravityScale").current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
@@ -80,8 +80,8 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
       f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
-    f.friction = entity.friction
-    f.restitution = entity.restitution
+    f.friction = entity.get("friction").current
+    f.restitution = entity.get("restitution").current
     f
   })
   fixture.setUserData(entity)
@@ -89,7 +89,7 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
   val fixtureBottom:Fixture = body.createFixture(
     {
       val f = new FixtureDef
-      f.density = entity.density
+      f.density = entity.get("density").current
       f.isSensor = true
       f.shape = new PolygonShape()
       f.shape.asInstanceOf[PolygonShape]

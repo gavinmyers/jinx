@@ -122,9 +122,9 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
       f.shape = shape
       shape.setRadius(Conversion.pixelsToMeters(height / 2.2f))
-      f.friction = creature.friction
-      f.density = creature.density
-      f.restitution = creature.restitution
+      f.friction = creature.get("friction").current
+      f.density = creature.get("density").current
+      f.restitution = creature.get("restitution").current
       f
     })
   fixture.setUserData(creature)
@@ -220,10 +220,10 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
   }
 
   override def update(gameTime:Float):Unit = {
-    this.fixture.setDensity(creature.density)
-    this.fixture.setFriction(creature.friction)
-    this.fixture.setRestitution(creature.restitution)
-    this.body.setGravityScale(creature.gravityScale)
+    this.fixture.setDensity(creature.get("density").current)
+    this.fixture.setFriction(creature.get("friction").current)
+    this.fixture.setRestitution(creature.get("restitution").current)
+    this.body.setGravityScale(creature.get("gravityScale").current)
 
     creature.set("run_current_velocity",body.getLinearVelocity.x)
     creature.set("jump_current_velocity",body.getLinearVelocity.y)
@@ -241,7 +241,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
       slow(gameTime)
     }
 
-    body.setGravityScale(creature.gravityScale)
+    body.setGravityScale(creature.get("gravityScale").current)
 
 
     if (creature.dieing) {

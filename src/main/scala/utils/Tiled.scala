@@ -54,8 +54,6 @@ object Tiled {
         val ladder:Ladder = new Ladder
         ladder.startX = px
         ladder.startY = py
-        ladder.height = rct.height
-        ladder.width = rct.width
         r.add(ladder)
       }
       if ("target".equalsIgnoreCase(mo.getName)) {

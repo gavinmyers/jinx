@@ -79,7 +79,7 @@ protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[T
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.gravityScale)
+  body.setGravityScale(entity.get("gravityScale").current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()

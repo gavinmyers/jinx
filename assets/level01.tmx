@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="102">
+<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="103">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="200" columns="8">
   <image source="levels.png" width="192" height="600"/>
  </tileset>
@@ -342,7 +342,7 @@
     <property name="target" value="forest01_w"/>
    </properties>
   </object>
-  <object id="66" name="thing" x="817.726" y="359.069" width="24" height="24">
+  <object id="66" name="thing" x="768" y="360" width="24" height="24">
    <properties>
     <property name="type" value="lantern"/>
    </properties>
@@ -420,6 +420,11 @@
   <object id="101" name="thing" x="1032" y="360" width="24" height="24">
    <properties>
     <property name="type" value="snake"/>
+   </properties>
+  </object>
+  <object id="102" name="ladder" x="840" y="360" width="24" height="24">
+   <properties>
+    <property name="type" value=""/>
    </properties>
   </object>
  </objectgroup>

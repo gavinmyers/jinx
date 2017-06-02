@@ -13,10 +13,6 @@ trait Thing {
   var id:String = java.util.UUID.randomUUID.toString
   var description:String = ""
   var ai:AI = _
-  var friction:Float = 5f
-  var density:Float = 4.0f
-  var restitution:Float = 0f
-  var gravityScale = 1f
 
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
@@ -27,7 +23,12 @@ trait Thing {
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
 
-  attributes += "health" -> new MinMaxCurrent(34f,34f,0f)
+  set("friction",new MinMaxCurrent(5f,5f,0f))
+  set("density",new MinMaxCurrent(4f,4f,0f))
+  set("restitution",new MinMaxCurrent(0f,0f,0f))
+  set("gravityScale",new MinMaxCurrent(1f,1f,0f))
+
+  set("health",new MinMaxCurrent(34f,34f,0f))
 
   var movH: String = ""
   var faceH: String = ""
