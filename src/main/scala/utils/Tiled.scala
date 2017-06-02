@@ -50,12 +50,6 @@ object Tiled {
         thing.startY = py
         r.add(thing)
       }
-      if ("ladder".equalsIgnoreCase(mo.getName)) {
-        val ladder:Ladder = new Ladder
-        ladder.startX = px
-        ladder.startY = py
-        r.add(ladder)
-      }
       if ("target".equalsIgnoreCase(mo.getName)) {
         var ent:Entrance = new Entrance
         ent.id=mo.getProperties.get("id").toString

@@ -227,6 +227,9 @@ object Thing {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern
 
+    } else if("ladder".equalsIgnoreCase(t)) {
+      return new Ladder
+
     } else if("woodblock".equalsIgnoreCase(t)) {
       return new Woodblock
 

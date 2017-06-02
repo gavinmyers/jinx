@@ -38,6 +38,9 @@ protected object VThing {
     if(thing.category == Thing.floor) {
       return new VTile(thing, world)
 
+    } else if(thing.category == Thing.ladder) {
+      return new VLadder(thing, world, VTool.tools("ladder"))
+
     } else if(thing.category == Thing.woodblock) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("woodblock"))
 
