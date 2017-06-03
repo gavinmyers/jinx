@@ -18,9 +18,11 @@ trait Creature extends Thing {
   set("jump", new MaxCurrentMin(0.45f, 0f, 0f))
   set("jump_velocity", new MaxCurrentMin(15f, 0f, -8f))
   set("run_velocity", new MaxCurrentMin(5f, 0f, -5f))
+  set("climb_velocity", new MaxCurrentMin(5f, 0f, -5f))
   set("stun", new MaxCurrentMin(1.5f, 0f, 0f))
 
   var canJump:Boolean = false
+  var canClimb:Boolean = false
   var isJumping:Boolean = false
   var isFalling:Boolean = false
 
@@ -242,13 +244,27 @@ class GenericCreature
       runRampDown()
     }
 
-    if(movV == "U" && canJump && !isJumping) {
+    set("gravityScale",get("gravityScale").maximum)
+
+    if(canClimb) {
+      set("gravityScale", 0f)
+      val jv:MaxCurrentMin = get("climb_velocity")
+      if(movV == "U") {
+        set("jump_velocity", jv.maximum)
+      } else if(movV == "D") {
+        set("jump_velocity", jv.maximum * -1)
+      } else {
+        set("jump_velocity", 0f)
+      }
+    }  else if(movV == "U" && canJump && !isJumping) {
       doJump()
     } else if(isJumping && movV != "U") {
       stopJump()
     }
-    updateJump()
-    updateFall()
+    if(!canClimb) {
+      updateJump()
+      updateFall()
+    }
 
     if(lastUpdate + updateCooldown > gameTime) {
       return false

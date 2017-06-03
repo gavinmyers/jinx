@@ -23,14 +23,15 @@ class VLadder(entity: Thing, world:World, sprites: scala.collection.mutable.Map[
     b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
     b
   })
-  body.setUserData(sprite)
+  body.setUserData(entity)
   body.setGravityScale(entity.get("gravityScale").current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
     val shape: PolygonShape = new PolygonShape()
-    f.isSensor = true
+    f.isSensor = false
     f.filter.categoryBits = Thing.tool
+    f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
     f.friction = entity.get("friction").current

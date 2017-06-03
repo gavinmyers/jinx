@@ -77,20 +77,23 @@ class Sinx extends ApplicationAdapter with InputProcessor {
         */
     var jv = lilac.get("jump_velocity")
     var jvmax = jv.maximum
-    var jvc = jv.current
+    var jvc = Math.round(jv.current)
     var jvmin = jv.minimum
     var rv = lilac.get("run_velocity")
     var rvmax = rv.maximum
-    var rvc = rv.current
+    var rvc = Math.round(rv.current)
     var rvmin = rv.minimum
 
     var isj = lilac.isJumping
     var isf = lilac.isFalling
     var cj = lilac.canJump
+    var cc = lilac.canClimb
 
-      currentRoom.title = s" JV [$jvmax ($jvc) $jvmin] "
-      currentRoom.title += s" RV [$rvmax ($rvc) $rvmin] "
-    currentRoom.title += s" J [$cj $isj $isf] "
+    //currentRoom.title = s" JV [$jvmax ($jvc) $jvmin] "
+    //currentRoom.title += s" RV [$rvmax ($rvc) $rvmin] "
+    currentRoom.title = s" J [$cc $cj $isj $isf] "
+    currentRoom.title += s" JV [$jvmax ($jvc) $jvmin] "
+    currentRoom.title += s" RV [$rvmax ($rvc) $rvmin] "
 
 
     currentRoom.history = ""

@@ -209,6 +209,37 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
 
 
+
+  def canClimb: Boolean = {
+    for (contact: Contact <- world.getContactList) {
+      if (!contact.getFixtureB.isSensor
+        && contact.getFixtureA == fixtureBottom
+        && contact.getFixtureA != contact.getFixtureB
+        && contact.getFixtureB.getBody != body) {
+        if(contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
+          def t:Thing = contact.getFixtureB.getUserData.asInstanceOf[Thing]
+          if(t.category == Thing.ladder && creature.isInside(t)) {
+            return true
+          }
+        }
+      }
+      if (!contact.getFixtureA.isSensor
+        && contact.getFixtureB == fixtureBottom
+        && contact.getFixtureA != contact.getFixtureB
+        && contact.getFixtureA.getBody != body) {
+        if(contact.getFixtureA.getUserData.isInstanceOf[Thing]) {
+          def t:Thing = contact.getFixtureA.getUserData.asInstanceOf[Thing]
+          if(t.category == Thing.ladder  && creature.isInside(t)) {
+            return true
+          }
+
+        }
+      }
+    }
+    false
+  }
+
+
   override def update(gameTime:Float):Unit = {
     this.fixture.setDensity(creature.get("density").current)
     this.fixture.setFriction(creature.get("friction").current)
@@ -222,6 +253,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
     var isJumping = creature.isJumping
     creature.canJump = canJump
+    creature.canClimb = canClimb
 
     this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)
 
