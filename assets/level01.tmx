@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="108">
+<map version="1.0.0" orientation="orthogonal" renderorder="right-down" width="124" height="24" tilewidth="24" tileheight="24" nextobjectid="109">
  <tileset firstgid="1" name="levels" tilewidth="24" tileheight="24" tilecount="200" columns="8">
   <image source="levels.png" width="192" height="600"/>
  </tileset>
@@ -425,6 +425,11 @@
   <object id="107" name="thing" x="840" y="312" width="24" height="24">
    <properties>
     <property name="type" value="ladder"/>
+   </properties>
+  </object>
+  <object id="108" name="thing" x="1056" y="264" width="24" height="24">
+   <properties>
+    <property name="type" value="skeletonwarrior"/>
    </properties>
   </object>
  </objectgroup>

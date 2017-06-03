@@ -261,7 +261,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     batch.begin()
