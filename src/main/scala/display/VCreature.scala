@@ -224,7 +224,9 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     creature.canJump = canJump
 
     this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)
-    if (creature.movH == "R" && creature.movV != "") {
+    if(creature.takingDamage) {
+      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
+    }  else if (creature.movH == "R" && creature.movV != "") {
       sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
     }  else if (creature.movH == "L"  && creature.movV != "") {
       sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
