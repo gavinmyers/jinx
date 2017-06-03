@@ -138,9 +138,6 @@ class VRoom(map:String, room:Room) {
 
     world.step(Gdx.graphics.getDeltaTime, 6, 2)
     for((k,vthing) <- vnotifications) {
-      if(vthing.destroyed == true) {
-        println("it's dead!")
-      }
       if(vthing.destroyed) {
         for (je: JointEdge <- vthing.body.getJointList) {
           world.destroyJoint(je.joint)

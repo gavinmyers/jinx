@@ -183,11 +183,8 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         && contact.getFixtureA != contact.getFixtureB
         && contact.getFixtureB.getBody != body) {
         if(contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
-
           def t:Thing = contact.getFixtureB.getUserData.asInstanceOf[Thing]
-
           if(t.platform) {
-            println(t)
             return true
           }
         }
@@ -199,7 +196,6 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         if(contact.getFixtureA.getUserData.isInstanceOf[Thing]) {
           def t:Thing = contact.getFixtureA.getUserData.asInstanceOf[Thing]
           if(t.platform) {
-            println(t)
             return true
           }
 
@@ -223,7 +219,6 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     creature.lastY = lastY
 
     var isJumping = creature.isJumping
-    println(s"Can Jump ($canJump) $isJumping" )
     creature.canJump = canJump
 
     this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)

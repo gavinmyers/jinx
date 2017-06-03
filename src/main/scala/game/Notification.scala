@@ -2,7 +2,6 @@ package game
 
 
 class Notification extends Thing {
-  println("hi")
   var message:String = ""
   var showing:Boolean = false
   var showDuration:Float = 2f

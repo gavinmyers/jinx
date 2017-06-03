@@ -21,7 +21,6 @@ object Tiled {
 
     val r:Room = new Room
     r.id=map
-    println(r.id + " vs "  + map)
     val tiles:TiledMap = new TmxMapLoader().load(map + ".tmx")
     val w: Int = 24
     val h: Int = 24
