@@ -156,7 +156,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
           new Vector2(0f, Conversion.pixelsToMeters(-1 * height / 2.5f)), 0)
       f
     })
-
+  fixtureBottom.setUserData(creature)
 
 
 
