@@ -157,19 +157,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
       f
     })
 
-  var fixtureTop = body.createFixture(
-    {
-      val f = new FixtureDef
-      f.isSensor = true
-      f.density = 0f
-      f.shape = new PolygonShape()
-      f.shape.asInstanceOf[PolygonShape]
-        .setAsBox(Conversion.pixelsToMeters(width / 3f),
-          Conversion.pixelsToMeters(height / 4.5f),
-          new Vector2(0f, Conversion.pixelsToMeters(height / 2.5f)), 0)
-      f
-    })
-  fixtureTop.setUserData(creature)
+
 
 
   def slow(gameTime:Float):Unit = {
@@ -239,20 +227,22 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     creature.canJump = canJump
 
     this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)
-    if (creature.movH == "R") {
+    if (creature.movH == "R" && creature.movV != "") {
       sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
-    }
-
-    if(creature.movH == "L") {
+    }  else if (creature.movH == "L"  && creature.movV != "") {
       sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
-    }
-
-    if(creature.movV == "U") {
+    }  else if (creature.movH == "R") {
+      sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
+    } else if(creature.movH == "L") {
+      sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
+    } else if(creature.movV == "U") {
       sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
-    }
-
-    if(creature.movV == "D") {
+    } else if(creature.movV == "D") {
       sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+    } else if(creature.faceH == "L") {
+      sprite.setRegion(standLeftAnimation.getKeyFrame(gameTime, true))
+    } else if(creature.faceH == "R") {
+      sprite.setRegion(standRightAnimation.getKeyFrame(gameTime, true))
     }
   }
 
