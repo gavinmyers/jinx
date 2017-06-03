@@ -104,6 +104,49 @@ class VRoom(map:String, room:Room) {
     batch.end()
   }
 
+  def drawItem(k:String,thing:Thing, gameTime:Float):Unit = {
+    if (vinventory.contains(k) == false) {
+      vinventory += thing.id -> VThing.create(thing, world)
+    }
+
+    val fet: VThing = vinventory(k)
+    thing.update(gameTime)
+    if (thing.get("luminance").current > 0f && fet.light == null) {
+      val light: PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.get("luminance").current), thing.get("brightness").current, 0, 0)
+      light.attachToBody(fet.body, 0, 0)
+      light.setIgnoreAttachedBody(true)
+      light.setContactFilter(Thing.floor, Thing.floor, Thing.floor)
+      light.setActive(true)
+      fet.light = light
+    }
+    if (fet.light != null) {
+      fet.light.setDistance(thing.get("brightness").current)
+    }
+    fet.update(gameTime)
+    fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth / 2, Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight / 2)
+    fet.sprite.draw(batch)
+
+    if (thing.transformX > 0 && thing.transformY > 0) {
+      fet.body.setTransform(Conversion.pixelsToMeters(thing.transformX), Conversion.pixelsToMeters(thing.transformY), 0f)
+      thing.transformX = 0
+      thing.transformY = 0
+    }
+  }
+  def drawItemNotifications(k:String,thing:Thing, gameTime:Float):Unit = {
+    for((k2,notification) <- thing.notifications) {
+
+      if(vnotifications.contains(k) == false) {
+        vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
+      }
+      notification.update(gameTime)
+      val fet:VThing = vnotifications(k2)
+      fet.destroyed = notification.destroyed
+      fet.update(gameTime)
+      fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
+      fet.sprite.draw(batch)
+    }
+  }
+
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
     if(room.alert.length > 0) {
       return renderAlert()
@@ -192,48 +235,13 @@ class VRoom(map:String, room:Room) {
     batch.setProjectionMatrix(camera.combined)
     batch.begin()
     for((k,thing) <- room.inventory) {
-      if(vinventory.contains(k) == false) {
-        vinventory += thing.id -> VThing.create(thing, world)
-      }
-
-      val fet:VThing = vinventory(k)
-      thing.update(gameTime)
-      if(thing.get("luminance").current > 0f && fet.light == null) {
-        val light:PositionalLight = new PointLight(handler, 24, new Color(1f, 1f, 1f, thing.get("luminance").current), thing.get("brightness").current, 0, 0)
-        light.attachToBody(fet.body, 0, 0)
-        light.setIgnoreAttachedBody(true)
-        light.setContactFilter(Thing.floor, Thing.floor, Thing.floor)
-        light.setActive(true)
-        fet.light = light
-      }
-      if(fet.light != null) {
-        fet.light.setDistance(thing.get("brightness").current)
-      }
-      fet.update(gameTime)
-      fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
-      fet.sprite.draw(batch)
-
-      if(thing.transformX > 0 && thing.transformY > 0) {
-        fet.body.setTransform(Conversion.pixelsToMeters(thing.transformX), Conversion.pixelsToMeters(thing.transformY), 0f)
-        thing.transformX = 0
-        thing.transformY = 0
-      }
-
-      for((k2,notification) <- thing.notifications) {
-
-        if(vnotifications.contains(k) == false) {
-          vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
-        }
-        notification.update(gameTime)
-        val fet:VThing = vnotifications(k2)
-        fet.destroyed = notification.destroyed
-        fet.update(gameTime)
-        fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
-        fet.sprite.draw(batch)
+      if(!thing.isInstanceOf[Bullet] && !thing.isInstanceOf[Notification]) {
+        drawItem(k,thing,gameTime)
       }
     }
-
     batch.end()
+
+
 
     batch.begin()
     tileRenderer.setView(camera)
@@ -241,10 +249,19 @@ class VRoom(map:String, room:Room) {
     batch.end()
 
 
+    batch.setProjectionMatrix(camera.combined)
+    batch.begin()
+    for((k,thing) <- room.inventory) {
+      if(thing.isInstanceOf[Bullet] || thing.isInstanceOf[Notification]) {
+        drawItem(k,thing,gameTime)
+      }
+      drawItemNotifications(k,thing,gameTime)
+    }
+    batch.end()
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    debugRenderer.render(world, debugMatrix)
+    //debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     batch.begin()
