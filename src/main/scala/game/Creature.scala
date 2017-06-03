@@ -14,13 +14,11 @@ trait Creature extends Thing {
   set("fullness", 600f)
   set("hunger", 1f)
   set("strength", 12f)
-  set("encumbrance", new MinMaxCurrent( get("strength").current * 10, 0f, 0f))
-  set("jump", new MinMaxCurrent(0.45f, 0f, 0f))
-  set("jump_velocity", new MinMaxCurrent(15f, 0f, -8f))
-  set("run_velocity", new MinMaxCurrent(5f, 0f, -5f))
-
-  var jump: Boolean = false
-  var lastJump: Float = 0
+  set("encumbrance", new MaxCurrentMin( get("strength").current * 10, 0f, 0f))
+  set("jump", new MaxCurrentMin(0.45f, 0f, 0f))
+  set("jump_velocity", new MaxCurrentMin(15f, 0f, -8f))
+  set("run_velocity", new MaxCurrentMin(5f, 0f, -5f))
+  set("stun", new MaxCurrentMin(1.5f, 0f, 0f))
 
   var canJump:Boolean = false
   var isJumping:Boolean = false
@@ -121,14 +119,14 @@ trait Creature extends Thing {
     set("encumbrance", get("encumbrance").current - thing.absweight)
   }
 
-  override def get(attribute:String):MinMaxCurrent = {
-    var mmc:MinMaxCurrent = super.get(attribute)
+  override def get(attribute:String):MaxCurrentMin = {
+    var mmc:MaxCurrentMin = super.get(attribute)
     if(mmc == null)
       println(attribute + " not found")
 
     var mod:Float = mmc.current
     if(this.holding != null) mod = this.holding.mod(this, attribute, mod)
-    return new MinMaxCurrent(mmc.maximum, mod, mmc.minimum)
+    return new MaxCurrentMin(mmc.maximum, mod, mmc.minimum)
   }
 
   def moveRight() = {
@@ -172,7 +170,7 @@ class GenericCreature
   }
 
   def runRampUp(): Unit = {
-    val rv:MinMaxCurrent = get("run_velocity")
+    val rv:MaxCurrentMin = get("run_velocity")
 
     if(movH == "L") {
       rv.current = rv.current - (rv.maximum * 0.1f)
@@ -187,7 +185,7 @@ class GenericCreature
   }
 
   def runRampDown(): Unit = {
-    val rv:MinMaxCurrent = get("run_velocity")
+    val rv:MaxCurrentMin = get("run_velocity")
     rv.current = rv.current * 0.9f
     set("run_velocity", rv)
   }
@@ -206,7 +204,7 @@ class GenericCreature
   def updateJump(): Unit = {
     if(!isJumping) return
 
-    val jv:MinMaxCurrent = get("jump_velocity")
+    val jv:MaxCurrentMin = get("jump_velocity")
 
     jv.current = jv.current + (jv.maximum * 0.1f)
     jv.current = Math.min(jv.current, jv.maximum)
@@ -222,7 +220,7 @@ class GenericCreature
   def updateFall(): Unit = {
     if(isJumping) return
 
-    val jv:MinMaxCurrent = get("jump_velocity")
+    val jv:MaxCurrentMin = get("jump_velocity")
     if(canJump) {
       isFalling = false
       jv.current = jv.current * 0.9f
@@ -258,7 +256,7 @@ class GenericCreature
     lastUpdate = gameTime
 
     var hungerCurrent:Float = this.get("hunger").current
-    var mmc:MinMaxCurrent = this.get("fullness")
+    var mmc:MaxCurrentMin = this.get("fullness")
 
     set("fullness", mmc.current - hungerCurrent)
 

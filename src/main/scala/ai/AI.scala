@@ -36,7 +36,6 @@ trait AI {
 
     if(enemy.lastY > thinker.lastY) {
       thinker.asInstanceOf[Creature].moveUp()
-      thinker.asInstanceOf[Creature].jump = true
 
     } else {
       thinker.asInstanceOf[Creature].moveDown()

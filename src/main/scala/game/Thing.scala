@@ -19,18 +19,18 @@ trait Thing {
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()
-  var attributes:scala.collection.mutable.Map[String,MinMaxCurrent] = scala.collection.mutable.Map[String, MinMaxCurrent]()
+  var attributes:scala.collection.mutable.Map[String,MaxCurrentMin] = scala.collection.mutable.Map[String, MaxCurrentMin]()
   var notifications:scala.collection.mutable.Map[String,Notification] = scala.collection.mutable.Map[String, Notification]()
 
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
 
-  set("friction",new MinMaxCurrent(5f,5f,0f))
-  set("density",new MinMaxCurrent(4f,4f,0f))
-  set("restitution",new MinMaxCurrent(0f,0f,0f))
-  set("gravityScale",new MinMaxCurrent(1f,1f,0f))
+  set("friction",new MaxCurrentMin(5f,5f,0f))
+  set("density",new MaxCurrentMin(4f,4f,0f))
+  set("restitution",new MaxCurrentMin(0f,0f,0f))
+  set("gravityScale",new MaxCurrentMin(1f,1f,0f))
 
-  set("health",new MinMaxCurrent(34f,34f,0f))
+  set("health",new MaxCurrentMin(34f,34f,0f))
 
   var movH: String = ""
   var faceH: String = ""
@@ -69,8 +69,8 @@ trait Thing {
   var transformX:Float = 0
   var transformY:Float = 0
 
-  attributes += "brightness" -> new MinMaxCurrent(0)
-  attributes += "luminance" -> new MinMaxCurrent(0)
+  attributes += "brightness" -> new MaxCurrentMin(0)
+  attributes += "luminance" -> new MaxCurrentMin(0)
 
   def mod(source:Thing, attribute:String, value:Float):Float = {
     if(this.attributes.contains("mod_"+attribute)) {
@@ -80,18 +80,18 @@ trait Thing {
     }
   }
 
-  def set(attribute:String, value:MinMaxCurrent) = {
+  def set(attribute:String, value:MaxCurrentMin) = {
     this.attributes.put(attribute, value)
   }
 
   def set(attribute:String, value:Float) = {
     if(!this.attributes.contains(attribute)) {
-      this.attributes.put(attribute, new MinMaxCurrent(0f))
+      this.attributes.put(attribute, new MaxCurrentMin(0f))
     }
     this.attributes(attribute).current = value
   }
 
-  def get(attribute:String):MinMaxCurrent = {
+  def get(attribute:String):MaxCurrentMin = {
     if(!this.attributes.contains(attribute))
       println(attribute + " not found")
 
@@ -248,8 +248,8 @@ object Thing {
       val bullet:Bullet = new Bullet
       bullet.effect = Bullet.fire
       bullet.cooldown = Float.MaxValue
-      bullet.attributes("brightness") = new MinMaxCurrent(2f)
-      bullet.attributes("luminance") = new MinMaxCurrent(1f)
+      bullet.attributes("brightness") = new MaxCurrentMin(2f)
+      bullet.attributes("luminance") = new MaxCurrentMin(1f)
       return bullet
 
 
