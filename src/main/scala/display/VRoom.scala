@@ -261,7 +261,7 @@ class VRoom(map:String, room:Room) {
 
     def debugMatrix: Matrix4 = batch.getProjectionMatrix.cpy().scale(Conversion.BOX_TO_WORLD, Conversion.BOX_TO_WORLD, 0f)
     handler.setCombinedMatrix(debugMatrix)
-    //debugRenderer.render(world, debugMatrix)
+    debugRenderer.render(world, debugMatrix)
     handler.updateAndRender()
 
     batch.begin()
@@ -286,8 +286,10 @@ class VRoom(map:String, room:Room) {
 
 
       if(t1 != null && t2 != null) {
-
-        if(t1.isInside(t2) || t2.isInside(t1)) {
+        if(t1.category == Thing.entrance || t1.category == Thing.exit) {
+          t1.contact(gameTime,t2)
+          t2.contact(gameTime,t1)
+        } else if(t1.isInside(t2) || t2.isInside(t1)) {
           t1.contact(gameTime,t2)
           t2.contact(gameTime,t1)
         }

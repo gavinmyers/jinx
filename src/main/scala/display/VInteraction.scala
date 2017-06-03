@@ -22,7 +22,7 @@ protected class VInteraction(entity: Thing, world:World, textureRegion: TextureR
     b.position.set(Conversion.pixelsToMeters(entity.startX), Conversion.pixelsToMeters(entity.startY))
     b
   })
-  body.setUserData(sprite)
+  body.setUserData(entity)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
