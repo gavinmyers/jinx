@@ -10,6 +10,7 @@ class WoodColumn extends Tool {
   this.description = "a column of wood"
   set("flammable",1f)
   this.wall = true
+  this.platform = true
   this.weight = 500f
   this.set("density",this.weight * 10f)
 

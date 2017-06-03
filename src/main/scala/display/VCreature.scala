@@ -156,7 +156,6 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
           new Vector2(0f, Conversion.pixelsToMeters(-1 * height / 2.5f)), 0)
       f
     })
-  fixtureBottom.setUserData(creature)
 
   var fixtureTop = body.createFixture(
     {
@@ -193,31 +192,36 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     for (contact: Contact <- world.getContactList) {
       if (!contact.getFixtureB.isSensor
         && contact.getFixtureA == fixtureBottom
+        && contact.getFixtureA != contact.getFixtureB
         && contact.getFixtureB.getBody != body) {
-        return true
+        if(contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
+
+          def t:Thing = contact.getFixtureB.getUserData.asInstanceOf[Thing]
+
+          if(t.platform) {
+            println(t)
+            return true
+          }
+        }
       }
       if (!contact.getFixtureA.isSensor
         && contact.getFixtureB == fixtureBottom
+        && contact.getFixtureA != contact.getFixtureB
         && contact.getFixtureA.getBody != body) {
-        return true
+        if(contact.getFixtureA.getUserData.isInstanceOf[Thing]) {
+          def t:Thing = contact.getFixtureA.getUserData.asInstanceOf[Thing]
+          if(t.platform) {
+            println(t)
+            return true
+          }
+
+        }
       }
     }
     false
   }
 
-  def canClimb: Boolean = {
 
-    for (contact: Contact <- world.getContactList) {
-      if (contact.getFixtureA.getUserData == creature && contact.getFixtureB.getUserData.isInstanceOf[Ladder]) {
-        return true
-      }
-      if (contact.getFixtureB.getUserData == creature && contact.getFixtureA.getUserData.isInstanceOf[Ladder]) {
-        return true
-      }
-    }
-    false
-
-  }
 
   override def update(gameTime:Float):Unit = {
     this.fixture.setDensity(creature.get("density").current)
@@ -230,6 +234,8 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     creature.lastX = lastX
     creature.lastY = lastY
 
+    var isJumping = creature.isJumping
+    println(s"Can Jump ($canJump) $isJumping" )
     creature.canJump = canJump
 
     this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)

@@ -11,5 +11,6 @@ class Woodblock  extends Tool {
   set("flammable",1f)
   this.wall = true
   this.weight = 500f
+  this.platform = true
   this.set("density",this.weight * 10f)
 }

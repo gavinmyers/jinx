@@ -392,11 +392,6 @@
     <property name="type" value="woodcolumn"/>
    </properties>
   </object>
-  <object id="96" name="thing" x="1128" y="504" width="24" height="24">
-   <properties>
-    <property name="type" value="phoenix"/>
-   </properties>
-  </object>
   <object id="97" name="thing" x="888" y="360" width="24" height="24">
    <properties>
     <property name="type" value="fire"/>
@@ -415,11 +410,6 @@
   <object id="100" name="thing" x="936" y="360" width="24" height="24">
    <properties>
     <property name="type" value="fire"/>
-   </properties>
-  </object>
-  <object id="101" name="thing" x="1032" y="360" width="24" height="24">
-   <properties>
-    <property name="type" value="snake"/>
    </properties>
   </object>
   <object id="105" name="thing" x="840" y="360" width="24" height="24">

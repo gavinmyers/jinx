@@ -14,6 +14,8 @@ trait Thing {
   var description:String = ""
   var ai:AI = _
 
+  var platform:Boolean = false
+
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()
@@ -171,6 +173,9 @@ trait Thing {
     }
   }
 
+  override def toString: String = {
+    return s"$getClass platform:$platform"
+  }
 }
 
 trait NoDamage extends Thing {
@@ -314,6 +319,7 @@ object Thing {
 
     return null
   }
+
 
 }
 
