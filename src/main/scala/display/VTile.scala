@@ -41,4 +41,12 @@ protected class VTile(entity: Thing, world:World) extends VThing {
     f
   })
   fixture.setUserData(entity)
+
+  override def update(gameTime:Float):Unit = {
+    lastX = Conversion.metersToPixels(body.getPosition.x)
+    lastY = Conversion.metersToPixels(body.getPosition.y)
+    entity.lastX = lastX
+    entity.lastY = lastY
+    entity.update(gameTime)
+  }
 }

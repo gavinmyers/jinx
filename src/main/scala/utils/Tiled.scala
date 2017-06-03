@@ -47,6 +47,8 @@ object Tiled {
         val thing:Thing = Thing.create(mo.getProperties.get("type").toString)
         thing.startX = px
         thing.startY = py
+        thing.height = rct.height
+        thing.width = rct.width
         r.add(thing)
       }
       if ("target".equalsIgnoreCase(mo.getName)) {

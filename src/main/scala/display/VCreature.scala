@@ -176,6 +176,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     }
   }
 
+
   def canJump: Boolean = {
     for (contact: Contact <- world.getContactList) {
       if (!contact.getFixtureB.isSensor
@@ -184,7 +185,8 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         && contact.getFixtureB.getBody != body) {
         if(contact.getFixtureB.getUserData.isInstanceOf[Thing]) {
           def t:Thing = contact.getFixtureB.getUserData.asInstanceOf[Thing]
-          if(t.platform) {
+
+          if(t.platform && creature.isOnTopOf(t)) {
             return true
           }
         }
@@ -195,7 +197,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
         && contact.getFixtureA.getBody != body) {
         if(contact.getFixtureA.getUserData.isInstanceOf[Thing]) {
           def t:Thing = contact.getFixtureA.getUserData.asInstanceOf[Thing]
-          if(t.platform) {
+          if(t.platform  && creature.isOnTopOf(t)) {
             return true
           }
 

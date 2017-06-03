@@ -51,8 +51,8 @@ trait Thing {
   var scaleY:Float = 1.0f
   var startX:Float = 0.0f
   var startY:Float = 0.0f
-  var height:Float = 12f
-  var width:Float = 12f
+  var height:Float = 24f
+  var width:Float = 24f
   var size:Float = 1f
 
   var weight:Float = 1f
@@ -120,6 +120,47 @@ trait Thing {
       inventory -= thing.id
     }
   }
+
+  def intersectsWith(t2:Thing):Boolean = {
+    var x1 = lastX
+    var w1 = width
+    var y1 = lastY
+    var h1 = height
+    var x2 = t2.lastX
+    var w2 = t2.width
+    var y2 = t2.lastY
+    var h2 = t2.height
+    var intersect =  x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+    return intersect
+  }
+
+  def isInside(t2:Thing):Boolean = {
+    var x1 = lastX + 3
+    var w1 = width - 6
+    var y1 = lastY + 3
+    var h1 = height - 6
+    var x2 = t2.lastX
+    var w2 = t2.width
+    var y2 = t2.lastY
+    var h2 = t2.height
+    var intersect =  x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+    return intersect
+  }
+
+  def isOnTopOf(t2:Thing):Boolean = {
+    var x1 = lastX
+    var w1 = width
+    var y1 = lastY - 6
+    var h1 = height
+    var x2 = t2.lastX
+    var w2 = t2.width
+    var y2 = t2.lastY
+    var h2 = t2.height
+    println(y1 + " , " + h1 + "|" + y2 +" , "+h2)
+    var intersect =  x1 < x2 + w2 && x1 + w1 > x2 && y1 < y2 + h2 && y1 + h1 > y2
+    return intersect
+  }
+
 
   def contact(gameTime:Float, thing:Thing) : Unit = {
     if(thing.category == Thing.floor || this.category == Thing.floor) {
