@@ -225,79 +225,28 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     this.fixture.setRestitution(creature.get("restitution").current)
     this.body.setGravityScale(creature.get("gravityScale").current)
 
-    creature.set("run_current_velocity",body.getLinearVelocity.x)
-    creature.set("jump_current_velocity",body.getLinearVelocity.y)
-
     lastX = Conversion.metersToPixels(body.getPosition.x)
     lastY = Conversion.metersToPixels(body.getPosition.y)
     creature.lastX = lastX
     creature.lastY = lastY
 
-    if(creature.holding != null) {
-      creature.holding.update(gameTime)
+    creature.canJump = canJump
+
+    this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)
+    if (creature.movH == "R") {
+      sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
     }
 
-    if(canJump && (body.getLinearVelocity.x > creature.get("run_velocity").maximum || body.getLinearVelocity.x < creature.get("run_velocity").maximum * -1)) {
-      slow(gameTime)
+    if(creature.movH == "L") {
+      sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
     }
 
-    body.setGravityScale(creature.get("gravityScale").current)
+    if(creature.movV == "U") {
+      sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
+    }
 
-
-    if (creature.dieing) {
-      sprite.setRegion(deathAnimation.getKeyFrame(gameTime, true))
-
-    } else if (creature.takingDamage) {
-      sprite.setRegion(hurtAnimation.getKeyFrame(gameTime, true))
-     } else if (creature.holding != null && creature.holding.attacking) {
-        if (creature.faceH == "R") {
-          sprite.setRegion(attackAnimationRight.getKeyFrame(gameTime, true))
-        } else if (creature.faceH == "L") {
-          sprite.setRegion(attackAnimationLeft.getKeyFrame(gameTime, true))
-        }
-    } else if (!canClimb && creature.movH == "" && !creature.jump) {
-      stop(gameTime)
-    } else {
-
-      if (creature.jump && canJump) {
-        //if (body.getLinearVelocity.y < creature.get("jump_max_velocity") && creature.lastJump + creature.get("jump_max") > gameTime) {
-          var h:Float = 0f
-          if("R".equalsIgnoreCase(creature.movH)) {
-            h = creature.get("run_velocity").maximum
-          } else if("L".equalsIgnoreCase(creature.movH)) {
-            h = creature.get("run_velocity").maximum * -1
-          }
-          //body.applyForceToCenter(h, 250f, true)
-          body.applyLinearImpulse(h, creature.get("jump_velocity").maximum, 0f, 0f, true)
-        //} else {
-          creature.jump = false
-          creature.movV = ""
-        //}
-      } else if (canClimb) {
-        if (creature.movV == "U") {
-          body.setLinearVelocity(body.getLinearVelocity.x * .9f, 4.5f)
-          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
-        } else if (creature.movV == "D") {
-          body.setLinearVelocity(body.getLinearVelocity.x * .9f, -4.5f)
-          sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
-        } else {
-          body.setLinearVelocity(body.getLinearVelocity.x * .95f, body.getLinearVelocity.y * 0.7f)
-        }
-
-      } else if (creature.movH == "R" && canJump) {
-        if (body.getLinearVelocity.x < creature.get("run_velocity").maximum)
-          body.applyForceToCenter(100f, 0f, true)
-
-          //body.applyLinearImpulse(15f, 0f, 0f, 0f, true)
-        //if (!weapon.attacking)
-        sprite.setRegion(walkRightAnimation.getKeyFrame(gameTime, true))
-      } else if (creature.movH == "L" && canJump) {
-        if (body.getLinearVelocity.x > creature.get("run_velocity").maximum * -1)
-          body.applyForceToCenter(-100f, 0f, true)
-          //body.applyLinearImpulse(-15f, 0f, 0f, 0f, true)
-        //if (!weapon.attacking)
-        sprite.setRegion(walkLeftAnimation.getKeyFrame(gameTime, true))
-      }
+    if(creature.movV == "D") {
+      sprite.setRegion(climbAnimation.getKeyFrame(gameTime, true))
     }
   }
 

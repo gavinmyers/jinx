@@ -69,18 +69,30 @@ class Sinx extends ApplicationAdapter with InputProcessor {
       scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
       currentRoom = lilac.location.asInstanceOf[game.Room]
     }
+      /*
+        currentRoom.title = "JINX "
+        currentRoom.title += "HP " + lilac.get("health").current + "[" + lilac.get("health").maximum + "]"
+        currentRoom.title += "| HUNGER " + lilac.get("fullness").current + "[" + lilac.get("fullness").maximum + "]"
+        currentRoom.title += "| WEIGHT " + lilac.get("encumbrance").current + " [" + lilac.get("encumbrance").maximum + "]"
+        */
+    var jv = lilac.get("jump_velocity")
+    var jvmax = jv.maximum
+    var jvc = jv.current
+    var jvmin = jv.minimum
+    var rv = lilac.get("run_velocity")
+    var rvmax = rv.maximum
+    var rvc = rv.current
+    var rvmin = rv.minimum
 
-    currentRoom.title = "JINX "
-    currentRoom.title += "HP " + lilac.get("health").current + "[" + lilac.get("health").maximum + "]"
-    currentRoom.title += "| HUNGER " + lilac.get("fullness").current + "[" + lilac.get("fullness").maximum + "]"
-    currentRoom.title += "| WEIGHT " + lilac.get("encumbrance").current + " [" + lilac.get("encumbrance").maximum + "]"
-    /*
-    currentRoom.title += "| JUMP " + lilac.jump + " " + lilac.lastJump
-    currentRoom.title += " JM " + lilac.get("jump").maximum
-    currentRoom.title += " JMV " + lilac.get("jump_velocity").maximum
-    currentRoom.title += " JC " + lilac.get("jump_velocity").current
-    currentRoom.title += " DENSITY " + lilac.density
-    */
+    var isj = lilac.isJumping
+    var isf = lilac.isFalling
+    var cj = lilac.canJump
+
+      currentRoom.title = s" JV [$jvmax ($jvc) $jvmin] "
+      currentRoom.title += s" RV [$rvmax ($rvc) $rvmin] "
+    currentRoom.title += s" J [$cj $isj $isf] "
+
+
     currentRoom.history = ""
     for((k,thing) <- lilac.near) {
       if(thing.description.length > 0) {
@@ -173,6 +185,10 @@ class Sinx extends ApplicationAdapter with InputProcessor {
 
     if (Input.Keys.LEFT == keycode && !Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Input.Keys.RIGHT == keycode && !Gdx.input.isKeyPressed(Input.Keys.LEFT))
       lilac.stop()
+
+    if (Input.Keys.UP == keycode && !Gdx.input.isKeyPressed(Input.Keys.UP))
+      lilac.stopJump()
+
 
     if (Input.Keys.O == keycode) {
       val t:Thing = lilac.open (gameTime)

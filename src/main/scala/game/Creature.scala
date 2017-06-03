@@ -16,11 +16,15 @@ trait Creature extends Thing {
   set("strength", 12f)
   set("encumbrance", new MinMaxCurrent( get("strength").current * 10, 0f, 0f))
   set("jump", new MinMaxCurrent(0.45f, 0f, 0f))
-  set("jump_velocity", new MinMaxCurrent(15f, 0f, 0f))
-  set("run_velocity", new MinMaxCurrent(5f, 0f, 0f))
+  set("jump_velocity", new MinMaxCurrent(15f, 0f, -8f))
+  set("run_velocity", new MinMaxCurrent(5f, 0f, -5f))
 
   var jump: Boolean = false
   var lastJump: Float = 0
+
+  var canJump:Boolean = false
+  var isJumping:Boolean = false
+  var isFalling:Boolean = false
 
   def exit(gameTime:Float) = {
 
@@ -167,8 +171,87 @@ class GenericCreature
     super.die()
   }
 
+  def runRampUp(): Unit = {
+    val rv:MinMaxCurrent = get("run_velocity")
+
+    if(movH == "L") {
+      rv.current = rv.current - (rv.maximum * 0.1f)
+      rv.current = Math.max(rv.current, rv.maximum * -1)
+    }
+
+    if(movH == "R") {
+      rv.current = rv.current + (rv.maximum * 0.1f)
+      rv.current = Math.min(rv.current, rv.maximum)
+    }
+    set("run_velocity", rv)
+  }
+
+  def runRampDown(): Unit = {
+    val rv:MinMaxCurrent = get("run_velocity")
+    rv.current = rv.current * 0.9f
+    set("run_velocity", rv)
+  }
+
+  def doJump(): Unit = {
+    if(!isFalling)
+      isJumping = true
+  }
+
+  def stopJump(): Unit = {
+    movV = ""
+    isJumping = false
+    isFalling = true
+  }
+
+  def updateJump(): Unit = {
+    if(!isJumping) return
+
+    val jv:MinMaxCurrent = get("jump_velocity")
+
+    jv.current = jv.current + (jv.maximum * 0.1f)
+    jv.current = Math.min(jv.current, jv.maximum)
+    set("jump_velocity", jv)
+
+    if(jv.current >= jv.maximum) {
+      isJumping = false
+      isFalling = true
+    }
+  }
+
+
+  def updateFall(): Unit = {
+    if(isJumping) return
+
+    val jv:MinMaxCurrent = get("jump_velocity")
+    if(canJump) {
+      isFalling = false
+      jv.current = jv.current * 0.9f
+      set("jump_velocity", jv)
+    } else {
+      jv.current = jv.current + (jv.minimum * 0.1f)
+      jv.current = Math.max(jv.current, jv.minimum)
+      set("jump_velocity", jv)
+    }
+  }
+
+
+
   override def update(gameTime:Float) : Unit = {
     super.update(gameTime)
+    if(movH == "R" || movH == "L") {
+      runRampUp()
+    } else {
+      runRampDown()
+    }
+
+    if(movV == "U" && canJump && !isJumping) {
+      doJump()
+    } else if(isJumping && movV != "U") {
+      stopJump()
+    }
+    updateJump()
+    updateFall()
+
     if(lastUpdate + updateCooldown > gameTime) {
       return false
     }
@@ -182,6 +265,7 @@ class GenericCreature
     if(this.get("fullness").current < 1) {
       this.die()
     }
+
 
   }
 
