@@ -52,7 +52,6 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     scene = new VRoom(lilac.location.id, lilac.location.asInstanceOf[game.Room])
 
     Gdx.input.setInputProcessor(this)
-
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
     //mp3Sound.play(0.5f)
   }
@@ -149,8 +148,12 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.RIGHT == keycode)
       lilac.moveRight()
 
-    if (Input.Keys.UP == keycode)
+    if (Input.Keys.UP == keycode) {
+      def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("sound_effects/jump2.mp3"))
+      mp3Sound.play(0.25f)
       lilac.moveUp()
+    }
+
 
     if (Input.Keys.DOWN == keycode)
       lilac.moveDown()
