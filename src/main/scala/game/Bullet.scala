@@ -4,7 +4,7 @@ import game.damage.Damage
 import logic.Combat
 
 class Bullet extends Thing {
-  var damages:scala.collection.mutable.MutableList[Damage] = scala.collection.mutable.MutableList[Damage]()
+  var damages:scala.collection.mutable.Map[String,Damage] = scala.collection.mutable.Map[String,Damage]()
 
   var cooldown:Float = 0.4f
 

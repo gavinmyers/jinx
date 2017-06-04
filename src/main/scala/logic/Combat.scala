@@ -1,10 +1,15 @@
 package logic
 
-import game.{Creature, Bullet, Tool, Thing}
+import game.damage.Damage
+import game.{Bullet, Creature, Thing, Tool}
 
 object Combat {
-  def apply(gameTime:Float, attacker:Thing,deffender:Thing,weapon:Tool,bullet:Bullet):Unit = {
+  def apply(gameTime:Float, attacker:Thing,defender:Thing,weapon:Tool,bullet:Bullet):Unit = {
 
-    deffender.damage(gameTime, 2)
+    var damage:Float = 0f
+    for((k,dam) <- bullet.damages) {
+      damage += dam.calculate(defender)
+    }
+    defender.damage(gameTime, damage)
   }
 }

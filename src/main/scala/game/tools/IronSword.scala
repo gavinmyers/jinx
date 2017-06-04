@@ -1,6 +1,7 @@
 package game.tools
 
-import game.{Thing, Creature, Bullet, Tool}
+import game.damage.{FireDamage, SharpDamage}
+import game.{Bullet, Creature, Thing, Tool}
 
 class IronSword extends Tool  {
   this.category = game.Thing.ironsword
@@ -14,6 +15,8 @@ class IronSword extends Tool  {
     }
 
     val bullet:Bullet = new Bullet
+    val d:SharpDamage = new SharpDamage
+    bullet.damages += d.id -> d
     bullet.effect = Bullet.slash
     bullet.startX = this.location.lastX
     bullet.startY = this.location.lastY

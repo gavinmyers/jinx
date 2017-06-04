@@ -1,6 +1,7 @@
 package game.tools
 
-import game.{Thing, Creature, Bullet, Tool}
+import game.damage.FireDamage
+import game.{Bullet, Creature, Thing, Tool}
 
 
 class Lantern extends Tool {
@@ -20,6 +21,9 @@ class Lantern extends Tool {
 
     this.damage(gameTime, (this.get("health").current * 0.2).toInt)
     val bullet:Bullet = new Bullet
+
+    val fd:FireDamage = new FireDamage
+    bullet.damages += fd.id -> fd
     bullet.effect = Bullet.fire
     bullet.startX = this.location.lastX
     bullet.startY = this.location.lastY

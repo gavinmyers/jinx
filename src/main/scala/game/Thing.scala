@@ -11,6 +11,8 @@ import scala.collection.mutable
 
 trait Thing {
 
+  var resistences:scala.collection.mutable.Map[String,Damage] = scala.collection.mutable.Map[String,Damage]()
+
   var id:String = java.util.UUID.randomUUID.toString
   var description:String = ""
   var ai:AI = _
@@ -291,7 +293,8 @@ object Thing {
       bullet.cooldown = Float.MaxValue
       bullet.attributes("brightness") = new MaxCurrentMin(2f)
       bullet.attributes("luminance") = new MaxCurrentMin(1f)
-      bullet.damages += new FireDamage()
+      val fd:FireDamage = new FireDamage
+      bullet.damages += fd.id -> fd
       return bullet
 
 
@@ -334,6 +337,8 @@ object Thing {
       gc.holding = new IronSword
       gc.add(gc.holding)
       gc.ai = new GenericAI
+      val fd:FireDamage = new FireDamage
+      gc.resistences += fd.id -> fd
       return gc
 
     } else if("snake".equalsIgnoreCase(t)) {
