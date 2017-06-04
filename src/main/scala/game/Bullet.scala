@@ -1,8 +1,11 @@
 package game
 
+import game.damage.Damage
 import logic.Combat
 
 class Bullet extends Thing {
+  var damages:scala.collection.mutable.MutableList[Damage] = scala.collection.mutable.MutableList[Damage]()
+
   var cooldown:Float = 0.4f
 
   var forceX:Float = 0f

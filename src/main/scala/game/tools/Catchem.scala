@@ -1,4 +1,4 @@
-package tools
+package game.tools
 
 import game.{Thing, Creature, Bullet, Tool}
 import logic.Combat

@@ -1,4 +1,4 @@
-package tools
+package game.tools
 
 import game.{Notification, Creature, Tool}
 import logic.Messaging

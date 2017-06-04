@@ -1,6 +1,7 @@
 package game
 
 import ai.{AI, GenericAI}
+import game.damage.{Damage, FireDamage}
 import logic.Messaging
 import tools.{Woodblock, _}
 
@@ -290,6 +291,7 @@ object Thing {
       bullet.cooldown = Float.MaxValue
       bullet.attributes("brightness") = new MaxCurrentMin(2f)
       bullet.attributes("luminance") = new MaxCurrentMin(1f)
+      bullet.damages += new FireDamage()
       return bullet
 
 
