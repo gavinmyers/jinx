@@ -95,7 +95,7 @@ trait Thing extends java.io.Serializable {
   }
 
   def get(attribute:String):MaxCurrentMin = {
-    if(!this.attributes.contains(attribute))
+    if(this.attributes == null || !this.attributes.contains(attribute))
       println(attribute + " not found")
 
     return this.attributes.get(attribute).get
@@ -264,6 +264,7 @@ object Thing {
   def key:Short = 0xF06
   def corpse: Short = 0xF07
   def catchem:Short = 0xF08
+  def boxingglove:Short = 0xF09
 
   def chest:Short = 0xD00
 
@@ -274,6 +275,9 @@ object Thing {
   def create(t:String):Thing = {
     if("lantern".equalsIgnoreCase(t)) {
       return new Lantern
+
+    } else if("boxingglove".equalsIgnoreCase(t)) {
+      return new BoxingGlove
 
     } else if("ladder".equalsIgnoreCase(t)) {
       return new Ladder

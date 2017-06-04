@@ -47,6 +47,10 @@ protected object VTool {
   tools("woodcolumn")("default") = VTool.sheetTextures(152)
   tools("woodcolumn")("broken") = VTool.sheetTextures(153)
 
+  tools("boxingglove") = scala.collection.mutable.Map[String,TextureRegion]()
+  tools("boxingglove")("default") = VTool.sheetTextures(164)
+  tools("boxingglove")("broken") = VTool.sheetTextures(164)
+
   tools("ladder") = scala.collection.mutable.Map[String,TextureRegion]()
   tools("ladder")("default") = VTool.sheetTextures(160)
   tools("ladder")("broken") = VTool.sheetTextures(161)

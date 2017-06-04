@@ -1,8 +1,10 @@
 package game
 
+import game.BodyParts.BodyParts
 import logic.Messaging
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 
 trait NoAttack extends Tool {
@@ -22,6 +24,8 @@ trait NoUse extends Tool {
 
 
 trait Tool extends Thing {
+
+  var bodyParts:ArrayBuffer[BodyParts] = ArrayBuffer[BodyParts]()
 
   var using:Boolean = false
   var useCooldown:Float = 0.4f

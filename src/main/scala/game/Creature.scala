@@ -1,12 +1,40 @@
 package game
 
+import javax.management.Notification
+
+import game.BodyParts.BodyParts
+import game.damage.Damage
 import logic.Messaging
 import tools.Corpse
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
+
+
 
 trait Creature extends Thing {
 
+  var bodyParts:ArrayBuffer[BodyParts] = ArrayBuffer[BodyParts]()
+  bodyParts += BodyParts.LEFT_HAND
+  bodyParts += BodyParts.RIGHT_HAND
+
+  var wearing:scala.collection.mutable.Map[BodyParts,Thing] = scala.collection.mutable.Map[BodyParts,Thing]()
+
+  def wear(gameTime:Float, tool:Tool): Unit = {
+    for(bp <- tool.bodyParts) {
+      if(!this.bodyParts.contains(bp)) {
+        println("Creatue does not have a " + bp + " to put this on")
+        Messaging.send(this, tool,"N", gameTime)
+        return
+      }
+    }
+
+    for(bp <- tool.bodyParts) {
+      this.wearing += bp -> tool
+    }
+    this.holding = null
+
+  }
 
   set("friction",0.05f)
   set("density",3.5f)
@@ -128,6 +156,9 @@ trait Creature extends Thing {
 
     var mod:Float = mmc.current
     if(this.holding != null) mod = this.holding.mod(this, attribute, mod)
+    for((bodyPart, tool) <- this.wearing) {
+      mod = tool.mod(this, attribute, mod)
+    }
     return new MaxCurrentMin(mmc.maximum, mod, mmc.minimum)
   }
 

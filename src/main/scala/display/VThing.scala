@@ -47,6 +47,8 @@ protected object VThing {
     } else if(thing.category == Thing.woodcolumn) {
       return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("woodcolumn"))
 
+    } else if(thing.category == Thing.boxingglove) {
+      return new VTool(thing.asInstanceOf[Tool], world, VTool.tools("boxingglove"))
 
     } else if(thing.category == Thing.lilac) {
       return new VCreature(thing.asInstanceOf[Creature], world, VCreature.lilac.sheetTextures)

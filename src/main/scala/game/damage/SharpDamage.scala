@@ -6,4 +6,5 @@ package game.damage
 class SharpDamage extends Damage {
   id = "SHARP"
   base = 4f
+  mod = "strength"
 }

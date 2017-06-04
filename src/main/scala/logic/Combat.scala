@@ -8,7 +8,7 @@ object Combat {
 
     var damage:Float = 0f
     for((k,dam) <- bullet.damages) {
-      damage += dam.calculate(defender)
+      damage += dam.calculate(attacker, defender)
     }
     defender.damage(gameTime, damage)
   }
