@@ -1,3 +1,4 @@
+import java.io.{FileInputStream, FileOutputStream, ObjectInputStream, ObjectOutputStream}
 import javafx.scene.input.KeyCode
 
 import ai.{AI, GenericAI, PlayerAI}
@@ -55,6 +56,7 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     def mp3Sound:Sound = Gdx.audio.newSound(Gdx.files.internal("_ghost_-_Lullaby.mp3"))
     //mp3Sound.play(0.5f)
   }
+
 
   override def render(): Unit = {
     if(showInventory) {
@@ -192,6 +194,29 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     if (Input.Keys.UP == keycode && !Gdx.input.isKeyPressed(Input.Keys.UP))
       lilac.stopJump()
 
+
+    if(Input.Keys.S == keycode) {
+      val fos = new FileOutputStream("../game.sav")
+      val oos = new ObjectOutputStream(fos)
+      oos.writeObject(currentRoom)
+      oos.writeObject(lilac)
+      oos.writeObject(Tiled.rooms)
+    }
+
+    if(Input.Keys.R == keycode) {
+      class ObjectInputStreamWithCustomClassLoader(fileInputStream: FileInputStream) extends ObjectInputStream(fileInputStream) {
+        override def resolveClass(desc: java.io.ObjectStreamClass): Class[_] = {
+          try { Class.forName(desc.getName, false, getClass.getClassLoader) }
+          catch { case ex: ClassNotFoundException => super.resolveClass(desc) }
+        }
+      }
+      val fis = new FileInputStream("../game.sav")
+      val ois = new ObjectInputStreamWithCustomClassLoader(fis)
+      currentRoom = ois.readObject.asInstanceOf[Room]
+      lilac = ois.readObject.asInstanceOf[GenericCreature]
+      Tiled.rooms = ois.readObject.asInstanceOf[scala.collection.mutable.Map[String, Room]]
+      ois.close
+    }
 
     if (Input.Keys.O == keycode) {
       val t:Thing = lilac.open (gameTime)

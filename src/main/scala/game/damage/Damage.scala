@@ -2,7 +2,7 @@ package game.damage
 
 import game.{Creature, Thing}
 
-trait Damage {
+trait Damage extends java.io.Serializable {
   var id:String = ""
   var base:Float = 0f
   def calculate(thing:Thing):Float = {

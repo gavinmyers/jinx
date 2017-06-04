@@ -9,7 +9,7 @@ import scala.collection.mutable
 
 
 
-trait Thing {
+trait Thing extends java.io.Serializable {
 
   var resistences:scala.collection.mutable.Map[String,Damage] = scala.collection.mutable.Map[String,Damage]()
 

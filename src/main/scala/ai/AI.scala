@@ -2,7 +2,7 @@ package ai
 
 import game.{Creature, Room, Thing}
 
-trait AI {
+trait AI extends java.io.Serializable {
   var friends:Short = AI.nobody
   var enemies:Short = AI.nobody
   var alignment:Short = AI.neutral
