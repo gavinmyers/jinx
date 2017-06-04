@@ -133,18 +133,23 @@ class VRoom(map:String, room:Room) {
     }
   }
   def drawItemNotifications(k:String,thing:Thing, gameTime:Float):Unit = {
-    for((k2,notification) <- thing.notifications) {
+    try {
+      for((k2,notification) <- thing.notifications) {
 
-      if(vnotifications.contains(k) == false) {
-        vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
+        if(vnotifications.contains(k) == false) {
+          vnotifications += k2 -> (VThing.create(notification, world).asInstanceOf[VNotification])
+        }
+        notification.update(gameTime)
+        val fet:VThing = vnotifications(k2)
+        fet.destroyed = notification.destroyed
+        fet.update(gameTime)
+        fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
+        fet.sprite.draw(batch)
       }
-      notification.update(gameTime)
-      val fet:VThing = vnotifications(k2)
-      fet.destroyed = notification.destroyed
-      fet.update(gameTime)
-      fet.sprite.setPosition(Conversion.metersToPixels(fet.body.getPosition.x) - fet.sprite.getWidth/2 , Conversion.metersToPixels(fet.body.getPosition.y) - fet.sprite.getHeight/2 )
-      fet.sprite.draw(batch)
+    } catch {
+      case e:java.util.NoSuchElementException => {println("Notification started in room A but ended in room B")}
     }
+
   }
 
   def render(targetX:Float, targetY:Float, gameTime:Float):Unit = {
