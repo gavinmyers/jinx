@@ -1,13 +1,13 @@
 package game.tools
 
-import game.{BodyParts, Creature, Tool}
+import game.{Attribute, BodyPart, Creature, Tool}
 
 class BoxingGlove extends Tool {
   this.category = game.Thing.boxingglove
-  bodyParts += BodyParts.LEFT_HAND
-  bodyParts += BodyParts.RIGHT_HAND
+  bodyParts += BodyPart.LEFT_HAND
+  bodyParts += BodyPart.RIGHT_HAND
 
-  set("mod_strength",99)
+  modset(Attribute.STRENGTH,99)
 
   override def use(gameTime: Float, user: Creature): Boolean = {
     user.wear(gameTime, this)

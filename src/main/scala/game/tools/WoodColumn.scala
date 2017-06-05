@@ -1,6 +1,6 @@
 package game.tools
 
-import game.Tool
+import game.{Attribute, Tool}
 
 /**
   * Created by gavin on 5/26/17.
@@ -8,10 +8,10 @@ import game.Tool
 class WoodColumn extends Tool {
   this.category = game.Thing.woodcolumn
   this.description = "a column of wood"
-  set("flammable",1f)
+  set(Attribute.FLAMMABLE,1f)
   this.wall = true
   this.platform = true
   this.weight = 500f
-  this.set("density",this.weight * 10f)
+  this.set(Attribute.V_DENSITY,this.weight * 10f)
 
 }

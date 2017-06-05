@@ -1,6 +1,6 @@
 package game.tools
 
-import game.{Thing, Creature, Bullet, Tool}
+import game._
 import logic.Combat
 
 class Catchem extends Tool {
@@ -34,8 +34,8 @@ class Catchem extends Tool {
       bullet.weight = 0.1f
       bullet.forceY = 250f + (Math.random() * 50).toFloat
 
-      bullet.set("brightness", 2f)
-      bullet.set("luminance", 1f)
+      bullet.set(Attribute.V_BRIGHTNESS, 2f)
+      bullet.set(Attribute.V_LUMINANCE, 1f)
       bullet.weapon = this
 
       if(this.location.isInstanceOf[Creature]) {

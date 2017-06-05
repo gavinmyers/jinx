@@ -72,15 +72,15 @@ class Sinx extends ApplicationAdapter with InputProcessor {
     }
       /*
         currentRoom.title = "JINX "
-        currentRoom.title += "HP " + lilac.get("health").current + "[" + lilac.get("health").maximum + "]"
-        currentRoom.title += "| HUNGER " + lilac.get("fullness").current + "[" + lilac.get("fullness").maximum + "]"
-        currentRoom.title += "| WEIGHT " + lilac.get("encumbrance").current + " [" + lilac.get("encumbrance").maximum + "]"
+        currentRoom.title += "HP " + lilac.get(Attribute.HEALTH).current + "[" + lilac.get(Attribute.HEALTH).maximum + "]"
+        currentRoom.title += "| HUNGER " + lilac.get(Attribute.FULLNESS).current + "[" + lilac.get(Attribute.FULLNESS).maximum + "]"
+        currentRoom.title += "| WEIGHT " + lilac.get(Attribute.ENCUMBRANCE).current + " [" + lilac.get(Attribute.ENCUMBRANCE).maximum + "]"
         */
-    var jv = lilac.get("jump_velocity")
+    var jv = lilac.get(Attribute.JUMP_VELOCITY)
     var jvmax = jv.maximum
     var jvc = Math.round(jv.current)
     var jvmin = jv.minimum
-    var rv = lilac.get("run_velocity")
+    var rv = lilac.get(Attribute.RUN_VELOCITY)
     var rvmax = rv.maximum
     var rvc = Math.round(rv.current)
     var rvmin = rv.minimum

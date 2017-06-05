@@ -1,6 +1,6 @@
 package game
 
-import game.BodyParts.BodyParts
+import game.BodyPart.BodyPart
 import logic.Messaging
 
 import scala.collection.mutable
@@ -25,7 +25,7 @@ trait NoUse extends Tool {
 
 trait Tool extends Thing {
 
-  var bodyParts:ArrayBuffer[BodyParts] = ArrayBuffer[BodyParts]()
+  var bodyParts:ArrayBuffer[BodyPart] = ArrayBuffer[BodyPart]()
 
   var using:Boolean = false
   var useCooldown:Float = 0.4f
@@ -69,7 +69,7 @@ trait Tool extends Thing {
   def use(gameTime:Float, user:Creature):Boolean = {
 
     if(this.edible) {
-      user.set("fullness", user.get("fullness").current + this.get("fullness").current)
+      user.set(Attribute.FULLNESS, user.get(Attribute.FULLNESS).current + this.get(Attribute.FULLNESS).current)
       this.die()
     }
 

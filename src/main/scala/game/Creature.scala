@@ -1,24 +1,21 @@
 package game
 
-import javax.management.Notification
 
-import game.BodyParts.BodyParts
-import game.damage.Damage
+import game.Attribute.Attribute
+import game.BodyPart.BodyPart
 import logic.Messaging
 import tools.Corpse
-
-import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 
 
 trait Creature extends Thing {
 
-  var bodyParts:ArrayBuffer[BodyParts] = ArrayBuffer[BodyParts]()
-  bodyParts += BodyParts.LEFT_HAND
-  bodyParts += BodyParts.RIGHT_HAND
+  var bodyParts:ArrayBuffer[BodyPart] = ArrayBuffer[BodyPart]()
+  bodyParts += BodyPart.LEFT_HAND
+  bodyParts += BodyPart.RIGHT_HAND
 
-  var wearing:scala.collection.mutable.Map[BodyParts,Thing] = scala.collection.mutable.Map[BodyParts,Thing]()
+  var wearing:scala.collection.mutable.Map[BodyPart,Thing] = scala.collection.mutable.Map[BodyPart,Thing]()
 
   def wear(gameTime:Float, tool:Tool): Unit = {
     for(bp <- tool.bodyParts) {
@@ -36,18 +33,22 @@ trait Creature extends Thing {
 
   }
 
-  set("friction",0.05f)
-  set("density",3.5f)
+  set(Attribute.V_FRICTION,0.05f)
+  set(Attribute.V_DENSITY,3.5f)
 
-  set("fullness", 600f)
-  set("hunger", 1f)
-  set("strength", 12f)
-  set("encumbrance", new MaxCurrentMin( get("strength").current * 10, 0f, 0f))
-  set("jump", new MaxCurrentMin(0.45f, 0f, 0f))
-  set("jump_velocity", new MaxCurrentMin(15f, 0f, -8f))
-  set("run_velocity", new MaxCurrentMin(5f, 0f, -5f))
-  set("climb_velocity", new MaxCurrentMin(5f, 0f, -5f))
-  set("stun", new MaxCurrentMin(1.5f, 0f, 0f))
+
+
+  set(Attribute.FULLNESS, 600f)
+  set(Attribute.HUNGER, 1f)
+  set(Attribute.STRENGTH, 12f)
+
+  set(Attribute.ENCUMBRANCE, new MaxCurrentMin( get(Attribute.STRENGTH).current * 10, 0f, 0f))
+
+  set(Attribute.JUMP, new MaxCurrentMin(0.45f, 0f, 0f))
+  set(Attribute.JUMP_VELOCITY, new MaxCurrentMin(15f, 0f, -8f))
+  set(Attribute.RUN_VELOCITY, new MaxCurrentMin(5f, 0f, -5f))
+  set(Attribute.CLIMB_VELOCITY, new MaxCurrentMin(5f, 0f, -5f))
+  set(Attribute.STUN, new MaxCurrentMin(1.5f, 0f, 0f))
 
   var canJump:Boolean = false
   var canClimb:Boolean = false
@@ -72,7 +73,7 @@ trait Creature extends Thing {
     for((k,thing) <- this.near) {
       if(thing.isInstanceOf[Tool]) {
         val tool:Tool = thing.asInstanceOf[Tool]
-        if(tool.absweight < get("encumbrance").remaining) {
+        if(tool.absweight < get(Attribute.ENCUMBRANCE).remaining) {
           this.add(tool)
 
           if(this.holding == null) {
@@ -136,7 +137,7 @@ trait Creature extends Thing {
   override def add(thing:Thing):Unit = {
     super.add(thing)
     println("adding " + thing)
-    set("encumbrance", get("encumbrance").current + thing.absweight)
+    set(Attribute.ENCUMBRANCE, get(Attribute.ENCUMBRANCE).current + thing.absweight)
   }
 
   override def remove(thing:Thing):Unit = {
@@ -146,13 +147,15 @@ trait Creature extends Thing {
       this.holding = null
     }
     println("removing " + thing)
-    set("encumbrance", get("encumbrance").current - thing.absweight)
+    set(Attribute.ENCUMBRANCE, get(Attribute.ENCUMBRANCE).current - thing.absweight)
   }
 
-  override def get(attribute:String):MaxCurrentMin = {
+  override def get(attribute:Attribute):MaxCurrentMin = {
     var mmc:MaxCurrentMin = super.get(attribute)
-    if(mmc == null)
+    if(mmc == null) {
       println(attribute + " not found")
+      return null
+    }
 
     var mod:Float = mmc.current
     if(this.holding != null) mod = this.holding.mod(this, attribute, mod)
@@ -203,7 +206,7 @@ class GenericCreature
   }
 
   def runRampUp(): Unit = {
-    val rv:MaxCurrentMin = get("run_velocity")
+    val rv:MaxCurrentMin = get(Attribute.RUN_VELOCITY)
 
     if(movH == "L") {
       rv.current = rv.current - (rv.maximum * 0.1f)
@@ -214,13 +217,13 @@ class GenericCreature
       rv.current = rv.current + (rv.maximum * 0.1f)
       rv.current = Math.min(rv.current, rv.maximum)
     }
-    set("run_velocity", rv)
+    set(Attribute.RUN_VELOCITY, rv)
   }
 
   def runRampDown(): Unit = {
-    val rv:MaxCurrentMin = get("run_velocity")
+    val rv:MaxCurrentMin = get(Attribute.RUN_VELOCITY)
     rv.current = rv.current * 0.9f
-    set("run_velocity", rv)
+    set(Attribute.RUN_VELOCITY, rv)
   }
 
   def doJump(): Unit = {
@@ -237,11 +240,11 @@ class GenericCreature
   def updateJump(): Unit = {
     if(!isJumping) return
 
-    val jv:MaxCurrentMin = get("jump_velocity")
+    val jv:MaxCurrentMin = get(Attribute.JUMP_VELOCITY)
 
     jv.current = jv.current + (jv.maximum * 0.1f)
     jv.current = Math.min(jv.current, jv.maximum)
-    set("jump_velocity", jv)
+    set(Attribute.JUMP_VELOCITY, jv)
 
     if(jv.current >= jv.maximum) {
       isJumping = false
@@ -253,15 +256,15 @@ class GenericCreature
   def updateFall(): Unit = {
     if(isJumping) return
 
-    val jv:MaxCurrentMin = get("jump_velocity")
+    val jv:MaxCurrentMin = get(Attribute.JUMP_VELOCITY)
     if(canJump) {
       isFalling = false
       jv.current = jv.current * 0.9f
-      set("jump_velocity", jv)
+      set(Attribute.JUMP_VELOCITY, jv)
     } else {
       jv.current = jv.current + (jv.minimum * 0.1f)
       jv.current = Math.max(jv.current, jv.minimum)
-      set("jump_velocity", jv)
+      set(Attribute.JUMP_VELOCITY, jv)
     }
   }
 
@@ -275,17 +278,17 @@ class GenericCreature
       runRampDown()
     }
 
-    set("gravityScale",get("gravityScale").maximum)
+    set(Attribute.V_GRAVITY_SCALE,get(Attribute.V_GRAVITY_SCALE).maximum)
 
     if(canClimb) {
-      set("gravityScale", 0f)
-      val jv:MaxCurrentMin = get("climb_velocity")
+      set(Attribute.V_GRAVITY_SCALE, 0f)
+      val jv:MaxCurrentMin = get(Attribute.CLIMB_VELOCITY)
       if(movV == "U") {
-        set("jump_velocity", jv.maximum)
+        set(Attribute.JUMP_VELOCITY, jv.maximum)
       } else if(movV == "D") {
-        set("jump_velocity", jv.maximum * -1)
+        set(Attribute.JUMP_VELOCITY, jv.maximum * -1)
       } else {
-        set("jump_velocity", 0f)
+        set(Attribute.JUMP_VELOCITY, 0f)
       }
     }  else if(movV == "U" && canJump && !isJumping) {
       doJump()
@@ -302,12 +305,12 @@ class GenericCreature
     }
     lastUpdate = gameTime
 
-    var hungerCurrent:Float = this.get("hunger").current
-    var mmc:MaxCurrentMin = this.get("fullness")
+    var hungerCurrent:Float = this.get(Attribute.HUNGER).current
+    var mmc:MaxCurrentMin = this.get(Attribute.FULLNESS)
 
-    set("fullness", mmc.current - hungerCurrent)
+    set(Attribute.FULLNESS, mmc.current - hungerCurrent)
 
-    if(this.get("fullness").current < 1) {
+    if(this.get(Attribute.FULLNESS).current < 1) {
       this.die()
     }
 

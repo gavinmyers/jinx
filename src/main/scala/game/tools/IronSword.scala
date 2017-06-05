@@ -1,12 +1,12 @@
 package game.tools
 
 import game.damage.{FireDamage, SharpDamage}
-import game.{Bullet, Creature, Thing, Tool}
+import game._
 
 class IronSword extends Tool  {
   this.category = game.Thing.ironsword
   this.description = "a sword"
-  set("mod_hunger", 2.0f)
+  modset(Attribute.HUNGER, 2.0f)
 
 
   override def attack(gameTime:Float):Boolean = {

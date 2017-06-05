@@ -2,7 +2,7 @@ package display
 import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import game.{Thing, Tool}
+import game.{Attribute, Thing, Tool}
 import _root_.utils.Conversion
 
 class VLadder(entity: Thing, world:World, sprites: scala.collection.mutable.Map[String,TextureRegion]) extends VThing {
@@ -24,7 +24,7 @@ class VLadder(entity: Thing, world:World, sprites: scala.collection.mutable.Map[
     b
   })
   body.setUserData(entity)
-  body.setGravityScale(entity.get("gravityScale").current)
+  body.setGravityScale(entity.get(Attribute.V_GRAVITY_SCALE).current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
@@ -34,8 +34,8 @@ class VLadder(entity: Thing, world:World, sprites: scala.collection.mutable.Map[
     f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
-    f.friction = entity.get("friction").current
-    f.restitution = entity.get("restitution").current
+    f.friction = entity.get(Attribute.V_FRICTION).current
+    f.restitution = entity.get(Attribute.V_RESTITUTION).current
     f
   })
   fixture.setUserData(entity)

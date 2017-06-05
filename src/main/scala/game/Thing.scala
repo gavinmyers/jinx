@@ -1,6 +1,8 @@
 package game
 
 import ai.{AI, GenericAI}
+import game.BodyPart.BodyPart
+import game.Attribute.Attribute
 import game.damage.{Damage, FireDamage}
 import logic.Messaging
 import tools.{Woodblock, _}
@@ -22,18 +24,24 @@ trait Thing extends java.io.Serializable {
   var location:Thing = _
   var inventory:scala.collection.mutable.Map[String,Thing] = scala.collection.mutable.Map[String, Thing]()
   var near:scala.collection.mutable.Map[(String, Float),Thing] = scala.collection.mutable.Map[(String, Float), Thing]()
+  var modifiers:scala.collection.mutable.Map[String,MaxCurrentMin] = scala.collection.mutable.Map[String, MaxCurrentMin]()
   var attributes:scala.collection.mutable.Map[String,MaxCurrentMin] = scala.collection.mutable.Map[String, MaxCurrentMin]()
   var notifications:scala.collection.mutable.Map[String,Notification] = scala.collection.mutable.Map[String, Notification]()
 
   var destroyed:Boolean = false
   var category:Short = Thing.nothing
 
-  set("friction",new MaxCurrentMin(5f,5f,0f))
-  set("density",new MaxCurrentMin(4f,4f,0f))
-  set("restitution",new MaxCurrentMin(0f,0f,0f))
-  set("gravityScale",new MaxCurrentMin(1f,1f,0f))
+  set(Attribute.V_FRICTION,new MaxCurrentMin(5f,5f,0f))
 
-  set("health",new MaxCurrentMin(34f,34f,0f))
+  set(Attribute.V_DENSITY,new MaxCurrentMin(4f,4f,0f))
+  set(Attribute.V_RESTITUTION,new MaxCurrentMin(0f,0f,0f))
+
+  set(Attribute.V_GRAVITY_SCALE,new MaxCurrentMin(1f,1f,0f))
+
+  set(Attribute.HEALTH,new MaxCurrentMin(34f,34f,0f))
+
+  set(Attribute.V_BRIGHTNESS,new MaxCurrentMin(0))
+  set(Attribute.V_LUMINANCE, new MaxCurrentMin(0))
 
   var movH: String = ""
   var faceH: String = ""
@@ -72,33 +80,43 @@ trait Thing extends java.io.Serializable {
   var transformX:Float = 0
   var transformY:Float = 0
 
-  attributes += "brightness" -> new MaxCurrentMin(0)
-  attributes += "luminance" -> new MaxCurrentMin(0)
 
-  def mod(source:Thing, attribute:String, value:Float):Float = {
-    if(this.attributes.contains("mod_"+attribute)) {
-      return value + this.attributes("mod_"+attribute).current
+  def mod(source:Thing, attribute:Attribute, value:Float):Float = {
+    if(this.modifiers.contains(attribute.toString)) {
+      return value + this.modifiers(attribute.toString).current
     } else {
       return value
     }
   }
 
-  def set(attribute:String, value:MaxCurrentMin) = {
-    this.attributes.put(attribute, value)
+  def modset(attribute:Attribute, value:MaxCurrentMin) = {
+    this.modifiers.put(attribute.toString, value)
   }
 
-  def set(attribute:String, value:Float) = {
-    if(!this.attributes.contains(attribute)) {
-      this.attributes.put(attribute, new MaxCurrentMin(0f))
+  def modset(attribute:Attribute, value:Float) = {
+    if(!this.modifiers.contains(attribute.toString)) {
+      this.modifiers.put(attribute.toString, new MaxCurrentMin(0f))
     }
-    this.attributes(attribute).current = value
+    this.modifiers(attribute.toString).current = value
   }
 
-  def get(attribute:String):MaxCurrentMin = {
-    if(this.attributes == null || !this.attributes.contains(attribute))
-      println(attribute + " not found")
+  def set(attribute:Attribute, value:MaxCurrentMin) = {
+    this.attributes.put(attribute.toString, value)
+  }
 
-    return this.attributes.get(attribute).get
+  def set(attribute:Attribute, value:Float) = {
+    if(!this.attributes.contains(attribute.toString)) {
+      this.attributes.put(attribute.toString, new MaxCurrentMin(0f))
+    }
+    this.attributes(attribute.toString).current = value
+  }
+
+  def get(attribute:Attribute):MaxCurrentMin = {
+    if(this.attributes == null || !this.attributes.contains(attribute.toString)) {
+      println(attribute + " not found")
+      return null
+    }
+    return this.attributes(attribute.toString)
   }
 
   def add(thing:Thing):Unit = {
@@ -201,12 +219,12 @@ trait Thing extends java.io.Serializable {
 
     this.lastDamage = gameTime
     this.takingDamage = true
-    this.set("health", this.get("health").current - amount)
-    if(this.get("health").current < 1) {
+    this.set(Attribute.HEALTH, this.get(Attribute.HEALTH).current - amount)
+    if(this.get(Attribute.HEALTH).current < 1) {
       this.die()
     }
 
-    Messaging.send(this, this, "H" + (1 + ((this.get("health").current / this.get("health").maximum) * 10).toInt), gameTime)
+    Messaging.send(this, this, "H" + (1 + ((this.get(Attribute.HEALTH).current / this.get(Attribute.HEALTH).maximum) * 10).toInt), gameTime)
   }
 
   def die():Unit = {
@@ -295,8 +313,8 @@ object Thing {
       val bullet:Bullet = new Bullet
       bullet.effect = Bullet.fire
       bullet.cooldown = Float.MaxValue
-      bullet.attributes("brightness") = new MaxCurrentMin(2f)
-      bullet.attributes("luminance") = new MaxCurrentMin(1f)
+      bullet.set(Attribute.V_BRIGHTNESS, new MaxCurrentMin(2f))
+      bullet.set(Attribute.V_LUMINANCE, new MaxCurrentMin(1f))
       val fd:FireDamage = new FireDamage
       bullet.damages += fd.id -> fd
       return bullet
@@ -321,10 +339,6 @@ object Thing {
     } else if("phoenix".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.phoenix
-      gc.set("run_max_velocity", 1f)
-      gc.set("jump_max_velocity", 2f)
-      gc.set("health_current",10f)
-      gc.set("health_max", 10f)
       gc.canFly = true
       gc.holding = new Firebreath
       gc.add(gc.holding)
@@ -335,9 +349,6 @@ object Thing {
     } else if("skeletonwarrior".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.skeletonwarrior
-      gc.set("run_max_velocity", 1f)
-      gc.set("health_current",10f)
-      gc.set("health_max", 10f)
       gc.holding = new IronSword
       gc.add(gc.holding)
       gc.ai = new GenericAI
@@ -348,9 +359,6 @@ object Thing {
     } else if("snake".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.snake
-      gc.set("run_max_velocity", 1f)
-      gc.set("health_current",10f)
-      gc.set("health_max", 10f)
       gc.holding = new IronSword
       gc.add(gc.holding)
       gc.ai = new GenericAI
@@ -359,9 +367,6 @@ object Thing {
     } else if("spider".equalsIgnoreCase(t)) {
       val gc:GenericCreature = new GenericCreature
       gc.category = Thing.spider
-      gc.set("run_max_velocity", 1f)
-      gc.set("health_current",10f)
-      gc.set("health_max", 10f)
       gc.holding = new IronSword
       gc.add(gc.holding)
       gc.ai = new GenericAI

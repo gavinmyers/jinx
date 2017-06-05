@@ -1,14 +1,14 @@
 package display
 
-import box2dLight.{RayHandler, PositionalLight, PointLight}
-import com.badlogic.gdx.graphics.{Texture, Color}
-import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion, Batch, Sprite}
+import box2dLight.{PointLight, PositionalLight, RayHandler}
+import com.badlogic.gdx.graphics.{Color, Texture}
+import com.badlogic.gdx.graphics.g2d.{Animation, Batch, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import game.{Ladder, Creature, Thing}
+import game.{Attribute, Creature, Ladder, Thing}
 import _root_.utils.Conversion
-import scala.collection.JavaConversions._
 
+import scala.collection.JavaConversions._
 import scala.collection.mutable.ListBuffer
 
 protected object VCreature {
@@ -122,9 +122,9 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
       f.shape = shape
       shape.setRadius(Conversion.pixelsToMeters(height / 2.2f))
-      f.friction = creature.get("friction").current
-      f.density = creature.get("density").current
-      f.restitution = creature.get("restitution").current
+      f.friction = creature.get(Attribute.V_FRICTION).current
+      f.density = creature.get(Attribute.V_DENSITY).current
+      f.restitution = creature.get(Attribute.V_RESTITUTION).current
       f
     })
   fixture.setUserData(creature)
@@ -241,10 +241,10 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
 
 
   override def update(gameTime:Float):Unit = {
-    this.fixture.setDensity(creature.get("density").current)
-    this.fixture.setFriction(creature.get("friction").current)
-    this.fixture.setRestitution(creature.get("restitution").current)
-    this.body.setGravityScale(creature.get("gravityScale").current)
+    this.fixture.setDensity(creature.get(Attribute.V_DENSITY).current)
+    this.fixture.setFriction(creature.get(Attribute.V_FRICTION).current)
+    this.fixture.setRestitution(creature.get(Attribute.V_RESTITUTION).current)
+    this.body.setGravityScale(creature.get(Attribute.V_GRAVITY_SCALE).current)
 
     lastX = Conversion.metersToPixels(body.getPosition.x)
     lastY = Conversion.metersToPixels(body.getPosition.y)
@@ -255,7 +255,7 @@ protected class VCreature(creature:Creature, world:World, animationSheet:ListBuf
     creature.canJump = canJump
     creature.canClimb = canClimb
 
-    this.body.setLinearVelocity(creature.get("run_velocity").current, creature.get("jump_velocity").current)
+    this.body.setLinearVelocity(creature.get(Attribute.RUN_VELOCITY).current, creature.get(Attribute.JUMP_VELOCITY).current)
 
     if(creature.holding != null && creature.holding.attacking) {
       if(creature.faceH == "L") {

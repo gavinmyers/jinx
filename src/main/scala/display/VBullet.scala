@@ -3,7 +3,7 @@ package display
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.physics.box2d._
-import game.{Bullet, Thing, Tool}
+import game.{Attribute, Bullet, Thing, Tool}
 import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
@@ -79,7 +79,7 @@ protected class VBullet(entity: Bullet, world:World, animationSheet:ListBuffer[T
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.get("gravityScale").current)
+  body.setGravityScale(entity.get(Attribute.V_GRAVITY_SCALE).current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()

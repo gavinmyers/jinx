@@ -1,6 +1,6 @@
 package game.tools
 
-import game.Tool
+import game.{Attribute, Tool}
 
 /**
   * Created by gavin on 3/7/17.
@@ -8,9 +8,9 @@ import game.Tool
 class Woodblock  extends Tool {
   this.category = game.Thing.woodblock
   this.description = "a block of wood"
-  set("flammable",1f)
+  set(Attribute.FLAMMABLE,1f)
   this.wall = true
   this.weight = 500f
   this.platform = true
-  this.set("density",this.weight * 10f)
+  this.set(Attribute.V_DENSITY,this.weight * 10f)
 }

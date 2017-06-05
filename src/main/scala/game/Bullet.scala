@@ -17,10 +17,10 @@ class Bullet extends Thing {
   var bind:Thing = _
 
   this.weight = 0.01f
-  set("friction",new MaxCurrentMin(0f,0f,0f))
-  set("density",new MaxCurrentMin(0.1f,0.1f,0f))
-  set("restitution",new MaxCurrentMin(0f,0f,0f))
-  set("gravityScale",new MaxCurrentMin(0.1f,0.1f,0f))
+  set(Attribute.V_FRICTION,new MaxCurrentMin(0f,0f,0f))
+  set(Attribute.V_DENSITY,new MaxCurrentMin(0.1f,0.1f,0f))
+  set(Attribute.V_RESTITUTION,new MaxCurrentMin(0f,0f,0f))
+  set(Attribute.V_GRAVITY_SCALE,new MaxCurrentMin(0.1f,0.1f,0f))
 
   var speed:Float = 0f
 
@@ -43,9 +43,11 @@ class Bullet extends Thing {
   }
 
   override def contact(gameTime:Float, thing:Thing): Unit = {
-    if(this.effect == Bullet.fire && !thing.destroyed && thing.attributes.contains("flammable")) {
+    /*
+    if(this.effect == Bullet.fire && !thing.destroyed && thing.get(Attribute.FLAMMABLE) != null) {
       this.created = gameTime
     }
+    */
     if(thing != attacker) {
       Combat.apply(gameTime, attacker, thing, weapon, this)
     }

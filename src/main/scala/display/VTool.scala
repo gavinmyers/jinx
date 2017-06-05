@@ -1,10 +1,10 @@
 package display
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{TextureRegion, Sprite}
+import com.badlogic.gdx.graphics.g2d.{Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import game.{Tool, Thing}
+import game.{Attribute, Thing, Tool}
 import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
@@ -77,7 +77,7 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.get("gravityScale").current)
+  body.setGravityScale(entity.get(Attribute.V_GRAVITY_SCALE).current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()
@@ -88,8 +88,8 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
       f.filter.maskBits = Thing.floor
     f.shape = shape
     shape.setAsBox(Conversion.pixelsToMeters((sprite.getHeight * scaleY) / 2), Conversion.pixelsToMeters((sprite.getWidth * scaleX) / 2))
-    f.friction = entity.get("friction").current
-    f.restitution = entity.get("restitution").current
+    f.friction = entity.get(Attribute.V_FRICTION).current
+    f.restitution = entity.get(Attribute.V_RESTITUTION).current
     f
   })
   fixture.setUserData(entity)
@@ -97,7 +97,7 @@ protected class VTool(entity: Tool, world:World, sprites: scala.collection.mutab
   val fixtureBottom:Fixture = body.createFixture(
     {
       val f = new FixtureDef
-      f.density = entity.get("density").current
+      f.density = entity.get(Attribute.V_DENSITY).current
       f.isSensor = true
       f.shape = new PolygonShape()
       f.shape.asInstanceOf[PolygonShape]

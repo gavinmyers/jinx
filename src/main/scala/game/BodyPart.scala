@@ -3,8 +3,8 @@ package game
 /**
   * Created by gavin on 6/4/17.
   */
-object BodyParts extends Enumeration with java.io.Serializable {
-  type BodyParts = Value
+object BodyPart extends Enumeration with java.io.Serializable {
+  type BodyPart = Value
   val LEFT_HAND = Value("LEFT_HAND")
   val RIGHT_HAND = Value("RIGHT_HAND")
   val HEAD = Value("HEAD")

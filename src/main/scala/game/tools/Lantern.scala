@@ -1,12 +1,13 @@
 package game.tools
 
+import game.Attribute.Attribute
 import game.damage.FireDamage
-import game.{Bullet, Creature, Thing, Tool}
+import game.{Attribute, _}
 
 
 class Lantern extends Tool {
-  set("brightness",2.0f)
-  set("luminance", 1.0f)
+  set(Attribute.V_BRIGHTNESS,2.0f)
+  set(Attribute.V_LUMINANCE, 1.0f)
 
   this.weight = 0.1f
   this.useCooldown = -1f
@@ -19,7 +20,7 @@ class Lantern extends Tool {
     }
 
 
-    this.damage(gameTime, (this.get("health").current * 0.2).toInt)
+    this.damage(gameTime, (this.get(Attribute.HEALTH).current * 0.2).toInt)
     val bullet:Bullet = new Bullet
 
     val fd:FireDamage = new FireDamage
@@ -32,8 +33,8 @@ class Lantern extends Tool {
     bullet.weight = 0.1f
     bullet.forceY = 150f + (Math.random() * 50).toFloat
 
-    bullet.set("brightness", 2f)
-    bullet.set("luminance", 1f)
+    bullet.set(Attribute.V_BRIGHTNESS, 2f)
+    bullet.set(Attribute.V_LUMINANCE, 1f)
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
@@ -52,13 +53,13 @@ class Lantern extends Tool {
     return true
   }
 
-  override def mod(source:Thing, attribute:String, value:Float):Float = {
+  override def mod(source:Thing, attribute:Attribute, value:Float):Float = {
     if(this.using == false) {
       return super.mod(source, attribute, value)
-    } else if("luminance".equalsIgnoreCase(attribute)) {
-      return 4.0f * (this.get("health").current / this.get("health").maximum)
-    } else if("brightness".equalsIgnoreCase(attribute)) {
-      return 4.0f * (this.get("health").current / this.get("health").maximum)
+    } else if(Attribute.V_LUMINANCE == attribute) {
+      return 4.0f * (this.get(Attribute.HEALTH).current / this.get(Attribute.HEALTH).maximum)
+    } else if(Attribute.V_BRIGHTNESS == attribute) {
+      return 4.0f * (this.get(Attribute.HEALTH).current / this.get(Attribute.HEALTH).maximum)
     } else {
       return super.mod(source, attribute, value)
     }
@@ -73,6 +74,6 @@ class Lantern extends Tool {
   override def update(gameTime:Float): Unit = {
     super.update(gameTime)
     if(Math.random() * 10 > 4)
-      set("brightness",(((get("brightness").current * 2f) +  1f + Math.random().toFloat) / 3))
+      set(Attribute.V_BRIGHTNESS,(((get(Attribute.V_BRIGHTNESS).current * 2f) +  1f + Math.random().toFloat) / 3))
   }
 }

@@ -1,10 +1,10 @@
 package display
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.{Sprite, Animation, TextureRegion}
+import com.badlogic.gdx.graphics.g2d.{Animation, Sprite, TextureRegion}
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.physics.box2d._
-import game.{Thing, Notification, Bullet}
+import game.{Attribute, Bullet, Notification, Thing}
 import _root_.utils.Conversion
 
 import scala.collection.mutable.ListBuffer
@@ -61,7 +61,7 @@ protected class VNotification(entity: Notification, world:World) extends VThing 
     b
   })
   body.setUserData(sprite)
-  body.setGravityScale(entity.get("gravityScale").current)
+  body.setGravityScale(entity.get(Attribute.V_GRAVITY_SCALE).current)
 
   val fixture: Fixture = body.createFixture({
     val f: FixtureDef = new FixtureDef()

@@ -1,7 +1,7 @@
 package game.tools
 
 import game.damage.{FireDamage, SharpDamage}
-import game.{Bullet, Creature, Tool}
+import game.{Attribute, Bullet, Creature, Tool}
 
 class Firebreath extends Tool {
   this.category = game.Thing.ironsword
@@ -23,8 +23,8 @@ class Firebreath extends Tool {
     bullet.weight = 0.02f
     bullet.forceY = 150f + (Math.random() * 50).toFloat
 
-    bullet.set("brightness",2f)
-    bullet.set("luminance",1f)
+    bullet.set(Attribute.V_BRIGHTNESS,2f)
+    bullet.set(Attribute.V_LUMINANCE,1f)
     bullet.weapon = this
     if(this.location.isInstanceOf[Creature]) {
       val creature:Creature = this.location.asInstanceOf[Creature]
